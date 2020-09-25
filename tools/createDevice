@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+"""
+Description: Creates device specific secrets
+Use: Once per device
+"""
+import os
+import shutil
+import json
+from argparse import ArgumentParser
+import hashlib
+
+
+def main(region_names, user_names, user_secrets, region_mipod_secrets, device_dir):
+    region_secrets = region_mipod_secrets["regions"]
+    #print(region_secrets)
+    file_name = "device_secrets"
+    if os.path.exists(device_dir):
+        shutil.rmtree(device_dir)
+
+    try:
+        os.mkdir(device_dir)
+    except Exception as e:
+        print("Could not create directory {device_dir}: {e}".format(
+            device_dir=device_dir, e=e))
+        return
+
+    try:
+        device_secrets = open(os.path.join(device_dir, file_name), "w")
+    except Exception as e:
+        print("Unable to open secrets file: {e}".format(e=e))
+        return
+
+    try:
+        rids = [str(region_secrets[r]) for r in region_names]
+    except Exception as e:
+        print("Unable to create secrets file: {e} "
+              "Please ensure all regions entered are in the list: {user_secrets}".format(e=e, user_secrets=user_secrets.keys()))
+        return
+    try:
+        uids = [str(user_secrets[u]['id']) for u in usernames]
+    except Exception as e:
+        print("Unable to create secrets file: {e} "
+              "Please ensure all regions entered are in the list: {user_secrets}".format(e=e, user_secrets=user_secrets.keys()))
+        return
+
+    device_secrets.write(f'''
+#pragma once
+#ifndef SECRETS_H
+#define SECRETS_H
+#include "constants.h"
+
+#define NUM_REGIONS {len(region_secrets)}
+#define NUM_PROVISIONED_REGIONS {len(region_names)}
+#define NUM_PROVISIONED_USERS {len(user_names)}
+#define NUM_USERS {len(user_secrets)}
+
+
+struct user {{
+    const char name[UNAME_SIZE]; 
+    const uint8_t salt[SALT_SIZE]; 
+    const uint8_t hash[PKEY_SIZE]; 
+}}; 
+
+static const uint8_t mipod_key[PKEY_SIZE] = {{{region_mipod_secrets["mipod_key"]} }}; //public signing key for the firmware size 64
+static struct user users[] = {{ {", ".join(['{"' + u + '",'+'{' + user_secrets[u]["salt"]+'}'+','+ '{'+user_secrets[u]["hash"]+'}'+'}' for u in user_secrets])} }};
+const uint8_t USER_IDS[] = {{ {", ".join([str(user_secrets[u]['id']) for u in user_secrets])} }};
+const uint8_t PROVISIONED_UIDS[] = {{ {", ".join(uids)} }};
+
+const char *REGION_NAMES[] = {{ {", ".join(['"' + r + '"' for r in region_secrets])} }};
+const uint8_t REGION_IDS[] = {{ {", ".join([str(r) for r in region_secrets.values()])} }};
+const uint8_t PROVISIONED_RIDS [] = {{ {", ".join(rids)} }};
+
+
+#endif // SECRETS_H
+''')
+
+def get_args():
+    """gets arguments from command line"""
+    parser = ArgumentParser(description='main interface to provision system')
+    parser.add_argument('--region-list', nargs='+',
+                        help='Regions the player is provisioned for.', required=True)
+    parser.add_argument('--region-secrets-path',
+                        help='Path to region secrets file.', required=True)
+    parser.add_argument('--user-list', help='List of users seperated by a space to provision the device for.',
+                        nargs='+', required=True)
+    parser.add_argument('--user-secrets-path', help='Path to user secrets file generated in createUsers.py',
+                        required=True)
+    parser.add_argument('--device-dir', help='Path to output any required information for the device.',
+                        required=True)
+    args = parser.parse_args()
+    return args.region_list, args.region_secrets_path, args.user_list, args.user_secrets_path,  args.device_dir
+
+
+if __name__ == '__main__':
+    region_names, region_secrets, usernames, user_secrets, device_dir = get_args()
+    #print (region_names)
+    print("generating device specific secrets")
+    user_secrets = json.load(open(os.path.abspath(user_secrets)))
+    region_mipod_secrets = json.load(open(os.path.abspath(region_secrets)))
+    #print (region_mipod_secrets)
+    main(region_names, usernames, user_secrets, region_mipod_secrets, device_dir)

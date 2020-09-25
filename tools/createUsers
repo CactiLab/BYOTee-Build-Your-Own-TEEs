@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+"""
+Description: Creates user specific secrets
+Usage: ./createUsers --user-list "drew:1234567890" "ben:00000000" "misha:0987654321" --outfile global_provisioning/user.secrets --mipod-secrets global_provisioning/mipod.secrets
+Use: Once per user
+"""
+
+import json
+from argparse import ArgumentParser
+import os
+import hashlib
+
+
+def main(user_list, outfile):
+    """writes user secrets to json file
+    args:
+        users_ (string): string of users and pins seperated by colons e.g. user1:123456789
+        outfile (string): name of file to write user_secrets to """
+    try:
+        secrets = open(outfile, "w")
+    except Exception as e:
+        print("Unable to open secrets file: %s" % (e,))
+        return 0
+    hashMap = {}
+    saltMap = {}
+    for user in user_list:
+        perSalt = os.urandom(16)
+        saltMap[user.split(":")[0]] = perSalt
+        userKey = hashlib.pbkdf2_hmac('sha512', str.encode(user.split(":")[1]), perSalt, 120)
+        hashMap[user.split(":")[0]] = userKey
+    try:
+        user_dict = {user.split(":")[0]: {"id": num, "salt": ", ".join([ str(uSaltByte)  for uSaltByte in saltMap[user.split(":")[0]]]), "hash": ", ".join([ str(uHash)  for uHash in hashMap[user.split(":")[0]]])} for num, user in enumerate(user_list)}
+    except IndexError:
+        raise Exception(
+            "Unable to parse user name and pin. Please make sure you entered the user-list as "
+            "space seperated pairs of usernames and pins. Example: --user-list user1:12345678 user2:12345689")
+    info = json.dumps(user_dict)
+    secrets.write(info)
+    secrets.close()
+
+
+def get_args():
+    """gets arguments from command line"""
+    parser = ArgumentParser(description='main interface to provision system')
+    parser.add_argument('--user-list', nargs='+',
+                        help='list of users and pins seperated by a colon: "user1:12345678 user2:12345679" ',
+                        required=True)
+    parser.add_argument('--outfile', help='location to save user secrets file', required=True)
+    args = parser.parse_args()
+    return args.user_list, args.outfile
+
+
+if __name__ == '__main__':
+    users, loc = get_args()
+    print("generating user specific secrets")
+    main(users, loc)
