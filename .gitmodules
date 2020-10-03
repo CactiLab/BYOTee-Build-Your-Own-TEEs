@@ -1,6 +1,0 @@
-[submodule "vivado-boards"]
-	path = vivado-boards
-	url = https://github.com/Digilent/vivado-boards.git
-[submodule "pl"]
-	path = pl
-	url = git@github.com:CactiLab/2020-ectf-rit-system-pl.git
