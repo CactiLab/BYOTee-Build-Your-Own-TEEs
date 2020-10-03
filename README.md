@@ -11,7 +11,7 @@ Please see the [Getting Started Guide](getting_started.md).
 ## Compile with Mb-gcc [run this commands in the Mb_files folder]
  * mb-gcc -Wall -O0 tes1.c -o test.elf
  * mb-objcopy --dump-section .text=test test.elf
- * Move the `test/` file from this folder to `/tools/global_provisioning/audio/` folder after step 8 from getting started
+ * Move the `test` file from this folder to `/tools/global_provisioning/audio/` folder after step 8 from getting started
 
 ## Project structure
 The example code is structured as follows
