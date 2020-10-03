@@ -1,18 +1,33 @@
-# 2020 eCTF Getting Started (RIT design)
+# 2020 MITRE Collegiate eCTF Getting Started
 
-Below is the overview of how to set up the RIT implementation for the 2020 Collegiate eCTF.
+Below is the overview of how to set up the reference implementation for the 2020 Collegiate eCTF.
 
 Please note: if any step fails, it is highly unlikely that the process will get back on track by continuing to future steps.
 
-## Download the code
+## Creating Your Own Fork
+We suggest you create a fork of this repo so that you can begin to develop
+your solution to the eCTF. To do this, you must fork the repo, change your fork to the `origin`, and
+then add the MITRE repo as another remote. Follow these steps below.
 
-Clone the RIT eCTF repository using ssh or https 
+1. Clone the eCTF repository using ssh or https 
 ```bash
-git clone git@github.com:CactiLab/2020-ectf-rit-system.git --recursive
+git clone git@github.com:CactiLab/code-build-your-own-TEE.git --recursive
 ``` 
+2. Change the current origin remote to another name
+```bash
+git remote rename origin mitre
+```
+
+3. Fork the MITRE repo on github (Note that you probably want to make the repo private for now so
+   that other teams cannot borrow your development ideas) 
+
+4. Add the fork as the new origin
+```bash
+git remote add origin <git_path>.git
+```
 
 You can now fetch and push as you normally would using `git fetch origin` and `git push origin`.
-If MITRE pushes out updated code, you can fetch this new code using `git fetch mitre`.
+If we push out updated code, you can fetch this new code using `git fetch mitre`.
 
 
 ## Download Xilinx Tools
@@ -38,7 +53,7 @@ Please allocate enough time for this process and be sure the follow the steps in
 carefully.
 
 
-## Building the RIT Design
+## Building the Reference Design
 This section assumes that you have a Vagrant development
 environment running as described in the `vagrant` folder, and that you have read through all of the
 `README` files in each subdirectory.
@@ -49,11 +64,11 @@ To build the reference design for the first time, follow these steps:
 2.  Log in to the virtual machine using the credentials `vagrant:vagrant`.
 3.  Open a terminal and `cd` to the `tools` directory.
 4.  Run `mkdir global_provisioning/audio -p` to make a directory called `global_provisioning`, with a subfolder of `audio` for audio files.
-5.  Run `./createRegions --region-list "United States" "Japan" "Australia" --outfile global_provisioning/region.secrets` script to create the geographical regions (USA, Japan, and Australia in this case). This script also creates the mipod secrets and an AES key for protecting songs (the AES key will be sent to the `pl` project). **ATTENTION**: Each team will have a unique `aes.key` for protecting songs. Because each team should have different AES key, so different teams need different `pl` projects, or else the AES key will not work and can not decrypt the song correctly.
-6.  Run `./createUsers --user-list "drew:1234567890" "ben:00000000" "misha:0987654321" --outfile global_provisioning/user.secrets` script to create the 3 users ("drew", "ben" and "misha") with their pins, salt, and hmac-sha512 hash. 
-7.  Run `./protectSong --region-list "United States" --region-secrets-path global_provisioning/region.secrets --outfile global_provisioning/audio/swan.drm --infile ../sample-audio/swan.wav --owner "misha" --user-secrets-path global_provisioning/user.secrets` to provision a song for the United States region, with "drew" as an owner, use the `mipod.secrets` to protect the song. This script will genearte an `aes.key` file for the first time which will be sent to hardware. 
-8.  Run `./createDevice --region-list "United States" "Japan" --region-secrets-path global_provisioning/region.secrets --user-list "drew" "ben" "misha" --user-secrets-path global_provisioning/user.secrets --device-dir device1`. This will create a device for the "United States" and "Japan" regions and provision the device for "drew", "ben", and "misha", allowing each of them to log in. Any output files will be put into the "device1" directory.
-9.  Run the device by running `./buildDevice -p ../ -n rit_pl_proj -bf all -secrets_dir device1` (note that this takes a long time to run the first time you run it! Please be patient.) This will create a Vivado project called `rit_pl_proj` and use the `device1` secrets directory. 
+5.  Run `./createRegions --region-list "United States" "Japan" "Australia" --outfile global_provisioning/region.secrets` script to create the geographical regions (USA, Japan, and Australia in this case)
+6.  Run `./createUsers --user-list "drew:1234567890" "ben:00000000" "misha:0987654321" --outfile global_provisioning/user.secrets` script to create the 3 users ("drew", "ben" and "misha") with their pins.
+7.  Run `./protectSong --region-list "United States" --region-secrets-path global_provisioning/region.secrets --outfile global_provisioning/audio/demo.drm --infile ../sample-audio/Sound-Bite_One-Small-Step.wav --owner "drew" --user-secrets-path global_provisioning/user.secrets` to provision a song for the United States region, with "drew" as an owner.
+8.  Run `./createDevice --region-list "United States" "Japan" --region-secrets-path global_provisioning/region.secrets --user-list "drew" "ben" "misha" --user-secrets-path global_provisioning/user.secrets --device-dir device1`. This will create a device for the "United States" and "Japan" regions and provision the device for "drew", "ben", and "misha", allowing each of them to log in. Any output files will be put into a "device" directory.
+9.  Run the device by running `./buildDevice -p ../ -n test -bf all -secrets_dir device1/` (note that this takes a long time to run the first time you run it! Please be patient.) This will create a Vivado project called `test` and use the `device1` secrets directory.
 10. Run `./packageDevice ../boot-image/template.bif device1/miPod.bin device1/download.bit` to create a `miPod.BIN` file with your bitstream.
 11. Insert the SD card into the SD card reader, and insert that into your laptop.
     Ensure that this is passed through to the VM through the VirtualBox USB options

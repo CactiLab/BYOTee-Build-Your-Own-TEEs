@@ -1,8 +1,0 @@
-#!/bin/bash
-
-for file in ../src/*.c; do
-	fullname=`basename -- $file`
-	name="${fn%.*}"
-	echo "src/$name.o src/" > src/$name.d
-	mb-gcc -I"/ectf/mb/drm_audio_fw_bsp/microblaze_0/include" -M $file >> src/$name.d
-done

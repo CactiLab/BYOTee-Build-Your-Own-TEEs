@@ -1,9 +1,16 @@
-# 
+# 2020 MITRE Collegiate eCTF Example Code
 
-This repository contains the RIT system for MITRE's 2020 [Embedded System CTF](http://mitrecyberacademy.org/competitions/embedded/). The original insecure reference system developed by MITRE can be found at [MITRE Insecure Reference](https://github.com/mitre-cyber-academy/2020-ectf-insecure-example).
+This repository contains an example reference system for MITRE's 2020 [Embedded System CTF](http://mitrecyberacademy.org/competitions/embedded/). 
+This code is incomplete, insecure, and does not meet MITRE standards for quality.
+This code is being provided for educational purposes to serve as a simple example that meets the minimum functional requirements for the 2020 MITRE eCTF competition.
+Use this code at your own risk!
 
 ## Getting Started
-Please see the [Getting Started Guide](getting_started.md). Please see the [RIT Design](2020ectf-rit-design.pdf) for the design and implementation details of our system.
+Please see the [Getting Started Guide](getting_started.md).
+
+## Compile with Mb-gcc
+ * mb-gcc -Wall -O0 tes1.c -o test.elf
+ * mb-objcopy --dump-section .text=test test.elf
 
 ## Project structure
 The example code is structured as follows
