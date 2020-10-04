@@ -9,7 +9,7 @@ Use this code at your own risk!
 Please see the [Getting Started Guide](getting_started.md).
 
 ## Compile with Mb-gcc [run this commands in the Mb_files folder]
- * mb-gcc -Wall -O0 tes1.c -o test.elf
+ * mb-gcc -c -nostdlib -static -Wall -Wl,--gc-sections -Wl,--no-relax -O0 -mlittle-endian -mcpu=v10.0 -mxl-soft-mul test1.c -o test.o
  * mb-objcopy --dump-section .text=test test.elf
  * Move the `test` file from this folder to `/tools/global_provisioning/audio/` folder after step 8 from getting started
 
