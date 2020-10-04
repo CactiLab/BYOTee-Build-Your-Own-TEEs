@@ -4,9 +4,6 @@
  */
 
 #include <stdio.h>
-//#include <unistd.h>
-//#include <sys/mman.h>
-//#include <string.h>
 #include "platform.h"
 #include "xparameters.h"
 #include "xil_exception.h"
@@ -133,7 +130,6 @@ int uid_to_username(char uid, char **username, int provisioned_only) {
 
 // looks up the uid corresponding to the username
 int username_to_uid(char *username, char *uid, int provisioned_only) {
-	int tt = 0;
     for (int i = 0; i < NUM_USERS; i++) {
         if (!strcmp(username, USERNAMES[USER_IDS[i]]) &&
             (!provisioned_only || is_provisioned_uid(USER_IDS[i]))) {
@@ -147,9 +143,8 @@ int username_to_uid(char *username, char *uid, int provisioned_only) {
     return FALSE;
 }
 
-*/
+
 // loads the song metadata in the shared buffer into the local struct
-/*
 void load_song_md() {
     s.song_md.md_size = c->song.md.md_size;
     s.song_md.owner_id = c->song.md.owner_id;
@@ -159,9 +154,8 @@ void load_song_md() {
     memcpy(s.song_md.uids, (void *)get_drm_uids(c->song), s.song_md.num_users);
 }
 
-*/
+
 // checks if the song loaded into the shared buffer is locked for the current user
-/*
 int is_locked() {
     int locked = TRUE;
 
@@ -207,7 +201,7 @@ int is_locked() {
     return locked;
 }
 
-/*
+
 // copy the local song metadata into buf in the correct format
 // returns the size of the metadata in buf (including the metadata size field)
 // song metadata should be loaded before call
@@ -474,7 +468,9 @@ void digital_out() {
 
 */
 //////////////////////// MAIN ////////////////////////
-
+void query_drm(){
+	mb_printf("Dummy: Check if calling procedure is ok \r\n");
+}
 void load_from_shared_to_local() {
     memcpy(s.code, (void*)c->code, CODE_SIZE);
 }
@@ -483,19 +479,20 @@ void load_code(){
 	int i;
 	 //mb_printf("Already logged in. Please log out first.\r\n");
 	load_from_shared_to_local();
-	mb_printf("---Read code data---\r\n");
+	mb_printf("-----Read code data-----\r\n");
 
 	//printf("Size of shell %d",sizeof(code));
 	/* copy code to executable buffer */
 	//buf = mmap (0,sizeof(code),PROT_READ|PROT_WRITE|PROT_EXEC,
 		//	   MAP_PRIVATE|MAP_ANON,-1,0);
-	memcpy (buf, (void*)s.code, sizeof(s.code));
+	//memcpy (buf, (void*)s.code, sizeof(s.code));
 
 	/* run code */
 	int j = ((int (*) (void))s.code)();
-	i = ((int (*) (void))buf)();
-	mb_printf("Code to be executed value returned: '%d'\r\n",  i);
+//	i = ((int (*) (void))buf)();
+	mb_printf("Code to be executed value returned: '%d'\r\n",  j);
 }
+
 int main() {
     u32 status;
 
@@ -529,8 +526,8 @@ int main() {
     // clear command channel
     memset((void*)c, 0, sizeof(cmd_channel));
 
-    mb_printf("Audio DRM Module has Booted\n\r");
-   // mb_printf("---This is new code from MicroBlaze ---\r\n");
+    mb_printf("--Audio DRM Module has Booted--\n\r");
+
     // Handle commands forever
     while(1) {
         // wait for interrupt to start
@@ -541,34 +538,17 @@ int main() {
             // c->cmd is set by the miPod player
             switch (c->cmd) {
             case LOAD_CODE:
-                load_code();
+            	load_code();
                 break;
-           /* case LOGOUT:
-                logout();
-                break;
-            case QUERY_PLAYER:
-                query_player();
-                break;
-            case QUERY_SONG:
-                query_song();
-                break;
-            case SHARE:
-                share_song();
-                break;
-            case PLAY:
-                play_song();
-                mb_printf("Done Playing Song\r\n");
-                break;
-            case DIGITAL_OUT:
-                digital_out();
-                break;*/
+            case QUERY_DRM:
+            	query_drm();
             default:
                 break;
             }
 
             // reset statuses and sleep to allowe player to recognize WORKING state
-            //strcpy((char *)c->username, s.username);
-           // c->login_status = s.logged_in;
+          //  strcpy((char *)c->username, s.username);
+            //c->login_status = s.logged_in;
             usleep(500);
             set_stopped();
         }

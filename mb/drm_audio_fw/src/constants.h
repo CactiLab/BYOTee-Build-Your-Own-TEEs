@@ -50,9 +50,8 @@ typedef struct {
 } query;
 
 // simulate array of 64B names without pointer indirection
-/*
 #define q_region_lookup(q, i) (q.regions + (i * REGION_NAME_SZ))
-#define q_user_lookup(q, i) (q.users + (i * USERNAME_SZ)) */
+#define q_user_lookup(q, i) (q.users + (i * USERNAME_SZ))
 
 
 // struct to interpret drm metadata
@@ -76,20 +75,20 @@ typedef struct __attribute__((__packed__)) {
 } song;
 
 // accessors for variable-length metadata fields
-/*
 #define get_drm_rids(d) (d.md.buf)
 #define get_drm_uids(d) (d.md.buf + d.md.num_regions)
-#define get_drm_song(d) ((char *)(&d.md) + d.md.md_size)*/
+#define get_drm_song(d) ((char *)(&d.md) + d.md.md_size)
 
 
 // shared buffer values
 //enum commands { QUERY_PLAYER, QUERY_SONG, LOGIN, LOGOUT, SHARE, PLAY, STOP, DIGITAL_OUT, PAUSE, RESTART, FF, RW };
-enum commands { LOAD_CODE};
+enum commands { LOAD_CODE, QUERY_DRM};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
 
 // struct to interpret shared command channel
-/*typedef volatile struct __attribute__((__packed__)) {
+/*
+typedef volatile struct __attribute__((__packed__)) {
     char cmd;                   // from commands enum
     char drm_state;             // from states enum
     char login_status;          // 0 = logged off, 1 = logged on
@@ -102,14 +101,14 @@ enum states   { STOPPED, WORKING, PLAYING, PAUSED };
         song song;
         query query;
     };
-} cmd_channel;*/
+} cmd_channel;
+*/
 
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
    char code [CODE_SIZE];
 } cmd_channel;
-
 // local store for drm metadata
 typedef struct {
     u8 md_size;
@@ -130,8 +129,8 @@ typedef struct {
     song_md song_md;            // current song metadata
 } internal_state;
 */
+
 typedef struct {
 	 char code [CODE_SIZE];
 } internal_state;
-
 #endif /* SRC_CONSTANTS_H_ */
