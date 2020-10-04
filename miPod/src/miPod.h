@@ -71,7 +71,7 @@ typedef struct __attribute__((__packed__)) {
 
 // shared buffer values
 //enum commands { QUERY_PLAYER, QUERY_SONG, LOGIN, LOGOUT, SHARE, PLAY, STOP, DIGITAL_OUT, PAUSE, RESTART, FF, RW };
-enum commands { LOAD_CODE};
+enum commands { LOAD_CODE, QUERY_DRM};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
 
@@ -93,8 +93,6 @@ typedef volatile struct __attribute__((__packed__)) {
     };
 } cmd_channel;
 */
-
-
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;

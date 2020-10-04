@@ -2,19 +2,19 @@
 # updatemem v2017.4 (64-bit)
 # SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
 # 
-# Start of session at: Sat Oct  3 19:13:44 2020
-# Process ID: 28828
-# Current directory: /home/tomal/Desktop/BUILDTEEcode/2020-ectf-insecure-example/tools
-# Command line: updatemem -mode batch -source /opt/Xilinx/SDK/2017.4/scripts/updatemem/main.tcl -notrace -tclargs -meminfo ..//mb/test/system_wrapper.mmi -data ..//mb/drm_audio_fw/Debug/drm_audio_fw.elf -proc system_i/microblaze_0 -bit ..//mb/test/system_wrapper.bit -out device1/download.bit -force
-# Log file: /home/tomal/Desktop/BUILDTEEcode/2020-ectf-insecure-example/tools/updatemem.log
-# Journal file: /home/tomal/Desktop/BUILDTEEcode/2020-ectf-insecure-example/tools/updatemem.jou
+# Start of session at: Sun Oct  4 01:14:40 2020
+# Process ID: 4742
+# Current directory: /home/tomal/Desktop/BUILDTEEcode/test_project/code-build-your-own-TEE/tools
+# Command line: updatemem -mode batch -source /opt/Xilinx/SDK/2017.4/scripts/updatemem/main.tcl -notrace -tclargs -meminfo /home/tomal/Desktop/BUILDTEEcode/mitre/2020-ectf-insecure-example/mb/Cora-Z7-07S/system_wrapper.mmi -data /home/tomal/Desktop/BUILDTEEcode/mitre/2020-ectf-insecure-example/mb/drm_audio_fw/Debug/drm_audio_fw.elf -proc system_i/microblaze_0 -bit /home/tomal/Desktop/BUILDTEEcode/mitre/2020-ectf-insecure-example/mb/Cora-Z7-07S/system_wrapper.bit -out /home/tomal/Desktop/BUILDTEEcode/mitre/2020-ectf-insecure-example/mb/Cora-Z7-07S/download.bit -force
+# Log file: /home/tomal/Desktop/BUILDTEEcode/test_project/code-build-your-own-TEE/tools/updatemem.log
+# Journal file: /home/tomal/Desktop/BUILDTEEcode/test_project/code-build-your-own-TEE/tools/updatemem.jou
 #-----------------------------------------------------------
 source /opt/Xilinx/SDK/2017.4/scripts/updatemem/main.tcl -notrace
- Loading bitfile ..//mb/test/system_wrapper.bit
+ Loading bitfile /home/tomal/Desktop/BUILDTEEcode/mitre/2020-ectf-insecure-example/mb/Cora-Z7-07S/system_wrapper.bit
 Loading data files...
 Updating memory content...
 Creating bitstream...
-Bitstream compression saved 8416960 bits.
-Writing bitstream device1/download.bit...
-  update_mem: Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 915.418 ; gain = 405.164 ; free physical = 651 ; free virtual = 14173
-INFO: [Common 17-206] Exiting updatemem at Sat Oct  3 19:13:54 2020...
+Bitstream compression saved 8415552 bits.
+Writing bitstream /home/tomal/Desktop/BUILDTEEcode/mitre/2020-ectf-insecure-example/mb/Cora-Z7-07S/download.bit...
+  update_mem: Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 916.227 ; gain = 405.965 ; free physical = 625 ; free virtual = 13871
+INFO: [Common 17-206] Exiting updatemem at Sun Oct  4 01:14:51 2020...

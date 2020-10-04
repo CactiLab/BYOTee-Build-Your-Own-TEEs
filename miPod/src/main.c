@@ -20,7 +20,6 @@
 volatile cmd_channel *c;
 
 
-
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 
 
@@ -70,12 +69,12 @@ void print_playback_help() {
     mp_printf("  ff: fast forwards 5 seconds(unsupported)\r\n");
     mp_printf("  rw: rewind 5 seconds (unsupported)\r\n");
     mp_printf("  help: display this message\r\n");
-}*/
-
+}
+*/
 
 // loads a file into the song buffer with the associate
 // returns the size of the file or 0 on error
-size_t load_file(char *fname, char *song_buf) {
+size_t load_file(char *fname, char *file_buf) {
     int fd;
     struct stat sb;
 
@@ -90,7 +89,7 @@ size_t load_file(char *fname, char *song_buf) {
         return 0;
     }
 
-    read(fd, song_buf, sb.st_size);
+    read(fd, file_buf, sb.st_size);
     close(fd);
 
     mp_printf("Loaded file into shared buffer (%dB)\r\n", sb.st_size);
@@ -343,8 +342,13 @@ void digital_out(char *song_name) {
     close(fd);
     mp_printf("Finished writing file\r\n");
 }
-
 */
+void query_drm(){
+	send_command(QUERY_DRM);
+	while (c->drm_state == STOPPED) continue; // wait for DRM to start working
+	while (c->drm_state == WORKING) continue; // wait for DRM to dump file
+	mp_printf("Dummy query\r\n");
+}
 //////////////////////// MAIN ////////////////////////
 void load_code(char *fileName) {
 	 // load file into shared buffer
@@ -372,16 +376,13 @@ int main(int argc, char** argv)
         mp_printf("MMAP Failed! Error = %d\r\n", errno);
         return -1;
     }
-    mp_printf("This is new code from Mipod)\r\n");
     mp_printf("Command channel open at %p (%dB)\r\n", c, sizeof(cmd_channel));
 
     // dump player information before command loop
-    print_help();
+    query_drm();
 
     // go into command loop until exit is requested
     while (1) {
-
-
         // get command
         print_prompt();
         fgets(usr_cmd, USR_CMD_SZ, stdin);
@@ -390,18 +391,12 @@ int main(int argc, char** argv)
         parse_input(usr_cmd, &cmd, &arg1, &arg2);
         if (!cmd) {
             continue;
-        } else if (!strcmp(cmd, "load_code")) {
-
-        	load_code(arg1);
-        }
-        else if (!strcmp(cmd, "help")) {
-			print_help();
-		}
-    /*    if (!cmd) {
-            continue;
         } else if (!strcmp(cmd, "help")) {
             print_help();
-        } else if (!strcmp(cmd, "login")) {
+        } else if (!strcmp(cmd, "load_code")) {
+        	load_code(arg1);
+        }
+        /*else if (!strcmp(cmd, "login")) {
             login(arg1, arg2);
         } else if (!strcmp(cmd, "logout")) {
             logout();
@@ -419,12 +414,13 @@ int main(int argc, char** argv)
         } else if (!strcmp(cmd, "exit")) {
             mp_printf("Exiting...\r\n");
             break;
-        } else {
+        } */
+        else {
             mp_printf("Unrecognized command.\r\n\r\n");
             print_help();
         }
-    } */
     }
+
     // unmap the command channel
     munmap((void*)c, sizeof(cmd_channel));
 

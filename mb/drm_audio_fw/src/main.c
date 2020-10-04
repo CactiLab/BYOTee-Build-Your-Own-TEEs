@@ -483,7 +483,7 @@ void load_code(){
 	int i;
 	 //mb_printf("Already logged in. Please log out first.\r\n");
 	load_from_shared_to_local();
-	mb_printf("Read code data\r\n");
+	mb_printf("---Read code data---\r\n");
 
 	//printf("Size of shell %d",sizeof(code));
 	/* copy code to executable buffer */
@@ -530,7 +530,7 @@ int main() {
     memset((void*)c, 0, sizeof(cmd_channel));
 
     mb_printf("Audio DRM Module has Booted\n\r");
-    mb_printf("---This is new code from MicroBlaze ---\r\n");
+   // mb_printf("---This is new code from MicroBlaze ---\r\n");
     // Handle commands forever
     while(1) {
         // wait for interrupt to start
