@@ -76,23 +76,6 @@ enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
 
 // struct to interpret shared command channel
-/*
-typedef volatile struct __attribute__((__packed__)) {
-    char cmd;                   // from commands enum
-    char drm_state;             // from states enum
-    char login_status;          // 0 = logged off, 1 = logged on
-    char padding;               // not used
-    char username[USERNAME_SZ]; // stores logged in or attempted username
-    char pin[MAX_PIN_SZ];       // stores logged in or attempted pin
-
-    // shared buffer is either a drm song or a query
-    union {
-        song song;
-        query query;
-        char buf[MAX_SONG_SZ]; // sets correct size of cmd_channel for allocation
-    };
-} cmd_channel;
-*/
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;

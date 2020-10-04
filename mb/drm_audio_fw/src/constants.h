@@ -79,36 +79,19 @@ typedef struct __attribute__((__packed__)) {
 #define get_drm_uids(d) (d.md.buf + d.md.num_regions)
 #define get_drm_song(d) ((char *)(&d.md) + d.md.md_size)
 
-
-// shared buffer values
-//enum commands { QUERY_PLAYER, QUERY_SONG, LOGIN, LOGOUT, SHARE, PLAY, STOP, DIGITAL_OUT, PAUSE, RESTART, FF, RW };
 enum commands { LOAD_CODE, QUERY_DRM};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
 
 // struct to interpret shared command channel
-/*
-typedef volatile struct __attribute__((__packed__)) {
-    char cmd;                   // from commands enum
-    char drm_state;             // from states enum
-    char login_status;          // 0 = logged off, 1 = logged on
-    char padding;               // not used
-    char username[USERNAME_SZ]; // stores logged in or attempted username
-    char pin[MAX_PIN_SZ];       // stores logged in or attempted pin
-
-    // shared buffer is either a drm song or a query
-    union {
-        song song;
-        query query;
-    };
-} cmd_channel;
-*/
 
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
    char code [CODE_SIZE];
 } cmd_channel;
+
+
 // local store for drm metadata
 typedef struct {
     u8 md_size;
@@ -119,16 +102,7 @@ typedef struct {
     u8 uids[MAX_USERS];
 } song_md;
 
-/*
 // store of internal state
-typedef struct {
-    char logged_in;             // whether or not a user is logged on
-    u8 uid;                     // logged on user id
-    char username[USERNAME_SZ]; // logged on username
-    char pin[MAX_PIN_SZ];       // logged on pin
-    song_md song_md;            // current song metadata
-} internal_state;
-*/
 
 typedef struct {
 	 char code [CODE_SIZE];
