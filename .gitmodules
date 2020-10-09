@@ -1,1 +1,7 @@
 
+[submodule "vivado-boards"]
+	path = vivado-boards
+	url = https://github.com/Digilent/vivado-boards.git
+[submodule "pl"]
+	path = pl
+	url = https://github.com/mitre-cyber-academy/Cora-Z7-07S-base-linux.git
