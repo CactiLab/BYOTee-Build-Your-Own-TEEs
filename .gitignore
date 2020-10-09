@@ -1,11 +1,1 @@
-BOOT.bin
-*.elf
-*.o
-*.bif
-*.d
-*.size
-*.wav
-*.drm
-*.vagrant
-*.log
-*.jou
+
