@@ -1,8 +1,3 @@
-/*
- * eCTF Collegiate 2020 miPod Example Code
- * Linux-side DRM driver
- */
-
 
 #include "miPod.h"
 
@@ -33,8 +28,6 @@ void send_command(int cmd) {
 }
 
 
-// parses the input of a command with up to two arguments
-// any arguments not present will be set to NULL
 void parse_input(char *input, char **cmd, char **arg1, char **arg2) {
     *cmd = strtok(input, " \r\n");
     *arg1 = strtok(NULL, " \r\n");

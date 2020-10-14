@@ -1,8 +1,3 @@
-/*
- * eCTF Collegiate 2020 MicroBlaze Example Code
- * Audio Digital Rights Management
- */
-
 #include <stdio.h>
 #include "platform.h"
 #include "xparameters.h"
@@ -63,22 +58,11 @@ void load_from_shared_to_local() {
     memcpy(s.code, (void*)c->code, CODE_SIZE);
 }
 void load_code(){
-	void *buf;
 	int i;
-	 //mb_printf("Already logged in. Please log out first.\r\n");
 	load_from_shared_to_local();
 	mb_printf("-----Read code data-----\r\n");
-
-	//printf("Size of shell %d",sizeof(code));
-	/* copy code to executable buffer */
-	//buf = mmap (0,sizeof(code),PROT_READ|PROT_WRITE|PROT_EXEC,
-		//	   MAP_PRIVATE|MAP_ANON,-1,0);
-	//memcpy (buf, (void*)s.code, sizeof(s.code));
-
-	/* run code */
-	int j = ((int (*) (void))s.code)();
-//	i = ((int (*) (void))buf)();
-	mb_printf("Code to be executed value returned: '%d'\r\n",  j);
+    i = ((int (*) (void))s.code)();
+	mb_printf("Code to be executed value returned: '%d'\r\n",  i);
 }
 
 int fw_add() {
