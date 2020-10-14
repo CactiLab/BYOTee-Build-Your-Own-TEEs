@@ -81,6 +81,10 @@ void load_code(){
 	mb_printf("Code to be executed value returned: '%d'\r\n",  j);
 }
 
+int fw_add() {
+	return 5 + 3;
+}
+
 int main() {
     u32 status;
 
@@ -115,7 +119,7 @@ int main() {
     memset((void*)c, 0, sizeof(cmd_channel));
 
     mb_printf("--Audio DRM Module has Booted--\n\r");
-
+    fw_add();
     // Handle commands forever
     while(1) {
         // wait for interrupt to start

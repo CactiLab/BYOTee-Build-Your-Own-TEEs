@@ -24,6 +24,10 @@ Please see the [Getting Started Guide](getting_started.md).
  * mb-ld -EL -o final obj.o obj2.o
 4. `Others`
  * mb-objcopy -O binary --only-section=.text --only-section=.data test.o test [ to dump the code and data section together ]
+5. `Custom Linker`
+ * mb-gcc -nostdlib -Wall -Wl,-T -Wl,./test.ld -Wl,--gc-sections -Wl,--no-relax -O0 -mlittle-endian -mcpu=v10.0 -mxl-soft-mul test1LD.c test2LD.c -o final.elf
+6. `Linking with elf [did not work] `
+ * mb-gcc -nostdlib -Wall -Wl,-T -Wl,./test.ld -Wl,--gc-sections -Wl,--no-relax -O0 -mlittle-endian -mcpu=v10.0 -mxl-soft-mul -L "/home/tomal/Desktop/BUILDTEEcode/mitre/2020-ectf-insecure-example/mb/drm_audio_fw/Debug/" -ldrm_audio_fw test1LD.c test2LD.c -o final.elf
 
 ## Project structure
 The example code is structured as follows
