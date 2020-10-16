@@ -7,7 +7,7 @@ OUTPUT_FORMAT("elf32-microblaze", "elf32-microblaze",
 	      "elf32-microblazeel")
 /*SEARCH_DIR("=/proj/sdk/gnu/microblaze/builds/HEAD/nightly/2017_11_15/rdi_scripts/../build/lin/ctng_output/microblaze-xilinx-elf/lib"); SEARCH_DIR("=/usr/local/lib"); SEARCH_DIR("=/lib"); SEARCH_DIR("=/usr/lib");*/
 SEARCH_DIR("=/proj/sdk/gnu/microblaze/builds/HEAD/nightly/2017_11_15/rdi_scripts/../build/lin/ctng_output/microblaze-xilinx-elf/lib"); SEARCH_DIR("=/usr/local/lib"); SEARCH_DIR("=/lib"); SEARCH_DIR("=/usr/lib");
-ENTRY (_start)
+ENTRY (_test)
 _TEXT_START_ADDR = DEFINED(_TEXT_START_ADDR) ? _TEXT_START_ADDR : 0x50;
 _HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x0;
 _STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x400;

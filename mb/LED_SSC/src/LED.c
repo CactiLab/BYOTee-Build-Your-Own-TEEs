@@ -12,11 +12,18 @@
 #include "xintc.h"
 #include "constants.h"
 #include "sleep.h"
+#include "LedHeader.h"
 
 const struct color RED =    {0x01ff, 0x0000, 0x0000};
 const struct color YELLOW = {0x01ff, 0x01ff, 0x0000};
 const struct color GREEN =  {0x0000, 0x01ff, 0x0000};
 const struct color BLUE =   {0x0000, 0x0000, 0x01ff};
+
+int _test()
+{
+	main();
+    return 1000;
+}
 
 int main()
 {
