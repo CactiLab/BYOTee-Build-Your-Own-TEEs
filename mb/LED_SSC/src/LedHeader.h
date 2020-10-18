@@ -1,7 +1,10 @@
 #ifndef __TEST_H_
 #define __TEST_H
 
-int _test() __attribute__ ((section (".text.ssc_entry")));
+int _test() __attribute__ ((section (".ssc")));
+int main() __attribute__ ((section (".ssc")));
+int fw_add() __attribute__ ((section (".fw_add")));
+//void xil_printf( const char8 *ctrl1, ...) __attribute__ ((section (".xfwLib")));
 //int add();
 //int mul(int);
 

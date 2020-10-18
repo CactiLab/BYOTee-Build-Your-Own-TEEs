@@ -19,18 +19,22 @@ const struct color YELLOW = {0x01ff, 0x01ff, 0x0000};
 const struct color GREEN =  {0x0000, 0x01ff, 0x0000};
 const struct color BLUE =   {0x0000, 0x0000, 0x01ff};
 
+int temp = 0xf1;
+
 int _test()
 {
-	main();
-    return 1000;
+    return main();
 }
-
+int fw_add () {
+	return 5 + 3;
+}
 int main()
 {
-   // init_platform();
+    //init_platform();
     u32 *led = (u32*) XPAR_RGB_PWM_0_PWM_AXI_BASEADDR;
-    xil_printf("Hello World\n\r");
+    xil_printf("Setting LED color blue from SSC \n\r");
     setLED(led, BLUE);
+    temp = temp  + 1;
     //cleanup_platform();
-    return 1000;
+    return fw_add() + temp ;
 }
