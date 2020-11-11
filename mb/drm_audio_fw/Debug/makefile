@@ -35,7 +35,7 @@ all: drm_audio_fw.elf secondary-outputs
 drm_audio_fw.elf: $(OBJS) ../src/lscript.ld $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MicroBlaze gcc linker'
-	mb-gcc -L"/ectf/mb/drm_audio_fw_bsp/microblaze_0/lib" -Wl,-T -Wl,../src/lscript.ld -L"/ectf/mb/drm_audio_fw_bsp/microblaze_0/include" -mlittle-endian -mcpu=v10.0 -mxl-soft-mul -Wl,--no-relax -Wl,--gc-sections -o "drm_audio_fw.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	mb-gcc -L"/home/tomal/Desktop/BUILDTEEcode/test_project/tt/code-build-your-own-TEE/mb/drm_audio_fw_bsp/microblaze_0/lib" -Wl,-T -Wl,../src/lscript.ld -L"/home/tomal/Desktop/BUILDTEEcode/test_project/tt/code-build-your-own-TEE/mb/drm_audio_fw_bsp/microblaze_0/include" -mlittle-endian -mcpu=v10.0 -mxl-soft-mul -Wl,--no-relax -Wl,--gc-sections -o "drm_audio_fw.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
