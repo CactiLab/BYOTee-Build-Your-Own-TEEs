@@ -6,7 +6,6 @@
 #include "xaxidma.h"
 #include "xil_mem.h"
 #include "util.h"
-#include "secrets.h"
 #include "xintc.h"
 #include "constants.h"
 #include "sleep.h"
