@@ -11,7 +11,7 @@ then add the MITRE repo as another remote. Follow these steps below.
 
 1. Clone the eCTF repository using ssh or https 
 ```bash
-git clone https://github.com/mitre-cyber-academy/2020-ectf-insecure-example --recursive
+git clone git@github.com:CactiLab/code-build-your-own-TEE.git --recursive
 ``` 
 2. Change the current origin remote to another name
 ```bash
