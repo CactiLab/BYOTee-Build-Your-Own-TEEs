@@ -7,3 +7,4 @@ BOOT.bin
 *.wav
 *.drm
 *.vagrant
+*.a
