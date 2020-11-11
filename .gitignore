@@ -1,3 +1,4 @@
+BOOT.bin
 *.elf
 *.o
 *.bif
