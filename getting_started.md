@@ -1,6 +1,6 @@
-# 2020 MITRE Collegiate eCTF Getting Started
+# Cactilab-BYOT Getting Started
 
-Below is the overview of how to set up the reference implementation for the 2020 Collegiate eCTF.
+Below is the overview of how to set up the reference implementation BYOT framework for FPGA SoCs.
 
 Please note: if any step fails, it is highly unlikely that the process will get back on track by continuing to future steps.
 
