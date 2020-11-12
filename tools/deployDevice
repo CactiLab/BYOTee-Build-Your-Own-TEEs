@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-import os
+import os, sys
 import subprocess
 import argparse
 
 # the directory to mount the sd card to
 BOOT_MNT = '/media/vagrant/boot'
-AUDIO_MNT = '/media/vagrant/root'
+SSC_MNT = '/media/vagrant/root'
 
 # the names to copy the boot and mes files to on the sd card
 BOOT_FILE = 'BOOT.bin'
@@ -49,38 +49,38 @@ def setup_sdcard(device):
     print("    root : %s2 " % (device))
 
 
-def copy_audio(device, audio):
+def copy_SSC(device, SSC_Dir):
     """
-    This function copies all the audio files from the specified audio directory
+    This function copies all the SSC files from the specified SSC directory
     to the device specified.
 
-    device: the device path to copy the audio to, ie /dev/sdb.
-    audio: the path to the directory that contains the audio files to copy to
+    device: the device path to copy the SSC to, ie /dev/sdb.
+    SSC: the path to the directory that contains the SSC files to copy to
            the sd card. This script will copy ALL regular files in the root of
            the specified directory, so make sure it is a clean directory.
     """
 
-    print("Copying audio Files...")
+    print("Copying SSC Files...")
     # mount sd card
-    subprocess.check_call("sudo mkdir -p %s" % (AUDIO_MNT), shell=True)
-    subprocess.check_call("sudo mount %s2 %s" % (device, AUDIO_MNT), shell=True)
+    subprocess.check_call("sudo mkdir -p %s" % (SSC_MNT), shell=True)
+    subprocess.check_call("sudo mount %s2 %s" % (device, SSC_MNT), shell=True)
 
-    # copy each file specified in audio directory
-    src_files = os.listdir(audio)
+    # copy each file specified in SSC directory
+    src_files = os.listdir(SSC_Dir)
     for file_name in src_files:
-        full_path = os.path.join(audio, file_name)
+        full_path = os.path.join(SSC_Dir, file_name)
         try:
             print("    %s-> %s2/" % (full_path, device))
-            copy_file(full_path, AUDIO_MNT)
+            copy_file(full_path, SSC_MNT)
         except IOError as e:
             print(e)
-            subprocess.check_call("sudo umount %s" % (AUDIO_MNT), shell=True)
+            subprocess.check_call("sudo umount %s" % (SSC_MNT), shell=True)
             exit(1)
 
     # cleanup
-    subprocess.check_call("sudo umount %s" % (AUDIO_MNT), shell=True)
+    subprocess.check_call("sudo umount %s" % (SSC_MNT), shell=True)
 
-    print("Done copying audio to SD Card")
+    print("Done copying SSC to SD Card")
 
 
 def copy_boot(device, boot_path, mipod_bin_path=None):
@@ -89,7 +89,7 @@ def copy_boot(device, boot_path, mipod_bin_path=None):
     to the device specified. The device is the overall device and it will copy
     the specified files to the first partition (the boot partition).
 
-    device: the path to the device to copy the audio to, ie /dev/sdb.
+    device: the path to the device to copy the SSC to, ie /dev/sdb.
     boot_path: The path to the boot file to use. This will always copy
             the file with the name BOOT_FILE specified above.
     """
@@ -120,18 +120,18 @@ def copy_mipod(device, path):
     """This function copies the mipod application to the SD card"""
     print("Copying mipod application...")
     # mount sd card
-    subprocess.check_call("sudo mount %s2 %s" % (device, AUDIO_MNT), shell=True)
+    subprocess.check_call("sudo mount %s2 %s" % (device, SSC_MNT), shell=True)
 
     try:
         print("    %s-> %s2/" % (path, device))
-        copy_file(path, "%s/miPod" % (AUDIO_MNT,))
+        copy_file(path, "%s/miPod" % (SSC_MNT,))
     except IOError as e:
         print(e)
-        subprocess.check_call("sudo umount %s" % (AUDIO_MNT), shell=True)
+        subprocess.check_call("sudo umount %s" % (SSC_MNT), shell=True)
         exit(1)
 
     # cleanup
-    subprocess.check_call("sudo umount %s" % (AUDIO_MNT), shell=True)
+    subprocess.check_call("sudo umount %s" % (SSC_MNT), shell=True)
 
     print("Done copying mipod application to SD Card")
 
@@ -164,8 +164,8 @@ def main():
     parser.add_argument('boot_path',
                         help=("This is the path to the main file to boot the "
                               "system."))
-    parser.add_argument('audio',
-                        help=("This is the directory where provision audio "
+    parser.add_argument('SSC',
+                        help=("This is the directory where SSC "
                               "files are stored."))
     parser.add_argument("mipod",
                         help=("This is the path to the mipod application"))
@@ -185,7 +185,7 @@ def main():
                               "not already formatted correctly, this "
                               "script will fail."))
     args = parser.parse_args()
-
+    print("Secucirty Sensitive code directory" + str(args.SSC))
     # verify boot bin
     boot_file = args.boot_path
     if not os.path.isfile(boot_file):
@@ -203,9 +203,9 @@ def main():
     if not os.path.exists(args.device):
         print("Error, SD device does not exist: %s" % (args.device))
         exit(2)
-    # verify audio folder
-    if not os.path.isdir(args.audio):
-        print("Error, audio directory doesn't exist: %s" % (args.audio))
+    # verify SSC folder
+    if not os.path.isdir(args.SSC):
+        print("Error, SSC directory doesn't exist: %s" % (args.SSC))
         exit(2)
 
     # unmount sd card just in case
@@ -216,7 +216,7 @@ def main():
         setup_sdcard(args.device)
 
     copy_boot(args.device, boot_file, args.mipod_bin_path)
-    copy_audio(args.device, args.audio)
+    copy_SSC(args.device, args.SSC)
     copy_mipod(args.device, args.mipod)
     copy_imageub(args.device, args.imageub)
 

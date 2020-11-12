@@ -43,34 +43,27 @@ information about these tools will be discussed when building the reference desi
  4. Place the downloaded zip file into the root directory of your project - Vagrant will install it on the VM
 
 
-## Vagrant
-In order to manage dependencies and allow for easier cross-platform development, a VM provisioned by
-[Vagrant](https://vagrantup.com) will be used for building and provisioning the design. Please see
-the [Vagrant README](vagrant/README.md) file for information about setting up the Vagrant environment before
-proceeding. Setting up the vagrant machine will take at least 1 hour and should be completed in one sitting
-to avoid common errors that occur when pausing and resuming the setup process.
-Please allocate enough time for this process and be sure the follow the steps in the `README`
-carefully.
-
-
 ## Building the Reference Design
 This section assumes that you have a Vagrant development
 environment running as described in the `vagrant` folder, and that you have read through all of the
 `README` files in each subdirectory.
 
 To build the reference design for the first time, follow these steps:
-1.  Run the device by running `./buildDevice -p ../ -n test -bf all -store_dir device1/` (note that this takes a long time to run the first time you run it! Please be patient.) This will create a Vivado project called `test` and use the `device1` store directory.
-2. Run `./packageDevice ../boot-image/template.bif device1/miPod.bin device1/download.bit` to create a `miPod.BIN` file with your bitstream.
-3. Insert the SD card into the SD card reader, and insert that into your laptop.
+1. Open a terminal and `cd` to the `tools` directory.
+2. Run `mkdir SSC` to make a directory called`SSC`. Dumped security sensitive code using the tool chain should be stored here to be copied to SD card.
+3.  Run the device by running `./buildDevice -p ../ -n test -bf all -store_dir device1/` (note that this takes a long time to run the first time you run it! Please be patient.) This will create a Vivado project called `test` and use the `device1` store directory.
+4. Run `./packageDevice ../boot-image/template.bif device1/miPod.bin device1/download.bit` to create a `miPod.BIN` file with your bitstream.
+5. Create dumped files of the secure senstive projects elf files and put it in the `SSC` folder. 
+5. Insert the SD card into the SD card reader, and insert that into your laptop.
     Ensure that this is passed through to the VM through the VirtualBox USB options
-4. Run the `./deployDevice /dev/sdb ../BOOT.BIN global_provisioning/audio/ device1/miPod ../boot-image/image.ub --mipod-bin-path device1/miPod.bin` script.
-5. Remove the SD card and place it into the board.
-6. Ensure that the jumper is connecting both pins of JP2 (this allows the device to boot from the SD card)
-7. Connect the Cora board to the computer. Ensure that the board (Digilent Adept USB Device) is passed through to the VM.
-8. See the **Accessing UART From Inside the VM** section of the [Vagrant README](vagrant/README.md) file to start minicom.
-9. Press the `RESET` button on the board to reset it. You should now see the board boot and enter a Linux shell.
-10. `cd` to the `music` folder.
-11. Run the `./miPod` application, and run `help` to see a list of all possible commands.
+6. Run the `./deployDevice /dev/sdb ../BOOT.bin SSC/ device1/miPod ../boot-image/image.ub --mipod-bin-path device1/miPod.bin` script.
+7. Remove the SD card and place it into the board.
+8. Ensure that the jumper is connecting both pins of JP2 (this allows the device to boot from the SD card)
+9. Connect the Cora board to the computer. Ensure that the board (Digilent Adept USB Device) is passed through to the VM.
+10. See the **Accessing UART From Inside the VM** section of the [Vagrant README](vagrant/README.md) file to start minicom.
+11. Press the `RESET` button on the board to reset it. You should now see the board boot and enter a Linux shell.
+12. `cd` to the `music` folder.
+13. Run the `./miPod` application, and run `help` to see a list of all possible commands.
 
 
 ## Working With the Xilinx Tools
