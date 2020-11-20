@@ -11,7 +11,8 @@
 /*******************************************************************/
 
 _STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x400;
-_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x800;
+_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x400;
+
 
 /* Define Memories in the system */
 
@@ -46,21 +47,49 @@ SECTIONS
    KEEP (*(.vectors.hw_exception))
 } 
 
-.text : {
+.lib : {
+
+	libc.a 
+	libgcc.a 
+	libgloss.a 
+	libm.a 
+    libxil.a(.text)
+	libxil.a(.text.*)
+}  > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+.test 0x1400: {
+    *LED.o(.text)
+	*LED.o(.text.*)
+	*platform.o(.text)
+	*platform.o(.text.*)
+	*util.o(.text)
+	*util.o(.text.*)
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+.text 0x1b00: {
    *(.text)
-   *(.text.*)
+   *(.text.*) 
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.init : {
+.data 0x7170: {
+   . = ALIGN(4);
+   __data_start = .;
+   *(.data)
+   *(.data.*)
+   *(.gnu.linkonce.d.*)
+   __data_end = . + 0x4;
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+.init 0x760c: {
    KEEP (*(.init))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.fini : {
+.fini 0x7648: {
    KEEP (*(.fini))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.ctors : {
+.ctors 0x7668: {
    __CTOR_LIST__ = .;
    ___CTORS_LIST___ = .;
    KEEP (*crtbegin.o(.ctors))
@@ -71,7 +100,7 @@ SECTIONS
    ___CTORS_END___ = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.dtors : {
+.dtors 0x7670: {
    __DTOR_LIST__ = .;
    ___DTORS_LIST___ = .;
    KEEP (*crtbegin.o(.dtors))
@@ -82,15 +111,15 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.rodata : {
+.rodata 0x7678: {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)
    *(.gnu.linkonce.r.*)
-   __rodata_end = .;
+   __rodata_end = 0x7c54;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.sdata2 : {
+.sdata2 0x7C54: {
    . = ALIGN(8);
    __sdata2_start = .;
    *(.sdata2)
@@ -108,14 +137,6 @@ SECTIONS
    __sbss2_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.data : {
-   . = ALIGN(4);
-   __data_start = .;
-   *(.data)
-   *(.data.*)
-   *(.gnu.linkonce.d.*)
-   __data_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 .got : {
    *(.got)
@@ -129,11 +150,11 @@ SECTIONS
    *(.got2)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.eh_frame : {
+.eh_frame 0x7C58: {
    *(.eh_frame)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.jcr : {
+.jcr 0x7C5C: {
    *(.jcr)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
@@ -141,7 +162,7 @@ SECTIONS
    *(.gcc_except_table)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.sdata : {
+.sdata 0x7C60: {
    . = ALIGN(8);
    __sdata_start = .;
    *(.sdata)
@@ -176,7 +197,7 @@ SECTIONS
    __tbss_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.bss (NOLOAD) : {
+.bss 0x7C60 (NOLOAD) : {
    . = ALIGN(4);
    __bss_start = .;
    *(.bss)
@@ -184,7 +205,7 @@ SECTIONS
    *(.gnu.linkonce.b.*)
    *(COMMON)
    . = ALIGN(4);
-   __bss_end = .;
+   __bss_end = . + 0x5588;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 _SDA_BASE_ = __sdata_start + ((__sbss_end - __sdata_start) / 2 );
@@ -193,7 +214,8 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 
 /* Generate Stack and Heap definitions */
 
-.heap (NOLOAD) : {
+
+.heap 0xD2D0 (NOLOAD) : {
    . = ALIGN(8);
    _heap = .;
    _heap_start = .;
@@ -201,7 +223,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    _heap_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.stack (NOLOAD) : {
+.stack 0xD6D0 (NOLOAD) : {
    _stack_end = .;
    . += _STACK_SIZE;
    . = ALIGN(8);
@@ -211,4 +233,11 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 
 _end = .;
 }
-
+__malloc_top_pad = 0x83e8;
+__malloc_current_mallinfo = 0x83f4;
+__malloc_max_sbrked_mem = 0x83ec;
+__malloc_max_total_mem = 0x83f0;
+errno = 0xd2cc;
+__errno = 0x7164;
+heap_ptr = 0x8420;
+__TMC_END__ = 0x760C;
