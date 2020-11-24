@@ -1,5 +1,5 @@
 the_ROM_image:
 {
-  [bootloader]/ectf/boot-image/stock-fsbl.elf
+  [bootloader]../boot-image/stock-fsbl.elf
   BITSTREAM_GOES_HERE
 }
