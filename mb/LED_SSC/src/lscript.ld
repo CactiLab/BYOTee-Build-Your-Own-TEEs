@@ -66,13 +66,13 @@ SECTIONS
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0x1b00: {
+.text 0x1bf4: {
    *(.text)
    *(.text.*) 
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.data 0x7170: {
+.data 0x7264: {
    . = ALIGN(4);
    __data_start = .;
    *(.data)
@@ -81,15 +81,15 @@ SECTIONS
    __data_end = . + 0x4;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.init 0x760c: {
+.init 0x7700: {
    KEEP (*(.init))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.fini 0x7648: {
+.fini 0x773c: {
    KEEP (*(.fini))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.ctors 0x7668: {
+.ctors 0x775c: {
    __CTOR_LIST__ = .;
    ___CTORS_LIST___ = .;
    KEEP (*crtbegin.o(.ctors))
@@ -100,7 +100,7 @@ SECTIONS
    ___CTORS_END___ = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.dtors 0x7670: {
+.dtors 0x7764: {
    __DTOR_LIST__ = .;
    ___DTORS_LIST___ = .;
    KEEP (*crtbegin.o(.dtors))
@@ -111,15 +111,15 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.rodata 0x7678: {
+.rodata 0x776c: {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)
    *(.gnu.linkonce.r.*)
-   __rodata_end = 0x7c54;
+   __rodata_end = 0x77f4;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.sdata2 0x7C54: {
+.sdata2 0x7d48: {
    . = ALIGN(8);
    __sdata2_start = .;
    *(.sdata2)
@@ -150,11 +150,11 @@ SECTIONS
    *(.got2)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.eh_frame 0x7C58: {
+.eh_frame 0x7d48: {
    *(.eh_frame)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.jcr 0x7C5C: {
+.jcr 0x7d4c: {
    *(.jcr)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
@@ -162,7 +162,7 @@ SECTIONS
    *(.gcc_except_table)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.sdata 0x7C60: {
+.sdata 0x7d50: {
    . = ALIGN(8);
    __sdata_start = .;
    *(.sdata)
@@ -197,7 +197,7 @@ SECTIONS
    __tbss_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.bss 0x7C60 (NOLOAD) : {
+.bss 0x7d50 (NOLOAD) : {
    . = ALIGN(4);
    __bss_start = .;
    *(.bss)
@@ -205,7 +205,7 @@ SECTIONS
    *(.gnu.linkonce.b.*)
    *(COMMON)
    . = ALIGN(4);
-   __bss_end = . + 0x5588;
+   __bss_end = 0x7dd8;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 _SDA_BASE_ = __sdata_start + ((__sbss_end - __sdata_start) / 2 );
@@ -215,7 +215,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 /* Generate Stack and Heap definitions */
 
 
-.heap 0xD2D0 (NOLOAD) : {
+.heap 0x8d70 (NOLOAD) : {
    . = ALIGN(8);
    _heap = .;
    _heap_start = .;
@@ -223,7 +223,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    _heap_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.stack 0xD6D0 (NOLOAD) : {
+.stack 0x9170 (NOLOAD) : {
    _stack_end = .;
    . += _STACK_SIZE;
    . = ALIGN(8);

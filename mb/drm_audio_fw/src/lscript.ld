@@ -45,11 +45,39 @@ SECTIONS
 .vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 } 
+.lib : {
 
-.text : {
+	libc.a 
+	libgcc.a 
+	libgloss.a 
+	libm.a 
+    libxil.a(.text)
+	libxil.a(.text.*)
+}  > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+.test 0x1400: {
+    *main.o(.text)
+	*main.o(.text.*)
+	*platform.o(.text)
+	*platform.o(.text.*)
+	*util.o(.text)
+	*util.o(.text.*)
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+.text 0x1bf4: {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+
+.data : {
+   . = ALIGN(4);
+   __data_start = .;
+   *(.data)
+   *(.data.*)
+   *(.gnu.linkonce.d.*)
+   __data_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 .init : {
@@ -108,14 +136,6 @@ SECTIONS
    __sbss2_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.data : {
-   . = ALIGN(4);
-   __data_start = .;
-   *(.data)
-   *(.data.*)
-   *(.gnu.linkonce.d.*)
-   __data_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 .got : {
    *(.got)
