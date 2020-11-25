@@ -21,14 +21,15 @@
 							<builder buildPath="${workspace_loc:/sanity_check}/Debug" enableAutoBuild="true" id="xilinx.gnu.mb.toolchain.builder.debug.1630193107" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="GNU make" superClass="xilinx.gnu.mb.toolchain.builder.debug"/>
 							<tool id="xilinx.gnu.mb.c.toolchain.assembler.debug.1033319884" name="MicroBlaze gcc assembler" superClass="xilinx.gnu.mb.c.toolchain.assembler.debug">
 								<option id="xilinx.gnu.mb.assembler.usele.1340272759" name="Produce little endian code (-mlittle-endian)" superClass="xilinx.gnu.mb.assembler.usele" value="true" valueType="boolean"/>
+								<option id="xilinx.gnu.both.assembler.option.flags.1553943673" superClass="xilinx.gnu.both.assembler.option.flags" value="-x" valueType="string"/>
 								<inputType id="xilinx.gnu.assembler.input.443382432" superClass="xilinx.gnu.assembler.input"/>
 							</tool>
 							<tool id="xilinx.gnu.mb.c.toolchain.compiler.debug.1707886963" name="MicroBlaze gcc compiler" superClass="xilinx.gnu.mb.c.toolchain.compiler.debug">
 								<option defaultValue="gnu.c.optimization.level.none" id="xilinx.gnu.compiler.option.optimization.level.2130470738" name="Optimization Level" superClass="xilinx.gnu.compiler.option.optimization.level" value="gnu.c.optimization.level.none" valueType="enumerated"/>
-								<option id="xilinx.gnu.compiler.option.debugging.level.510782660" name="Debug Level" superClass="xilinx.gnu.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+								<option id="xilinx.gnu.compiler.option.debugging.level.510782660" name="Debug Level" superClass="xilinx.gnu.compiler.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
 								<option id="xilinx.gnu.mb.compiler.inferred.mbversion.2017699981" name="MicroBlaze Version" superClass="xilinx.gnu.mb.compiler.inferred.mbversion" value="10.0" valueType="string"/>
-								<option id="xilinx.gnu.mb.compiler.inferred.norelax.1581576478" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.compiler.inferred.norelax" value="true" valueType="boolean"/>
-								<option id="xilinx.gnu.mb.compiler.inferred.garbage.281095739" name="Enable garbage collector (-ffunction-sections -fdata-sections)" superClass="xilinx.gnu.mb.compiler.inferred.garbage" value="true" valueType="boolean"/>
+								<option id="xilinx.gnu.mb.compiler.inferred.norelax.1581576478" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.compiler.inferred.norelax" value="false" valueType="boolean"/>
+								<option id="xilinx.gnu.mb.compiler.inferred.garbage.281095739" name="Enable garbage collector (-ffunction-sections -fdata-sections)" superClass="xilinx.gnu.mb.compiler.inferred.garbage" value="false" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.compiler.inferred.usele.616711205" name="Produce little endian code (-mlittle-endian)" superClass="xilinx.gnu.mb.compiler.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.582918074" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/include}&quot;"/>
@@ -52,8 +53,8 @@
 							<tool id="xilinx.gnu.mb.toolchain.archiver.1657133831" name="MicroBlaze archiver" superClass="xilinx.gnu.mb.toolchain.archiver"/>
 							<tool id="xilinx.gnu.mb.c.toolchain.linker.debug.1499310129" name="MicroBlaze gcc linker" superClass="xilinx.gnu.mb.c.toolchain.linker.debug">
 								<option id="xilinx.gnu.mb.linker.inferred.mbversion.1878529322" name="MicroBlaze Version" superClass="xilinx.gnu.mb.linker.inferred.mbversion" value="10.0" valueType="string"/>
-								<option id="xilinx.gnu.mb.linker.inferred.norelax.1192086210" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.linker.inferred.norelax" value="true" valueType="boolean"/>
-								<option id="xilinx.gnu.mb.linker.inferred.garbage.2139337441" name="Enable garbage collector (-Wl,--gc-sections)" superClass="xilinx.gnu.mb.linker.inferred.garbage" value="true" valueType="boolean"/>
+								<option id="xilinx.gnu.mb.linker.inferred.norelax.1192086210" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.linker.inferred.norelax" value="false" valueType="boolean"/>
+								<option id="xilinx.gnu.mb.linker.inferred.garbage.2139337441" name="Enable garbage collector (-Wl,--gc-sections)" superClass="xilinx.gnu.mb.linker.inferred.garbage" value="false" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.linker.inferred.usele.114601073" name="Produce little endian artifacts (-mlittle-endian)" superClass="xilinx.gnu.mb.linker.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.linker.inferred.swplatform.lpath.261287881" name="Software Platform Library Path" superClass="xilinx.gnu.linker.inferred.swplatform.lpath" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/include}&quot;"/>
