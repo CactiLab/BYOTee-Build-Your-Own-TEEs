@@ -18,7 +18,7 @@ _HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x400;
 
 MEMORY
 {
-   ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem : ORIGIN = 0x50, LENGTH = 0x1FFB0
+   ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem : ORIGIN = 0x50, LENGTH = 0x1FFB00
    share_axi_bram_ctrl_0_Mem0 : ORIGIN = 0x4B00000, LENGTH = 0x2000
    mb_dma_axi_bram_ctrl_0_Mem0 : ORIGIN = 0xC0000000, LENGTH = 0x8000
 }
@@ -46,7 +46,7 @@ SECTIONS
 .vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 } 
-
+/*
 .lib : {
 
 	libc.a 
@@ -56,8 +56,8 @@ SECTIONS
     libxil.a(.text)
 	libxil.a(.text.*)
 }  > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
-.test 0x1400: {
+*/
+.test : {
     *LED.o(.text)
 	*LED.o(.text.*)
 	*platform.o(.text)
@@ -72,7 +72,7 @@ SECTIONS
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.data 0x7264: {
+.data : {
    . = ALIGN(4);
    __data_start = .;
    *(.data)
@@ -81,15 +81,15 @@ SECTIONS
    __data_end = . + 0x4;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.init 0x7700: {
+.init : {
    KEEP (*(.init))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.fini 0x773c: {
+.fini : {
    KEEP (*(.fini))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.ctors 0x775c: {
+.ctors : {
    __CTOR_LIST__ = .;
    ___CTORS_LIST___ = .;
    KEEP (*crtbegin.o(.ctors))
@@ -100,7 +100,7 @@ SECTIONS
    ___CTORS_END___ = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.dtors 0x7764: {
+.dtors : {
    __DTOR_LIST__ = .;
    ___DTORS_LIST___ = .;
    KEEP (*crtbegin.o(.dtors))
@@ -111,7 +111,7 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.rodata 0x776c: {
+.rodata : {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)
@@ -119,7 +119,7 @@ SECTIONS
    __rodata_end = 0x77f4;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.sdata2 0x7d48: {
+.sdata2 : {
    . = ALIGN(8);
    __sdata2_start = .;
    *(.sdata2)
@@ -150,11 +150,11 @@ SECTIONS
    *(.got2)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.eh_frame 0x7d48: {
+.eh_frame : {
    *(.eh_frame)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.jcr 0x7d4c: {
+.jcr : {
    *(.jcr)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
@@ -162,7 +162,7 @@ SECTIONS
    *(.gcc_except_table)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.sdata 0x7d50: {
+.sdata : {
    . = ALIGN(8);
    __sdata_start = .;
    *(.sdata)
@@ -197,7 +197,7 @@ SECTIONS
    __tbss_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.bss 0x7d50 (NOLOAD) : {
+.bss (NOLOAD) : {
    . = ALIGN(4);
    __bss_start = .;
    *(.bss)
@@ -215,7 +215,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 /* Generate Stack and Heap definitions */
 
 
-.heap 0x8d70 (NOLOAD) : {
+.heap  (NOLOAD) : {
    . = ALIGN(8);
    _heap = .;
    _heap_start = .;
@@ -223,7 +223,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    _heap_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.stack 0x9170 (NOLOAD) : {
+.stack  (NOLOAD) : {
    _stack_end = .;
    . += _STACK_SIZE;
    . = ALIGN(8);
@@ -233,6 +233,11 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 
 _end = .;
 }
+
+_SDA_BASE_ = 0x9338;
+_SDA2_BASE_ = 0x9330;
+_crtinit = 0x1e94;
+
 __malloc_top_pad = 0x83e8;
 __malloc_current_mallinfo = 0x83f4;
 __malloc_max_sbrked_mem = 0x83ec;
@@ -240,4 +245,4 @@ __malloc_max_total_mem = 0x83f0;
 errno = 0xd2cc;
 __errno = 0x7164;
 heap_ptr = 0x8420;
-__TMC_END__ = 0x760C;
+__TMC_END__ = 0x8ce0;
