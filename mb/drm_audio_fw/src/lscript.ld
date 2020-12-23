@@ -45,17 +45,9 @@ SECTIONS
 .vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 } 
-.lib : {
 
-	libc.a 
-	libgcc.a 
-	libgloss.a 
-	libm.a 
-    libxil.a(.text)
-	libxil.a(.text.*)
-}  > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.test 0x1400: {
+.test : {
     *main.o(.text)
 	*main.o(.text.*)
 	*platform.o(.text)
