@@ -16,7 +16,7 @@ def main():
     if not os.path.exists(abs_SSC_elf_path):
         print ("SSC Elf file Does not exist")
     SSC_dump_location = str(os.path.splitext(str(os.path.basename(abs_SSC_elf_path)))[0])
-    dump_command = 'mb-objcopy -O binary --only-section=.ssc --only-section=.data --only-section=.rodata ' + abs_SSC_elf_path + ' ' + 'SSC/' + SSC_dump_location 
+    dump_command = 'mb-objcopy -O binary --only-section=.test --only-section=.data --only-section=.rodata ' + abs_SSC_elf_path + ' ' + 'SSC/' + SSC_dump_location 
     print ("Running command : \n")
     print (dump_command)
     print ("\n" + SSC_dump_location + " --dumped file dumped at location -> SSC/")

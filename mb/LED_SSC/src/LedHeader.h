@@ -8,6 +8,7 @@ int fw_add() __attribute__ ((section (".fw_add")));*/
 int _test();
 int main();
 int fw_add();
+int dummpy();
 //void xil_printf( const char8 *ctrl1, ...) __attribute__ ((section (".xfwLib")));
 //int add();
 //int mul(int);

@@ -19,6 +19,10 @@ const struct color YELLOW = {0x01ff, 0x01ff, 0x0000};
 const struct color GREEN =  {0x0000, 0x01ff, 0x0000};
 const struct color BLUE =   {0x0000, 0x0000, 0x01ff};
 
+int dummy ()
+{
+	usleep(500);
+}
 int temp = 0xf1; /* attribute golbal variables*/
 
 /*int _test()

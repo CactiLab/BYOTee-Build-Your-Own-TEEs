@@ -8,3 +8,4 @@ BOOT.bin
 *.drm
 *.vagrant
 *.a
+*makefile

@@ -19,9 +19,9 @@
 						<toolChain id="xilinx.gnu.mb.exe.debug.toolchain.1823604802" name="Xilinx MicroBlaze GNU Toolchain" superClass="xilinx.gnu.mb.exe.debug.toolchain">
 							<targetPlatform binaryParser="com.xilinx.sdk.managedbuilder.XELF.mb" id="xilinx.mb.target.gnu.base.debug.2034609041" isAbstract="false" name="Debug Platform" superClass="xilinx.mb.target.gnu.base.debug"/>
 							<builder buildPath="${workspace_loc:/LED_SSC}/Debug" enableAutoBuild="true" id="xilinx.gnu.mb.toolchain.builder.debug.638820578" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="GNU make" superClass="xilinx.gnu.mb.toolchain.builder.debug"/>
-							<tool id="xilinx.gnu.mb.c.toolchain.assembler.debug.1757902422" name="MicroBlaze gcc assembler" superClass="xilinx.gnu.mb.c.toolchain.assembler.debug">
+							<tool commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="xilinx.gnu.mb.c.toolchain.assembler.debug.1757902422" name="MicroBlaze gcc assembler" superClass="xilinx.gnu.mb.c.toolchain.assembler.debug">
 								<option id="xilinx.gnu.mb.assembler.usele.692451507" name="Produce little endian code (-mlittle-endian)" superClass="xilinx.gnu.mb.assembler.usele" value="true" valueType="boolean"/>
-								<option id="xilinx.gnu.both.assembler.option.flags.1017002404" superClass="xilinx.gnu.both.assembler.option.flags" value="-x" valueType="string"/>
+								<option id="xilinx.gnu.both.assembler.option.flags.1017002404" name="Assembler Flags" superClass="xilinx.gnu.both.assembler.option.flags" value="-x" valueType="string"/>
 								<inputType id="xilinx.gnu.assembler.input.1050112675" superClass="xilinx.gnu.assembler.input"/>
 							</tool>
 							<tool id="xilinx.gnu.mb.c.toolchain.compiler.debug.889552192" name="MicroBlaze gcc compiler" superClass="xilinx.gnu.mb.c.toolchain.compiler.debug">
@@ -61,11 +61,15 @@
 								</option>
 								<option id="xilinx.gnu.linker.inferred.swplatform.flags.1853312897" name="Software Platform Inferred Flags" superClass="xilinx.gnu.linker.inferred.swplatform.flags" valueType="libs">
 									<listOptionValue builtIn="false" value="-Wl,--start-group,-lxil,-lgcc,-lc,--end-group"/>
+									<listOptionValue builtIn="false" value=""/>
 								</option>
 								<option id="xilinx.gnu.c.linker.option.lscript.47442037" name="Linker Script" superClass="xilinx.gnu.c.linker.option.lscript" value="../src/lscript.ld" valueType="string"/>
 								<option id="xilinx.gnu.c.link.option.paths.1616424449" name="Library search path (-L)" superClass="xilinx.gnu.c.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/lib}&quot;"/>
 								</option>
+								<option id="xilinx.gnu.c.link.option.ldflags.1786146372" name="Linker Flags" superClass="xilinx.gnu.c.link.option.ldflags" value="" valueType="string"/>
+								<option id="xilinx.gnu.c.link.option.libs.1925435021" name="Libraries (-l)" superClass="xilinx.gnu.c.link.option.libs" valueType="libs"/>
+								<option id="xilinx.gnu.c.link.option.nodeflibs.1138047362" name="Do not use default libraries (-nodefaultlibs)" superClass="xilinx.gnu.c.link.option.nodeflibs" value="false" valueType="boolean"/>
 								<inputType id="xilinx.gnu.linker.input.262092956" superClass="xilinx.gnu.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -91,6 +95,7 @@
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
 		</cconfiguration>
 		<cconfiguration id="xilinx.gnu.mb.exe.release.1228802781">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="xilinx.gnu.mb.exe.release.1228802781" moduleId="org.eclipse.cdt.core.settings" name="Release">
@@ -196,5 +201,13 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.xilinx.managedbuilder.ui.MBGCCManagedMakePerProjectProfileC"/>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/LED_SSC"/>
+		</configuration>
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/LED_SSC"/>
+		</configuration>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>
