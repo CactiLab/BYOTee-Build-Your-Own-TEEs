@@ -3,11 +3,11 @@
 This is the to-do list of the project.
 
 # Design
-* [] How to provide the root of trust?
-* [] How can computer-aided formal verification can be used here?
+* [ ] How to provide the root of trust?
+* [ ] How can computer-aided formal verification can be used here?
 
 # Paper Writing
-* []
+* [ ]
 
 # Implementation
 ## Build single microblaze linker script for all SSCs and Runtime
