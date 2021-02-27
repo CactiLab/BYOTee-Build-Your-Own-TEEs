@@ -4,7 +4,7 @@ This is the to-do list of the project.
 
 # Design
 * [ ] How to provide the root of trust?
-* [ ] How can computer-aided formal verification can be used here?
+* [ ] How can computer-aided formal verification can be used here? The hardware part may be simple; we can covert HDL to NuSMV model [VRASED]
 
 # Paper Writing
 * [ ] ?
