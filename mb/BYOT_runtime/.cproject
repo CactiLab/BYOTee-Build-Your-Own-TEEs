@@ -32,10 +32,10 @@
 								<option id="xilinx.gnu.mb.compiler.inferred.garbage.281095739" name="Enable garbage collector (-ffunction-sections -fdata-sections)" superClass="xilinx.gnu.mb.compiler.inferred.garbage" value="false" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.compiler.inferred.usele.616711205" name="Produce little endian code (-mlittle-endian)" superClass="xilinx.gnu.mb.compiler.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.582918074" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/BYOT_bsp/microblaze_0/include}&quot;"/>
 								</option>
 								<option id="xilinx.gnu.compiler.dircategory.includes.1152677060" name="Include Paths" superClass="xilinx.gnu.compiler.dircategory.includes" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/BYOT_bsp/microblaze_0/include}&quot;"/>
 								</option>
 								<inputType id="xilinx.gnu.compiler.input.897023826" name="C source files" superClass="xilinx.gnu.compiler.input"/>
 							</tool>
@@ -57,16 +57,16 @@
 								<option id="xilinx.gnu.mb.linker.inferred.garbage.2139337441" name="Enable garbage collector (-Wl,--gc-sections)" superClass="xilinx.gnu.mb.linker.inferred.garbage" value="false" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.linker.inferred.usele.114601073" name="Produce little endian artifacts (-mlittle-endian)" superClass="xilinx.gnu.mb.linker.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.linker.inferred.swplatform.lpath.261287881" name="Software Platform Library Path" superClass="xilinx.gnu.linker.inferred.swplatform.lpath" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/BYOT_bsp/microblaze_0/include}&quot;"/>
 								</option>
 								<option id="xilinx.gnu.linker.inferred.swplatform.flags.633785542" name="Software Platform Inferred Flags" superClass="xilinx.gnu.linker.inferred.swplatform.flags" valueType="libs">
 									<listOptionValue builtIn="false" value="-Wl,--start-group,-lxil,-lgcc,-lc,--end-group"/>
 								</option>
 								<option id="xilinx.gnu.c.linker.option.lscript.169321223" name="Linker Script" superClass="xilinx.gnu.c.linker.option.lscript" value="../src/lscript.ld" valueType="string"/>
 								<option id="xilinx.gnu.c.link.option.paths.1820765835" name="Library search path (-L)" superClass="xilinx.gnu.c.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/BYOT_bsp/microblaze_0/lib}&quot;"/>
 								</option>
-								<option id="xilinx.gnu.c.link.option.libs.588210714" name="Libraries (-l)" superClass="xilinx.gnu.c.link.option.libs" valueType="libs"/>
+								<option id="xilinx.gnu.c.link.option.libs.588210714" name="Libraries (-l)" superClass="xilinx.gnu.c.link.option.libs"/>
 								<option id="xilinx.gnu.c.link.option.ldflags.1859154606" name="Linker Flags" superClass="xilinx.gnu.c.link.option.ldflags" value="" valueType="string"/>
 								<inputType id="xilinx.gnu.linker.input.79806413" superClass="xilinx.gnu.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

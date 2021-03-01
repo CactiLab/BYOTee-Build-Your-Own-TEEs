@@ -26,7 +26,7 @@ C_DEPS += \
 src/%.o: ../src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MicroBlaze gcc compiler'
-	mb-gcc -Wall -O0 -g3 -I"/home/tomal/Desktop/BUILDTEEcode/code-build-your-own-TEE/mb/drm_audio_fw_bsp/microblaze_0/include" -c -fmessage-length=0 -MT"$@" -I"/home/tomal/Desktop/BUILDTEEcode/code-build-your-own-TEE/mb/drm_audio_fw_bsp/microblaze_0/include" -mlittle-endian -mcpu=v10.0 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	mb-gcc -Wall -O0 -I"/home/tomal/Desktop/BUILDTEEcode/organize/code-build-your-own-TEE/mb/BYOT_bsp/microblaze_0/include" -c -fmessage-length=0 -MT"$@" -I"/home/tomal/Desktop/BUILDTEEcode/organize/code-build-your-own-TEE/mb/BYOT_bsp/microblaze_0/include" -mlittle-endian -mcpu=v10.0 -mxl-soft-mul -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

@@ -32,10 +32,10 @@
 								<option id="xilinx.gnu.mb.compiler.inferred.garbage.1258575730" name="Enable garbage collector (-ffunction-sections -fdata-sections)" superClass="xilinx.gnu.mb.compiler.inferred.garbage" value="false" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.compiler.inferred.usele.1284904322" name="Produce little endian code (-mlittle-endian)" superClass="xilinx.gnu.mb.compiler.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.60597425" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/BYOT_bsp/microblaze_0/include}&quot;"/>
 								</option>
 								<option id="xilinx.gnu.compiler.dircategory.includes.281897756" name="Include Paths" superClass="xilinx.gnu.compiler.dircategory.includes" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/BYOT_bsp/microblaze_0/include}&quot;"/>
 								</option>
 								<inputType id="xilinx.gnu.compiler.input.1794052835" name="C source files" superClass="xilinx.gnu.compiler.input"/>
 							</tool>
@@ -57,7 +57,7 @@
 								<option id="xilinx.gnu.mb.linker.inferred.garbage.620400003" name="Enable garbage collector (-Wl,--gc-sections)" superClass="xilinx.gnu.mb.linker.inferred.garbage" value="false" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.linker.inferred.usele.952559538" name="Produce little endian artifacts (-mlittle-endian)" superClass="xilinx.gnu.mb.linker.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.linker.inferred.swplatform.lpath.969992571" name="Software Platform Library Path" superClass="xilinx.gnu.linker.inferred.swplatform.lpath" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/BYOT_bsp/microblaze_0/include}&quot;"/>
 								</option>
 								<option id="xilinx.gnu.linker.inferred.swplatform.flags.1853312897" name="Software Platform Inferred Flags" superClass="xilinx.gnu.linker.inferred.swplatform.flags" valueType="libs">
 									<listOptionValue builtIn="false" value="-Wl,--start-group,-lxil,-lgcc,-lc,--end-group"/>
@@ -65,10 +65,10 @@
 								</option>
 								<option id="xilinx.gnu.c.linker.option.lscript.47442037" name="Linker Script" superClass="xilinx.gnu.c.linker.option.lscript" value="../src/lscript.ld" valueType="string"/>
 								<option id="xilinx.gnu.c.link.option.paths.1616424449" name="Library search path (-L)" superClass="xilinx.gnu.c.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/drm_audio_fw_bsp/microblaze_0/lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/BYOT_bsp/microblaze_0/lib}&quot;"/>
 								</option>
 								<option id="xilinx.gnu.c.link.option.ldflags.1786146372" name="Linker Flags" superClass="xilinx.gnu.c.link.option.ldflags" value="" valueType="string"/>
-								<option id="xilinx.gnu.c.link.option.libs.1925435021" name="Libraries (-l)" superClass="xilinx.gnu.c.link.option.libs" valueType="libs"/>
+								<option id="xilinx.gnu.c.link.option.libs.1925435021" name="Libraries (-l)" superClass="xilinx.gnu.c.link.option.libs"/>
 								<option id="xilinx.gnu.c.link.option.nodeflibs.1138047362" name="Do not use default libraries (-nodefaultlibs)" superClass="xilinx.gnu.c.link.option.nodeflibs" value="false" valueType="boolean"/>
 								<inputType id="xilinx.gnu.linker.input.262092956" superClass="xilinx.gnu.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

@@ -18,7 +18,7 @@ set worksp "$dev_path/mb"
 
 set sw_mmi "$worksp/$proj_name/system_wrapper.mmi"
 set sw_bit "$worksp/$proj_name/system_wrapper.bit"
-set drm_elf "$worksp/drm_audio_fw/Debug/drm_audio_fw.elf"
+set drm_elf "$worksp/BYOT_runtime/Debug/BYOT_runtime.elf"
 set output "$device_dir/download.bit"
 
 puts "\nCalling updatemem as follows:

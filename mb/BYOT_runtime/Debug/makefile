@@ -25,29 +25,29 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 ELFSIZE += \
-drm_audio_fw.elf.size \
+BYOT_runtime.elf.size \
 
 
 # All Target
-all: drm_audio_fw.elf secondary-outputs
+all: BYOT_runtime.elf secondary-outputs
 
 # Tool invocations
-drm_audio_fw.elf: $(OBJS) ../src/lscript.ld $(USER_OBJS)
+BYOT_runtime.elf: $(OBJS) ../src/lscript.ld $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MicroBlaze gcc linker'
-	mb-gcc -L"/home/tomal/Desktop/BUILDTEEcode/code-build-your-own-TEE/mb/drm_audio_fw_bsp/microblaze_0/lib" -Wl,-T -Wl,../src/lscript.ld -L"/home/tomal/Desktop/BUILDTEEcode/code-build-your-own-TEE/mb/drm_audio_fw_bsp/microblaze_0/include" -mlittle-endian -mcpu=v10.0 -mxl-soft-mul -Wl,--no-relax -Wl,--gc-sections -o "drm_audio_fw.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	mb-gcc -L"/home/tomal/Desktop/BUILDTEEcode/organize/code-build-your-own-TEE/mb/BYOT_bsp/microblaze_0/lib" -Wl,-T -Wl,../src/lscript.ld -L"/home/tomal/Desktop/BUILDTEEcode/organize/code-build-your-own-TEE/mb/BYOT_bsp/microblaze_0/include" -mlittle-endian -mcpu=v10.0 -mxl-soft-mul -o "BYOT_runtime.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-drm_audio_fw.elf.size: drm_audio_fw.elf
+BYOT_runtime.elf.size: BYOT_runtime.elf
 	@echo 'Invoking: MicroBlaze Print Size'
-	mb-size drm_audio_fw.elf  |tee "drm_audio_fw.elf.size"
+	mb-size BYOT_runtime.elf  |tee "BYOT_runtime.elf.size"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(EXECUTABLES)$(OBJS)$(S_UPPER_DEPS)$(C_DEPS)$(ELFSIZE) drm_audio_fw.elf
+	-$(RM) $(EXECUTABLES)$(OBJS)$(S_UPPER_DEPS)$(C_DEPS)$(ELFSIZE) BYOT_runtime.elf
 	-@echo ' '
 
 secondary-outputs: $(ELFSIZE)
