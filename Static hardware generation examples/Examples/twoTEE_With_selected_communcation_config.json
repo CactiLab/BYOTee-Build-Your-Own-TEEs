@@ -1,0 +1,85 @@
+{
+  "Board": {
+    "Vendor": "digilentinc.com",
+    "Name": "cora-z7-07s",
+    "Part": "xc7z007sclg400-1",
+    "Version": "1.0"
+  },
+  "Project": {
+    "Folder_Name" : "Test_ProjectUARTEST",
+    "Name": "Project_UARTEST",
+    "Location": "/home/tomal/Desktop/cmdTest/"
+  },
+  "REE": {
+    "Clock_Speed": "50MHz",
+    "Cross_Trigger_in": "False",
+    "Cross_Trigger_out": "False"
+  },
+  "TEEs": {
+    "MicroBlaze_0": {
+      "MicroBlaze_Implementation_bits": "32",
+      "Local_Memory": {
+        "Size": "16KB"
+      },
+      "Preset": "None",
+      "Local_Memory_ECC": "None",
+      "Cache_Configuration": {
+        "Data_cache": "",
+        "Instruction_cache": ""
+      },
+      "Debug_Module": "Extended",
+      "Interface": {
+        "Bus_Interface": "AXI",
+        "AXI_Peripheral_Instruction_Interface": "True",
+        "AXI_Peripheral_Data_Interface": "True"
+      }
+    },
+    "MicroBlaze_1": {
+      "MicroBlaze_Implementation_bits": "32",
+      "Local_Memory": {
+        "Size": "32KB"
+      },
+      "Preset": "None",
+      "Local_Memory_ECC": "None",
+      "Cache_Configuration": {
+        "Data_cache": "",
+        "Instruction_cache": ""
+      },
+      "Debug_Module": "Extended",
+      "Interface": {
+        "Bus_Interface": "AXI",
+        "AXI_Peripheral_Instruction_Interface": "True",
+        "AXI_Peripheral_Data_Interface": "True"
+      }
+    }
+  },
+  "Peripherals": {
+    "peripheral1": {
+      "Type" : "AXI_GPIO",
+      "Board_Interface": "btns 2bits",
+      "Mode": "Slave"
+    },
+    "UART_Lite": {
+      "Type" : "UART_Lite",
+      "Baud_Rate": "115200",
+      "Data_bits": "8",
+      "Mode": "Slave",
+      "Data_Transfer" : {
+        "REE" : "True",
+        "MicroBlaze_0" : "False",
+        "MicroBlaze_1" :"True"
+      }
+    },
+    "UART_Lite1": {
+      "Type" : "UART_Lite",
+      "Baud_Rate": "115200",
+      "Data_bits": "8",
+      "Mode": "Slave",
+      "Data_Transfer" : {
+        "REE" : "True",
+        "MicroBlaze_0" : "True",
+        "MicroBlaze_1" :"True"
+      }
+    }
+  }
+}

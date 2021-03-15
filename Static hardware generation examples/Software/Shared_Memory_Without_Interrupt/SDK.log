@@ -1,0 +1,2324 @@
+17:39:09 INFO  : Registering command handlers for SDK TCF services
+17:39:10 INFO  : Launching XSCT server: xsct -n -interactive /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/temp_xsdb_launch_script.tcl
+17:39:13 INFO  : XSCT server has started successfully.
+17:39:13 INFO  : Successfully done setting XSCT server connection channel  
+17:39:14 INFO  : Successfully done setting SDK workspace  
+17:39:14 INFO  : Processing command line option -hwspec /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper.hdf.
+17:41:47 INFO  : Refreshed build settings on project CortexA
+17:43:11 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:43:11 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:43:13 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+17:43:27 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:43:27 INFO  : 'fpga -state' command is executed.
+17:43:27 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:43:27 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:43:27 INFO  : 'jtag frequency' command is executed.
+17:43:27 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:43:27 INFO  : Context for 'APU' is selected.
+17:43:27 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+17:43:27 INFO  : 'configparams force-mem-access 1' command is executed.
+17:43:27 INFO  : Context for 'APU' is selected.
+17:43:28 INFO  : 'stop' command is executed.
+17:43:33 INFO  : 'ps7_init' command is executed.
+17:43:33 INFO  : 'ps7_post_config' command is executed.
+17:43:33 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+17:43:33 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:43:33 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+17:43:33 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:43:34 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA/Debug/CortexA.elf' is downloaded to processor 'ps7_cortexa9_0'.
+17:43:34 INFO  : 'configparams force-mem-access 0' command is executed.
+17:43:34 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA/Debug/CortexA.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+17:43:34 INFO  : Memory regions updated for context APU
+17:43:34 INFO  : Memory regions updated for context MicroBlaze #0
+17:43:34 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+17:43:34 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:43:34 INFO  : 'con' command is executed.
+17:43:34 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+17:43:34 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa.elf_on_local.tcl'
+17:44:09 INFO  : Refreshed build settings on project MB0
+17:44:36 INFO  : Disconnected from the channel tcfchan#1.
+17:44:38 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:44:38 INFO  : 'fpga -state' command is executed.
+17:44:38 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:44:38 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:44:38 INFO  : 'jtag frequency' command is executed.
+17:44:38 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:44:38 INFO  : Context for 'APU' is selected.
+17:44:39 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+17:44:39 INFO  : 'configparams force-mem-access 1' command is executed.
+17:44:39 INFO  : Context for 'APU' is selected.
+17:44:39 INFO  : 'stop' command is executed.
+17:44:45 INFO  : 'ps7_init' command is executed.
+17:44:45 INFO  : 'ps7_post_config' command is executed.
+17:44:45 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+17:44:45 INFO  : Context for processor 'microblaze_0' is selected.
+17:44:45 INFO  : Processor reset is completed for 'microblaze_0'.
+17:44:45 INFO  : Context for processor 'microblaze_0' is selected.
+17:44:45 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0/Debug/MB0.elf' is downloaded to processor 'microblaze_0'.
+17:44:45 INFO  : 'configparams force-mem-access 0' command is executed.
+17:44:45 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0/Debug/MB0.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+17:44:45 INFO  : Memory regions updated for context APU
+17:44:45 INFO  : Memory regions updated for context MicroBlaze #0
+17:44:45 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+17:44:45 INFO  : Context for processor 'microblaze_0' is selected.
+17:44:45 INFO  : 'con' command is executed.
+17:44:45 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+17:44:45 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0.elf_on_local.tcl'
+17:45:35 INFO  : Example project MB0_bsp_xbram_intr_example_1 has been created successfully.
+17:46:19 INFO  : Example project MB0_bsp_xbram_example_1 has been created successfully.
+17:46:42 INFO  : Disconnected from the channel tcfchan#2.
+17:46:43 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:46:43 INFO  : 'fpga -state' command is executed.
+17:46:43 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:46:43 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:46:43 INFO  : 'jtag frequency' command is executed.
+17:46:43 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:46:43 INFO  : Context for 'APU' is selected.
+17:46:44 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+17:46:44 INFO  : 'configparams force-mem-access 1' command is executed.
+17:46:44 INFO  : Context for 'APU' is selected.
+17:46:45 INFO  : 'stop' command is executed.
+17:46:50 INFO  : 'ps7_init' command is executed.
+17:46:50 INFO  : 'ps7_post_config' command is executed.
+17:46:50 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+17:46:50 INFO  : Context for processor 'microblaze_0' is selected.
+17:46:50 INFO  : Processor reset is completed for 'microblaze_0'.
+17:46:50 INFO  : Context for processor 'microblaze_0' is selected.
+17:46:50 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+17:46:50 INFO  : 'configparams force-mem-access 0' command is executed.
+17:46:50 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+17:46:51 INFO  : Memory regions updated for context APU
+17:46:51 INFO  : Memory regions updated for context MicroBlaze #0
+17:46:51 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+17:46:51 INFO  : Context for processor 'microblaze_0' is selected.
+17:46:51 INFO  : 'con' command is executed.
+17:46:51 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+17:46:51 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0_bsp_xbram_example_1.elf_on_local.tcl'
+17:47:57 INFO  : Example project CortexA_bsp_xbram_example_1 has been created successfully.
+17:48:08 INFO  : Disconnected from the channel tcfchan#3.
+17:48:09 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:48:09 INFO  : 'fpga -state' command is executed.
+17:48:09 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:48:10 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:48:10 INFO  : 'jtag frequency' command is executed.
+17:48:10 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:48:10 INFO  : Context for 'APU' is selected.
+17:48:11 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+17:48:11 INFO  : 'configparams force-mem-access 1' command is executed.
+17:48:11 INFO  : Context for 'APU' is selected.
+17:48:11 INFO  : 'stop' command is executed.
+17:48:16 INFO  : 'ps7_init' command is executed.
+17:48:16 INFO  : 'ps7_post_config' command is executed.
+17:48:16 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+17:48:17 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:48:17 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+17:48:17 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:48:18 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+17:48:18 INFO  : 'configparams force-mem-access 0' command is executed.
+17:48:18 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+17:48:18 INFO  : Memory regions updated for context APU
+17:48:18 INFO  : Memory regions updated for context MicroBlaze #0
+17:48:18 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+17:48:18 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:48:19 INFO  : 'con' command is executed.
+17:48:19 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+17:48:19 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+17:50:32 INFO  : Disconnected from the channel tcfchan#4.
+17:50:33 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:50:33 INFO  : 'fpga -state' command is executed.
+17:50:33 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:50:33 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:50:33 INFO  : 'jtag frequency' command is executed.
+17:50:33 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:50:34 INFO  : Context for 'APU' is selected.
+17:50:35 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+17:50:35 INFO  : 'configparams force-mem-access 1' command is executed.
+17:50:35 INFO  : Context for 'APU' is selected.
+17:50:35 INFO  : 'stop' command is executed.
+17:50:40 INFO  : 'ps7_init' command is executed.
+17:50:40 INFO  : 'ps7_post_config' command is executed.
+17:50:40 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+17:50:40 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:50:41 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+17:50:41 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:50:42 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+17:50:42 INFO  : 'configparams force-mem-access 0' command is executed.
+17:50:42 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+17:50:42 INFO  : Memory regions updated for context APU
+17:50:42 INFO  : Memory regions updated for context MicroBlaze #0
+17:50:42 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+17:50:42 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:50:42 INFO  : 'con' command is executed.
+17:50:42 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+17:50:42 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+17:53:34 INFO  : Disconnected from the channel tcfchan#5.
+17:53:35 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:53:35 INFO  : 'fpga -state' command is executed.
+17:53:35 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:53:36 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:53:36 INFO  : 'jtag frequency' command is executed.
+17:53:36 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:53:36 INFO  : Context for 'APU' is selected.
+17:53:37 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+17:53:37 INFO  : 'configparams force-mem-access 1' command is executed.
+17:53:37 INFO  : Context for 'APU' is selected.
+17:53:38 INFO  : 'stop' command is executed.
+17:53:43 INFO  : 'ps7_init' command is executed.
+17:53:43 INFO  : 'ps7_post_config' command is executed.
+17:53:43 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+17:53:43 INFO  : Context for processor 'microblaze_0' is selected.
+17:53:43 INFO  : Processor reset is completed for 'microblaze_0'.
+17:53:43 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:53:43 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+17:53:43 INFO  : Context for processor 'microblaze_0' is selected.
+17:53:44 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+17:53:44 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:53:45 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+17:53:45 INFO  : 'configparams force-mem-access 0' command is executed.
+17:53:45 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+17:53:45 INFO  : Memory regions updated for context APU
+17:53:45 INFO  : Memory regions updated for context MicroBlaze #0
+17:53:45 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+17:53:45 INFO  : Context for processor 'microblaze_0' is selected.
+17:53:45 INFO  : 'con' command is executed.
+17:53:45 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:53:45 INFO  : 'con' command is executed.
+17:53:45 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+17:53:45 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+17:54:37 INFO  : Disconnected from the channel tcfchan#6.
+17:54:38 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:54:38 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:54:39 INFO  : 'jtag frequency' command is executed.
+17:54:39 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:54:39 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:54:41 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+17:54:41 INFO  : Context for 'APU' is selected.
+17:54:42 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+17:54:42 INFO  : 'configparams force-mem-access 1' command is executed.
+17:54:42 INFO  : Context for 'APU' is selected.
+17:54:43 INFO  : 'stop' command is executed.
+17:54:48 INFO  : 'ps7_init' command is executed.
+17:54:48 INFO  : 'ps7_post_config' command is executed.
+17:54:48 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+17:54:48 INFO  : Context for processor 'microblaze_0' is selected.
+17:54:48 INFO  : Processor reset is completed for 'microblaze_0'.
+17:54:48 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:54:48 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+17:54:48 INFO  : Context for processor 'microblaze_0' is selected.
+17:54:48 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+17:54:48 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:54:50 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+17:54:50 INFO  : 'configparams force-mem-access 0' command is executed.
+17:54:50 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+17:54:50 INFO  : Memory regions updated for context APU
+17:54:50 INFO  : Memory regions updated for context MicroBlaze #0
+17:54:50 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+17:54:50 INFO  : Context for processor 'microblaze_0' is selected.
+17:54:50 INFO  : 'con' command is executed.
+17:54:50 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:54:50 INFO  : 'con' command is executed.
+17:54:50 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+17:54:50 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+17:55:15 INFO  : Disconnected from the channel tcfchan#7.
+17:55:16 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:55:16 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:55:16 INFO  : 'jtag frequency' command is executed.
+17:55:16 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:55:16 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:55:18 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+17:55:18 INFO  : Context for 'APU' is selected.
+17:55:20 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+17:55:20 INFO  : 'configparams force-mem-access 1' command is executed.
+17:55:20 INFO  : Context for 'APU' is selected.
+17:55:20 INFO  : 'stop' command is executed.
+17:55:25 INFO  : 'ps7_init' command is executed.
+17:55:25 INFO  : 'ps7_post_config' command is executed.
+17:55:25 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+17:55:25 INFO  : Context for processor 'microblaze_0' is selected.
+17:55:26 INFO  : Processor reset is completed for 'microblaze_0'.
+17:55:26 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:55:26 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+17:55:26 INFO  : Context for processor 'microblaze_0' is selected.
+17:55:26 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+17:55:26 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:55:28 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+17:55:28 INFO  : 'configparams force-mem-access 0' command is executed.
+17:55:28 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+17:55:28 INFO  : Memory regions updated for context APU
+17:55:28 INFO  : Memory regions updated for context MicroBlaze #0
+17:55:28 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+17:55:28 INFO  : Context for processor 'microblaze_0' is selected.
+17:55:28 INFO  : 'con' command is executed.
+17:55:28 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:55:28 INFO  : 'con' command is executed.
+17:55:28 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+17:55:28 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+17:56:08 INFO  : Disconnected from the channel tcfchan#8.
+17:56:09 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:56:09 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:56:09 INFO  : 'jtag frequency' command is executed.
+17:56:09 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:56:09 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:56:11 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+17:56:11 INFO  : Context for 'APU' is selected.
+17:56:13 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+17:56:13 INFO  : 'configparams force-mem-access 1' command is executed.
+17:56:13 INFO  : Context for 'APU' is selected.
+17:56:13 INFO  : 'stop' command is executed.
+17:56:18 INFO  : 'ps7_init' command is executed.
+17:56:18 INFO  : 'ps7_post_config' command is executed.
+17:56:18 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+17:56:19 INFO  : Context for processor 'microblaze_0' is selected.
+17:56:19 INFO  : Processor reset is completed for 'microblaze_0'.
+17:56:19 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:56:19 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+17:56:19 INFO  : Context for processor 'microblaze_0' is selected.
+17:56:19 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+17:56:19 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:56:21 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+17:56:21 INFO  : 'configparams force-mem-access 0' command is executed.
+17:56:21 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+17:56:21 INFO  : Memory regions updated for context APU
+17:56:21 INFO  : Memory regions updated for context MicroBlaze #0
+17:56:21 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+17:56:21 INFO  : Context for processor 'microblaze_0' is selected.
+17:56:21 INFO  : 'con' command is executed.
+17:56:21 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+17:56:21 INFO  : 'con' command is executed.
+17:56:21 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+17:56:21 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+17:57:27 INFO  : Disconnected from the channel tcfchan#9.
+17:57:29 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:57:29 INFO  : 'fpga -state' command is executed.
+17:57:29 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:57:29 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:57:29 INFO  : 'jtag frequency' command is executed.
+17:57:29 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:57:29 INFO  : Context for 'APU' is selected.
+17:57:31 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+17:57:31 INFO  : 'configparams force-mem-access 1' command is executed.
+17:57:31 INFO  : Context for 'APU' is selected.
+17:57:31 INFO  : 'stop' command is executed.
+17:57:36 INFO  : 'ps7_init' command is executed.
+17:57:36 INFO  : 'ps7_post_config' command is executed.
+17:57:36 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+17:57:36 INFO  : Context for processor 'microblaze_0' is selected.
+17:57:36 INFO  : Processor reset is completed for 'microblaze_0'.
+17:57:37 INFO  : Context for processor 'microblaze_0' is selected.
+17:57:37 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+17:57:37 INFO  : 'configparams force-mem-access 0' command is executed.
+17:57:37 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+17:57:37 INFO  : Memory regions updated for context APU
+17:57:37 INFO  : Memory regions updated for context MicroBlaze #0
+17:57:37 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+17:57:37 INFO  : Context for processor 'microblaze_0' is selected.
+17:57:37 INFO  : 'con' command is executed.
+17:57:37 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+17:57:37 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0_bsp_xbram_example_1.elf_on_local.tcl'
+17:59:58 INFO  : Disconnected from the channel tcfchan#10.
+17:59:59 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+17:59:59 INFO  : 'fpga -state' command is executed.
+17:59:59 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+17:59:59 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+17:59:59 INFO  : 'jtag frequency' command is executed.
+17:59:59 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+17:59:59 INFO  : Context for 'APU' is selected.
+18:00:01 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:00:01 INFO  : 'configparams force-mem-access 1' command is executed.
+18:00:01 INFO  : Context for 'APU' is selected.
+18:00:01 INFO  : 'stop' command is executed.
+18:00:06 INFO  : 'ps7_init' command is executed.
+18:00:06 INFO  : 'ps7_post_config' command is executed.
+18:00:06 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:00:06 INFO  : Context for processor 'microblaze_0' is selected.
+18:00:07 INFO  : Processor reset is completed for 'microblaze_0'.
+18:00:07 INFO  : Context for processor 'microblaze_0' is selected.
+18:00:07 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:00:07 INFO  : 'configparams force-mem-access 0' command is executed.
+18:00:07 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:00:07 INFO  : Memory regions updated for context APU
+18:00:07 INFO  : Memory regions updated for context MicroBlaze #0
+18:00:07 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:00:07 INFO  : Context for processor 'microblaze_0' is selected.
+18:00:07 INFO  : 'con' command is executed.
+18:00:07 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:00:07 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0_bsp_xbram_example_1.elf_on_local.tcl'
+18:00:56 INFO  : Disconnected from the channel tcfchan#11.
+18:00:57 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:00:58 INFO  : 'fpga -state' command is executed.
+18:00:58 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:00:58 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:00:58 INFO  : 'jtag frequency' command is executed.
+18:00:58 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:00:58 INFO  : Context for 'APU' is selected.
+18:00:59 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:00:59 INFO  : 'configparams force-mem-access 1' command is executed.
+18:00:59 INFO  : Context for 'APU' is selected.
+18:00:59 INFO  : 'stop' command is executed.
+18:01:05 INFO  : 'ps7_init' command is executed.
+18:01:05 INFO  : 'ps7_post_config' command is executed.
+18:01:05 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:01:05 INFO  : Context for processor 'microblaze_0' is selected.
+18:01:05 INFO  : Processor reset is completed for 'microblaze_0'.
+18:01:05 INFO  : Context for processor 'microblaze_0' is selected.
+18:01:05 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:01:05 INFO  : 'configparams force-mem-access 0' command is executed.
+18:01:05 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:01:05 INFO  : Memory regions updated for context APU
+18:01:05 INFO  : Memory regions updated for context MicroBlaze #0
+18:01:05 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:01:05 INFO  : Context for processor 'microblaze_0' is selected.
+18:01:06 INFO  : 'con' command is executed.
+18:01:06 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:01:06 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0_bsp_xbram_example_1.elf_on_local.tcl'
+18:01:37 INFO  : Disconnected from the channel tcfchan#12.
+18:01:39 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:01:39 INFO  : 'fpga -state' command is executed.
+18:01:39 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:01:39 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:01:39 INFO  : 'jtag frequency' command is executed.
+18:01:39 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:01:39 INFO  : Context for 'APU' is selected.
+18:01:41 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:01:41 INFO  : 'configparams force-mem-access 1' command is executed.
+18:01:41 INFO  : Context for 'APU' is selected.
+18:01:41 INFO  : 'stop' command is executed.
+18:01:46 INFO  : 'ps7_init' command is executed.
+18:01:46 INFO  : 'ps7_post_config' command is executed.
+18:01:46 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:01:46 INFO  : Context for processor 'microblaze_0' is selected.
+18:01:47 INFO  : Processor reset is completed for 'microblaze_0'.
+18:01:47 INFO  : Context for processor 'microblaze_0' is selected.
+18:01:47 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:01:47 INFO  : 'configparams force-mem-access 0' command is executed.
+18:01:47 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:01:47 INFO  : Memory regions updated for context APU
+18:01:47 INFO  : Memory regions updated for context MicroBlaze #0
+18:01:47 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:01:47 INFO  : Context for processor 'microblaze_0' is selected.
+18:01:47 INFO  : 'con' command is executed.
+18:01:47 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:01:47 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0_bsp_xbram_example_1.elf_on_local.tcl'
+18:07:45 INFO  : Disconnected from the channel tcfchan#13.
+18:08:06 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:08:06 INFO  : 'fpga -state' command is executed.
+18:08:06 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:08:06 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:08:06 INFO  : 'jtag frequency' command is executed.
+18:08:06 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:08:07 INFO  : Context for 'APU' is selected.
+18:08:08 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:08:08 INFO  : 'configparams force-mem-access 1' command is executed.
+18:08:08 INFO  : Context for 'APU' is selected.
+18:08:08 INFO  : 'stop' command is executed.
+18:08:14 INFO  : 'ps7_init' command is executed.
+18:08:14 INFO  : 'ps7_post_config' command is executed.
+18:08:14 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:08:14 INFO  : Context for processor 'microblaze_0' is selected.
+18:08:14 INFO  : Processor reset is completed for 'microblaze_0'.
+18:08:14 INFO  : Context for processor 'microblaze_0' is selected.
+18:08:14 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:08:14 INFO  : 'configparams force-mem-access 0' command is executed.
+18:08:14 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:08:15 INFO  : Memory regions updated for context APU
+18:08:15 INFO  : Memory regions updated for context MicroBlaze #0
+18:08:15 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:08:15 INFO  : Context for processor 'microblaze_0' is selected.
+18:08:15 INFO  : 'con' command is executed.
+18:08:15 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:08:15 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0_bsp_xbram_example_1.elf_on_local.tcl'
+18:08:51 INFO  : Disconnected from the channel tcfchan#14.
+18:08:52 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:08:52 INFO  : 'fpga -state' command is executed.
+18:08:52 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:08:52 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:08:52 INFO  : 'jtag frequency' command is executed.
+18:08:52 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:08:52 INFO  : Context for 'APU' is selected.
+18:08:54 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:08:54 INFO  : 'configparams force-mem-access 1' command is executed.
+18:08:54 INFO  : Context for 'APU' is selected.
+18:08:54 INFO  : 'stop' command is executed.
+18:08:59 INFO  : 'ps7_init' command is executed.
+18:08:59 INFO  : 'ps7_post_config' command is executed.
+18:08:59 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:08:59 INFO  : Context for processor 'microblaze_0' is selected.
+18:09:00 INFO  : Processor reset is completed for 'microblaze_0'.
+18:09:00 INFO  : Context for processor 'microblaze_0' is selected.
+18:09:00 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:09:00 INFO  : 'configparams force-mem-access 0' command is executed.
+18:09:00 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:09:00 INFO  : Memory regions updated for context APU
+18:09:00 INFO  : Memory regions updated for context MicroBlaze #0
+18:09:00 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:09:00 INFO  : Context for processor 'microblaze_0' is selected.
+18:09:01 INFO  : 'con' command is executed.
+18:09:01 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:09:01 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0_bsp_xbram_example_1.elf_on_local.tcl'
+18:09:21 INFO  : Disconnected from the channel tcfchan#15.
+18:09:22 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:09:22 INFO  : 'fpga -state' command is executed.
+18:09:22 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:09:22 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:09:22 INFO  : 'jtag frequency' command is executed.
+18:09:22 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:09:22 INFO  : Context for 'APU' is selected.
+18:09:24 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:09:24 INFO  : 'configparams force-mem-access 1' command is executed.
+18:09:24 INFO  : Context for 'APU' is selected.
+18:09:24 INFO  : 'stop' command is executed.
+18:09:29 INFO  : 'ps7_init' command is executed.
+18:09:29 INFO  : 'ps7_post_config' command is executed.
+18:09:29 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:09:30 INFO  : Context for processor 'microblaze_0' is selected.
+18:09:30 INFO  : Processor reset is completed for 'microblaze_0'.
+18:09:30 INFO  : Context for processor 'microblaze_0' is selected.
+18:09:30 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:09:30 INFO  : 'configparams force-mem-access 0' command is executed.
+18:09:30 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:09:30 INFO  : Memory regions updated for context APU
+18:09:30 INFO  : Memory regions updated for context MicroBlaze #0
+18:09:30 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:09:30 INFO  : Context for processor 'microblaze_0' is selected.
+18:09:31 INFO  : 'con' command is executed.
+18:09:31 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:09:31 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0_bsp_xbram_example_1.elf_on_local.tcl'
+18:10:01 INFO  : Disconnected from the channel tcfchan#16.
+18:10:02 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:10:02 INFO  : 'fpga -state' command is executed.
+18:10:02 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:10:03 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:10:03 INFO  : 'jtag frequency' command is executed.
+18:10:03 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:10:03 INFO  : Context for 'APU' is selected.
+18:10:04 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:10:04 INFO  : 'configparams force-mem-access 1' command is executed.
+18:10:04 INFO  : Context for 'APU' is selected.
+18:10:04 INFO  : 'stop' command is executed.
+18:10:10 INFO  : 'ps7_init' command is executed.
+18:10:10 INFO  : 'ps7_post_config' command is executed.
+18:10:10 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:10:10 INFO  : Context for processor 'microblaze_0' is selected.
+18:10:10 INFO  : Processor reset is completed for 'microblaze_0'.
+18:10:10 INFO  : Context for processor 'microblaze_0' is selected.
+18:10:10 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:10:10 INFO  : 'configparams force-mem-access 0' command is executed.
+18:10:10 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:10:10 INFO  : Memory regions updated for context APU
+18:10:10 INFO  : Memory regions updated for context MicroBlaze #0
+18:10:10 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:10:11 INFO  : Context for processor 'microblaze_0' is selected.
+18:10:11 INFO  : 'con' command is executed.
+18:10:11 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:10:11 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0_bsp_xbram_example_1.elf_on_local.tcl'
+18:13:14 INFO  : Disconnected from the channel tcfchan#17.
+18:13:15 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:13:15 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:13:15 INFO  : 'jtag frequency' command is executed.
+18:13:15 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:13:15 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:13:17 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:13:17 INFO  : Context for 'APU' is selected.
+18:13:19 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:13:19 INFO  : 'configparams force-mem-access 1' command is executed.
+18:13:19 INFO  : Context for 'APU' is selected.
+18:13:19 INFO  : 'stop' command is executed.
+18:13:24 INFO  : 'ps7_init' command is executed.
+18:13:25 INFO  : 'ps7_post_config' command is executed.
+18:13:25 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:13:25 INFO  : Context for processor 'microblaze_0' is selected.
+18:13:25 INFO  : Processor reset is completed for 'microblaze_0'.
+18:13:25 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:13:25 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:13:25 INFO  : Context for processor 'microblaze_0' is selected.
+18:13:25 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:13:25 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:13:27 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:13:27 INFO  : 'configparams force-mem-access 0' command is executed.
+18:13:27 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:13:27 INFO  : Memory regions updated for context APU
+18:13:27 INFO  : Memory regions updated for context MicroBlaze #0
+18:13:27 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:13:27 INFO  : Context for processor 'microblaze_0' is selected.
+18:13:27 INFO  : 'con' command is executed.
+18:13:27 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:13:27 INFO  : 'con' command is executed.
+18:13:27 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:13:27 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:14:42 INFO  : Disconnected from the channel tcfchan#18.
+18:14:43 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:14:44 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:14:44 INFO  : 'jtag frequency' command is executed.
+18:14:44 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:14:44 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:14:46 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:14:46 INFO  : Context for 'APU' is selected.
+18:14:47 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:14:47 INFO  : 'configparams force-mem-access 1' command is executed.
+18:14:48 INFO  : Context for 'APU' is selected.
+18:14:48 INFO  : 'stop' command is executed.
+18:14:53 INFO  : 'ps7_init' command is executed.
+18:14:53 INFO  : 'ps7_post_config' command is executed.
+18:14:53 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:14:53 INFO  : Context for processor 'microblaze_0' is selected.
+18:14:53 INFO  : Processor reset is completed for 'microblaze_0'.
+18:14:53 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:14:53 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:14:53 INFO  : Context for processor 'microblaze_0' is selected.
+18:14:54 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:14:54 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:14:55 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:14:55 INFO  : 'configparams force-mem-access 0' command is executed.
+18:14:55 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:14:55 INFO  : Memory regions updated for context APU
+18:14:55 INFO  : Memory regions updated for context MicroBlaze #0
+18:14:55 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:14:55 INFO  : Context for processor 'microblaze_0' is selected.
+18:14:55 INFO  : 'con' command is executed.
+18:14:55 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:14:55 INFO  : 'con' command is executed.
+18:14:55 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:14:55 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:16:00 INFO  : Disconnected from the channel tcfchan#19.
+18:16:01 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:16:01 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:16:01 INFO  : 'jtag frequency' command is executed.
+18:16:01 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:16:02 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:16:04 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:16:04 INFO  : Context for 'APU' is selected.
+18:16:05 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:16:05 INFO  : 'configparams force-mem-access 1' command is executed.
+18:16:05 INFO  : Context for 'APU' is selected.
+18:16:06 INFO  : 'stop' command is executed.
+18:16:11 INFO  : 'ps7_init' command is executed.
+18:16:11 INFO  : 'ps7_post_config' command is executed.
+18:16:11 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:16:11 INFO  : Context for processor 'microblaze_0' is selected.
+18:16:11 INFO  : Processor reset is completed for 'microblaze_0'.
+18:16:11 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:16:11 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:16:11 INFO  : Context for processor 'microblaze_0' is selected.
+18:16:12 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:16:12 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:16:13 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:16:13 INFO  : 'configparams force-mem-access 0' command is executed.
+18:16:13 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:16:13 INFO  : Memory regions updated for context APU
+18:16:13 INFO  : Memory regions updated for context MicroBlaze #0
+18:16:13 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:16:13 INFO  : Context for processor 'microblaze_0' is selected.
+18:16:13 INFO  : 'con' command is executed.
+18:16:13 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:16:13 INFO  : 'con' command is executed.
+18:16:13 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:16:13 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:16:30 INFO  : Disconnected from the channel tcfchan#20.
+18:16:31 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:16:31 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:16:31 INFO  : 'jtag frequency' command is executed.
+18:16:31 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:16:31 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:16:33 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:16:33 INFO  : Context for 'APU' is selected.
+18:16:35 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:16:35 INFO  : 'configparams force-mem-access 1' command is executed.
+18:16:35 INFO  : Context for 'APU' is selected.
+18:16:36 INFO  : 'stop' command is executed.
+18:16:41 INFO  : 'ps7_init' command is executed.
+18:16:41 INFO  : 'ps7_post_config' command is executed.
+18:16:41 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:16:41 INFO  : Context for processor 'microblaze_0' is selected.
+18:16:41 INFO  : Processor reset is completed for 'microblaze_0'.
+18:16:41 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:16:41 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:16:41 INFO  : Context for processor 'microblaze_0' is selected.
+18:16:42 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:16:42 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:16:43 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:16:43 INFO  : 'configparams force-mem-access 0' command is executed.
+18:16:43 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:16:43 INFO  : Memory regions updated for context APU
+18:16:43 INFO  : Memory regions updated for context MicroBlaze #0
+18:16:43 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:16:43 INFO  : Context for processor 'microblaze_0' is selected.
+18:16:43 INFO  : 'con' command is executed.
+18:16:43 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:16:43 INFO  : 'con' command is executed.
+18:16:43 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:16:43 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:17:30 INFO  : Disconnected from the channel tcfchan#21.
+18:17:31 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:17:32 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:17:32 INFO  : 'jtag frequency' command is executed.
+18:17:32 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:17:32 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:17:34 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:17:34 INFO  : Context for 'APU' is selected.
+18:17:35 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:17:35 INFO  : 'configparams force-mem-access 1' command is executed.
+18:17:36 INFO  : Context for 'APU' is selected.
+18:17:36 INFO  : 'stop' command is executed.
+18:17:41 INFO  : 'ps7_init' command is executed.
+18:17:41 INFO  : 'ps7_post_config' command is executed.
+18:17:41 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:17:41 INFO  : Context for processor 'microblaze_0' is selected.
+18:17:41 INFO  : Processor reset is completed for 'microblaze_0'.
+18:17:41 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:17:41 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:17:42 INFO  : Context for processor 'microblaze_0' is selected.
+18:17:42 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:17:42 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:17:43 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:17:43 INFO  : 'configparams force-mem-access 0' command is executed.
+18:17:43 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:17:43 INFO  : Memory regions updated for context APU
+18:17:43 INFO  : Memory regions updated for context MicroBlaze #0
+18:17:43 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:17:44 INFO  : Context for processor 'microblaze_0' is selected.
+18:17:44 INFO  : 'con' command is executed.
+18:17:44 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:17:44 INFO  : 'con' command is executed.
+18:17:44 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:17:44 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:18:47 INFO  : Disconnected from the channel tcfchan#22.
+18:20:07 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:20:09 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:20:09 INFO  : 'jtag frequency' command is executed.
+18:20:09 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:20:09 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:20:11 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:20:11 INFO  : Context for 'APU' is selected.
+18:20:13 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:20:13 INFO  : 'configparams force-mem-access 1' command is executed.
+18:20:13 INFO  : Context for 'APU' is selected.
+18:20:13 INFO  : 'stop' command is executed.
+18:20:18 INFO  : 'ps7_init' command is executed.
+18:20:19 INFO  : 'ps7_post_config' command is executed.
+18:20:19 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:20:19 INFO  : Context for processor 'microblaze_0' is selected.
+18:20:19 INFO  : Processor reset is completed for 'microblaze_0'.
+18:20:19 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:20:19 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:20:19 INFO  : Context for processor 'microblaze_0' is selected.
+18:20:19 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:20:19 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:20:21 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:20:21 INFO  : 'configparams force-mem-access 0' command is executed.
+18:20:21 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:20:21 INFO  : Memory regions updated for context APU
+18:20:21 INFO  : Memory regions updated for context MicroBlaze #0
+18:20:21 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:20:21 INFO  : Context for processor 'microblaze_0' is selected.
+18:20:21 INFO  : 'con' command is executed.
+18:20:21 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:20:21 INFO  : 'con' command is executed.
+18:20:21 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:20:21 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:21:30 INFO  : Disconnected from the channel tcfchan#23.
+18:21:31 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:21:31 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:21:31 INFO  : 'jtag frequency' command is executed.
+18:21:31 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:21:31 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:21:33 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:21:33 INFO  : Context for 'APU' is selected.
+18:21:35 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:21:35 INFO  : 'configparams force-mem-access 1' command is executed.
+18:21:35 INFO  : Context for 'APU' is selected.
+18:21:36 INFO  : 'stop' command is executed.
+18:21:41 INFO  : 'ps7_init' command is executed.
+18:21:41 INFO  : 'ps7_post_config' command is executed.
+18:21:41 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:21:41 INFO  : Context for processor 'microblaze_0' is selected.
+18:21:41 INFO  : Processor reset is completed for 'microblaze_0'.
+18:21:41 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:21:41 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:21:41 INFO  : Context for processor 'microblaze_0' is selected.
+18:21:42 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:21:42 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:21:43 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:21:43 INFO  : 'configparams force-mem-access 0' command is executed.
+18:21:43 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:21:43 INFO  : Memory regions updated for context APU
+18:21:43 INFO  : Memory regions updated for context MicroBlaze #0
+18:21:43 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:21:43 INFO  : Context for processor 'microblaze_0' is selected.
+18:21:44 INFO  : 'con' command is executed.
+18:21:44 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:21:44 INFO  : 'con' command is executed.
+18:21:44 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:21:44 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:22:13 INFO  : Disconnected from the channel tcfchan#24.
+18:22:25 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:22:27 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:22:27 INFO  : 'jtag frequency' command is executed.
+18:22:27 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:22:27 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:22:29 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:22:29 INFO  : Context for 'APU' is selected.
+18:22:31 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:22:31 INFO  : 'configparams force-mem-access 1' command is executed.
+18:22:31 INFO  : Context for 'APU' is selected.
+18:22:31 INFO  : 'stop' command is executed.
+18:22:36 INFO  : 'ps7_init' command is executed.
+18:22:37 INFO  : 'ps7_post_config' command is executed.
+18:22:37 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:22:37 INFO  : Context for processor 'microblaze_0' is selected.
+18:22:37 INFO  : Processor reset is completed for 'microblaze_0'.
+18:22:37 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:22:37 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:22:37 INFO  : Context for processor 'microblaze_0' is selected.
+18:22:37 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:22:38 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:22:39 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:22:39 INFO  : 'configparams force-mem-access 0' command is executed.
+18:22:39 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:22:39 INFO  : Memory regions updated for context APU
+18:22:39 INFO  : Memory regions updated for context MicroBlaze #0
+18:22:39 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:22:40 INFO  : Context for processor 'microblaze_0' is selected.
+18:22:40 INFO  : 'con' command is executed.
+18:22:40 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:22:40 INFO  : 'con' command is executed.
+18:22:40 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:22:40 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:26:35 INFO  : Disconnected from the channel tcfchan#25.
+18:26:36 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:26:37 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:26:37 INFO  : 'jtag frequency' command is executed.
+18:26:37 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:26:37 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:26:39 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:26:39 INFO  : Context for 'APU' is selected.
+18:26:41 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:26:41 INFO  : 'configparams force-mem-access 1' command is executed.
+18:26:41 INFO  : Context for 'APU' is selected.
+18:26:41 INFO  : 'stop' command is executed.
+18:26:46 INFO  : 'ps7_init' command is executed.
+18:26:46 INFO  : 'ps7_post_config' command is executed.
+18:26:46 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:26:46 INFO  : Context for processor 'microblaze_0' is selected.
+18:26:47 INFO  : Processor reset is completed for 'microblaze_0'.
+18:26:47 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:26:47 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:26:47 INFO  : Context for processor 'microblaze_0' is selected.
+18:26:47 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:26:47 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:26:48 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:26:48 INFO  : 'configparams force-mem-access 0' command is executed.
+18:26:48 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:26:49 INFO  : Memory regions updated for context APU
+18:26:49 INFO  : Memory regions updated for context MicroBlaze #0
+18:26:49 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:26:49 INFO  : Context for processor 'microblaze_0' is selected.
+18:26:49 INFO  : 'con' command is executed.
+18:26:49 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:26:49 INFO  : 'con' command is executed.
+18:26:49 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:26:49 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:27:47 INFO  : Disconnected from the channel tcfchan#26.
+18:27:48 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:27:48 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:27:48 INFO  : 'jtag frequency' command is executed.
+18:27:48 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:27:49 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:27:51 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:27:51 INFO  : Context for 'APU' is selected.
+18:27:53 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:27:53 INFO  : 'configparams force-mem-access 1' command is executed.
+18:27:53 INFO  : Context for 'APU' is selected.
+18:27:53 INFO  : 'stop' command is executed.
+18:27:58 INFO  : 'ps7_init' command is executed.
+18:27:58 INFO  : 'ps7_post_config' command is executed.
+18:27:58 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:27:58 INFO  : Context for processor 'microblaze_0' is selected.
+18:27:58 INFO  : Processor reset is completed for 'microblaze_0'.
+18:27:58 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:27:58 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:27:58 INFO  : Context for processor 'microblaze_0' is selected.
+18:27:59 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:27:59 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:28:00 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:28:00 INFO  : 'configparams force-mem-access 0' command is executed.
+18:28:00 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:28:00 INFO  : Memory regions updated for context APU
+18:28:00 INFO  : Memory regions updated for context MicroBlaze #0
+18:28:00 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:28:00 INFO  : Context for processor 'microblaze_0' is selected.
+18:28:00 INFO  : 'con' command is executed.
+18:28:00 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:28:00 INFO  : 'con' command is executed.
+18:28:00 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:28:00 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:28:40 INFO  : Disconnected from the channel tcfchan#27.
+18:28:41 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:28:41 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:28:41 INFO  : 'jtag frequency' command is executed.
+18:28:41 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:28:41 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:28:43 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:28:43 INFO  : Context for 'APU' is selected.
+18:28:46 ERROR : (XSDB Server)/tools/Xilinx/SDK/2019.1/bin/loader: line 267: 10310 Segmentation fault      (core dumped) "$RDI_PROG" "$@"
+
+18:28:46 ERROR : Unexpected exception occurred.
+java.io.IOException: Command [C 3815 xsdb eval "loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_S...] aborted
+	at org.eclipse.tcf.core.AbstractChannel$9.run(AbstractChannel.java:839)
+	at org.eclipse.tcf.EventQueue.run(EventQueue.java:96)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.io.IOException: Communication channel is closed by remote peer
+	at org.eclipse.tcf.core.AbstractChannel$1$2.run(AbstractChannel.java:382)
+	... 2 more
+18:28:46 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+----------------End of Script----------------
+
+18:29:02 INFO  : Launching XSCT server: xsct -n -interactive /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/temp_xsdb_launch_script.tcl
+18:29:05 INFO  : XSCT server has started successfully.
+18:29:07 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:29:08 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:29:08 INFO  : 'jtag frequency' command is executed.
+18:29:08 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:29:08 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:29:10 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:29:10 INFO  : Context for 'APU' is selected.
+18:29:14 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:29:14 INFO  : 'configparams force-mem-access 1' command is executed.
+18:29:14 INFO  : Context for 'APU' is selected.
+18:29:15 INFO  : 'stop' command is executed.
+18:29:20 INFO  : 'ps7_init' command is executed.
+18:29:20 INFO  : 'ps7_post_config' command is executed.
+18:29:20 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:29:20 INFO  : Context for processor 'microblaze_0' is selected.
+18:29:20 INFO  : Processor reset is completed for 'microblaze_0'.
+18:29:20 INFO  : Context for processor 'microblaze_0' is selected.
+18:29:20 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:29:20 INFO  : 'configparams force-mem-access 0' command is executed.
+18:29:20 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:29:20 INFO  : Memory regions updated for context APU
+18:29:20 INFO  : Memory regions updated for context MicroBlaze #0
+18:29:20 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:29:20 INFO  : Context for processor 'microblaze_0' is selected.
+18:29:20 INFO  : 'con' command is executed.
+18:29:20 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:29:20 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:31:07 INFO  : Disconnected from the channel tcfchan#1.
+18:31:08 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:31:08 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:31:08 INFO  : 'jtag frequency' command is executed.
+18:31:08 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:31:08 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:31:10 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:31:10 INFO  : Context for 'APU' is selected.
+18:31:12 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:31:12 INFO  : 'configparams force-mem-access 1' command is executed.
+18:31:12 INFO  : Context for 'APU' is selected.
+18:31:12 INFO  : 'stop' command is executed.
+18:31:17 INFO  : 'ps7_init' command is executed.
+18:31:17 INFO  : 'ps7_post_config' command is executed.
+18:31:17 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:31:17 INFO  : Context for processor 'microblaze_0' is selected.
+18:31:17 INFO  : Processor reset is completed for 'microblaze_0'.
+18:31:17 INFO  : Context for processor 'microblaze_0' is selected.
+18:31:17 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:31:17 INFO  : 'configparams force-mem-access 0' command is executed.
+18:31:17 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:31:17 INFO  : Memory regions updated for context APU
+18:31:17 INFO  : Memory regions updated for context MicroBlaze #0
+18:31:17 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:31:17 INFO  : Context for processor 'microblaze_0' is selected.
+18:31:17 INFO  : 'con' command is executed.
+18:31:17 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:31:17 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:32:38 INFO  : Disconnected from the channel tcfchan#2.
+18:32:39 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:32:39 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:32:39 INFO  : 'jtag frequency' command is executed.
+18:32:39 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:32:39 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:32:42 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:32:42 INFO  : Context for 'APU' is selected.
+18:32:43 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:32:43 INFO  : 'configparams force-mem-access 1' command is executed.
+18:32:43 INFO  : Context for 'APU' is selected.
+18:32:43 INFO  : 'stop' command is executed.
+18:32:48 INFO  : 'ps7_init' command is executed.
+18:32:48 INFO  : 'ps7_post_config' command is executed.
+18:32:48 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:32:48 INFO  : Context for processor 'microblaze_0' is selected.
+18:32:48 INFO  : Processor reset is completed for 'microblaze_0'.
+18:32:48 INFO  : Context for processor 'microblaze_0' is selected.
+18:32:49 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:32:49 INFO  : 'configparams force-mem-access 0' command is executed.
+18:32:49 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:32:49 INFO  : Memory regions updated for context APU
+18:32:49 INFO  : Memory regions updated for context MicroBlaze #0
+18:32:49 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:32:49 INFO  : Context for processor 'microblaze_0' is selected.
+18:32:49 INFO  : 'con' command is executed.
+18:32:49 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:32:49 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:38:29 INFO  : Disconnected from the channel tcfchan#3.
+18:38:30 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:38:30 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:38:30 INFO  : 'jtag frequency' command is executed.
+18:38:30 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:38:31 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:38:33 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:38:33 INFO  : Context for 'APU' is selected.
+18:38:34 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:38:34 INFO  : 'configparams force-mem-access 1' command is executed.
+18:38:34 INFO  : Context for 'APU' is selected.
+18:38:34 INFO  : 'stop' command is executed.
+18:38:39 INFO  : 'ps7_init' command is executed.
+18:38:40 INFO  : 'ps7_post_config' command is executed.
+18:38:40 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:38:40 INFO  : Context for processor 'microblaze_0' is selected.
+18:38:40 INFO  : Processor reset is completed for 'microblaze_0'.
+18:38:40 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:38:40 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:38:40 INFO  : Context for processor 'microblaze_0' is selected.
+18:38:40 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:38:40 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:38:41 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:38:41 INFO  : 'configparams force-mem-access 0' command is executed.
+18:38:41 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:38:42 INFO  : Memory regions updated for context APU
+18:38:42 INFO  : Memory regions updated for context MicroBlaze #0
+18:38:42 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:38:42 INFO  : Context for processor 'microblaze_0' is selected.
+18:38:42 INFO  : 'con' command is executed.
+18:38:42 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:38:42 INFO  : 'con' command is executed.
+18:38:42 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:38:42 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:39:51 INFO  : Disconnected from the channel tcfchan#4.
+18:39:52 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:39:52 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:39:53 INFO  : 'jtag frequency' command is executed.
+18:39:53 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:39:53 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:39:55 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:39:55 INFO  : Context for 'APU' is selected.
+18:39:56 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:39:56 INFO  : 'configparams force-mem-access 1' command is executed.
+18:39:56 INFO  : Context for 'APU' is selected.
+18:39:57 INFO  : 'stop' command is executed.
+18:40:02 INFO  : 'ps7_init' command is executed.
+18:40:02 INFO  : 'ps7_post_config' command is executed.
+18:40:02 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:40:02 INFO  : Context for processor 'microblaze_0' is selected.
+18:40:02 INFO  : Processor reset is completed for 'microblaze_0'.
+18:40:02 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:40:02 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:40:02 INFO  : Context for processor 'microblaze_0' is selected.
+18:40:02 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:40:03 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:40:04 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:40:04 INFO  : 'configparams force-mem-access 0' command is executed.
+18:40:04 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:40:04 INFO  : Memory regions updated for context APU
+18:40:04 INFO  : Memory regions updated for context MicroBlaze #0
+18:40:04 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:40:04 INFO  : Context for processor 'microblaze_0' is selected.
+18:40:04 INFO  : 'con' command is executed.
+18:40:04 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:40:04 INFO  : 'con' command is executed.
+18:40:04 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:40:04 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:41:05 INFO  : Disconnected from the channel tcfchan#5.
+18:41:07 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:41:07 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:41:07 INFO  : 'jtag frequency' command is executed.
+18:41:07 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:41:07 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:41:09 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:41:09 INFO  : Context for 'APU' is selected.
+18:41:11 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:41:11 INFO  : 'configparams force-mem-access 1' command is executed.
+18:41:11 INFO  : Context for 'APU' is selected.
+18:41:11 INFO  : 'stop' command is executed.
+18:41:16 INFO  : 'ps7_init' command is executed.
+18:41:16 INFO  : 'ps7_post_config' command is executed.
+18:41:16 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:41:16 INFO  : Context for processor 'microblaze_0' is selected.
+18:41:16 INFO  : Processor reset is completed for 'microblaze_0'.
+18:41:16 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:41:17 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:41:17 INFO  : Context for processor 'microblaze_0' is selected.
+18:41:17 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:41:17 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:41:18 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:41:18 INFO  : 'configparams force-mem-access 0' command is executed.
+18:41:18 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:41:18 INFO  : Memory regions updated for context APU
+18:41:18 INFO  : Memory regions updated for context MicroBlaze #0
+18:41:18 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:41:18 INFO  : Context for processor 'microblaze_0' is selected.
+18:41:18 INFO  : 'con' command is executed.
+18:41:18 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:41:19 INFO  : 'con' command is executed.
+18:41:19 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:41:19 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:41:28 INFO  : Disconnected from the channel tcfchan#6.
+18:41:29 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:41:30 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:41:30 INFO  : 'jtag frequency' command is executed.
+18:41:30 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:41:30 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:41:32 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:41:32 INFO  : Context for 'APU' is selected.
+18:41:34 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:41:34 INFO  : 'configparams force-mem-access 1' command is executed.
+18:41:34 INFO  : Context for 'APU' is selected.
+18:41:34 INFO  : 'stop' command is executed.
+18:41:39 INFO  : 'ps7_init' command is executed.
+18:41:39 INFO  : 'ps7_post_config' command is executed.
+18:41:39 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:41:39 INFO  : Context for processor 'microblaze_0' is selected.
+18:41:39 INFO  : Processor reset is completed for 'microblaze_0'.
+18:41:39 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:41:39 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:41:39 INFO  : Context for processor 'microblaze_0' is selected.
+18:41:39 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:41:39 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:41:41 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:41:41 INFO  : 'configparams force-mem-access 0' command is executed.
+18:41:41 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:41:41 INFO  : Memory regions updated for context APU
+18:41:41 INFO  : Memory regions updated for context MicroBlaze #0
+18:41:41 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:41:41 INFO  : Context for processor 'microblaze_0' is selected.
+18:41:41 INFO  : 'con' command is executed.
+18:41:41 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:41:41 INFO  : 'con' command is executed.
+18:41:41 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:41:41 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:42:59 INFO  : Disconnected from the channel tcfchan#7.
+18:43:00 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:43:00 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:43:00 INFO  : 'jtag frequency' command is executed.
+18:43:00 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:43:00 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:43:02 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:43:02 INFO  : Context for 'APU' is selected.
+18:43:04 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:43:04 INFO  : 'configparams force-mem-access 1' command is executed.
+18:43:04 INFO  : Context for 'APU' is selected.
+18:43:04 INFO  : 'stop' command is executed.
+18:43:09 INFO  : 'ps7_init' command is executed.
+18:43:09 INFO  : 'ps7_post_config' command is executed.
+18:43:09 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:43:09 INFO  : Context for processor 'microblaze_0' is selected.
+18:43:09 INFO  : Processor reset is completed for 'microblaze_0'.
+18:43:09 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:43:10 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:43:10 INFO  : Context for processor 'microblaze_0' is selected.
+18:43:10 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:43:10 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:43:11 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:43:11 INFO  : 'configparams force-mem-access 0' command is executed.
+18:43:11 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:43:11 INFO  : Memory regions updated for context APU
+18:43:11 INFO  : Memory regions updated for context MicroBlaze #0
+18:43:11 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:43:12 INFO  : Context for processor 'microblaze_0' is selected.
+18:43:12 INFO  : 'con' command is executed.
+18:43:12 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:43:12 INFO  : 'con' command is executed.
+18:43:12 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:43:12 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:46:53 INFO  : Disconnected from the channel tcfchan#8.
+18:46:54 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:46:54 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:46:54 INFO  : 'jtag frequency' command is executed.
+18:46:54 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:46:55 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:46:57 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:46:57 INFO  : Context for 'APU' is selected.
+18:46:58 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:46:58 INFO  : 'configparams force-mem-access 1' command is executed.
+18:46:58 INFO  : Context for 'APU' is selected.
+18:46:58 INFO  : 'stop' command is executed.
+18:47:04 INFO  : 'ps7_init' command is executed.
+18:47:04 INFO  : 'ps7_post_config' command is executed.
+18:47:04 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:47:04 INFO  : Context for processor 'microblaze_0' is selected.
+18:47:04 INFO  : Processor reset is completed for 'microblaze_0'.
+18:47:04 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:47:04 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:47:04 INFO  : Context for processor 'microblaze_0' is selected.
+18:47:04 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:47:05 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:47:06 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:47:06 INFO  : 'configparams force-mem-access 0' command is executed.
+18:47:06 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:47:06 INFO  : Memory regions updated for context APU
+18:47:06 INFO  : Memory regions updated for context MicroBlaze #0
+18:47:06 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:47:06 INFO  : Context for processor 'microblaze_0' is selected.
+18:47:06 INFO  : 'con' command is executed.
+18:47:06 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:47:06 INFO  : 'con' command is executed.
+18:47:06 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:47:06 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:48:12 INFO  : Disconnected from the channel tcfchan#9.
+18:48:14 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:48:14 INFO  : 'fpga -state' command is executed.
+18:48:14 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:48:14 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:48:14 INFO  : 'jtag frequency' command is executed.
+18:48:14 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:48:14 INFO  : Context for 'APU' is selected.
+18:48:15 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:48:15 INFO  : 'configparams force-mem-access 1' command is executed.
+18:48:15 INFO  : Context for 'APU' is selected.
+18:48:16 INFO  : 'stop' command is executed.
+18:48:21 INFO  : 'ps7_init' command is executed.
+18:48:21 INFO  : 'ps7_post_config' command is executed.
+18:48:21 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:48:21 INFO  : Context for processor 'microblaze_0' is selected.
+18:48:21 INFO  : Processor reset is completed for 'microblaze_0'.
+18:48:21 INFO  : Context for processor 'microblaze_0' is selected.
+18:48:22 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:48:22 INFO  : 'configparams force-mem-access 0' command is executed.
+18:48:22 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:48:22 INFO  : Memory regions updated for context APU
+18:48:22 INFO  : Memory regions updated for context MicroBlaze #0
+18:48:22 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:48:22 INFO  : Context for processor 'microblaze_0' is selected.
+18:48:22 INFO  : 'con' command is executed.
+18:48:22 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+----------------End of Script----------------
+
+18:48:22 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_mb0_bsp_xbram_example_1.elf_on_local.tcl'
+18:48:53 INFO  : Disconnected from the channel tcfchan#10.
+18:48:54 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:48:54 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:48:55 INFO  : 'jtag frequency' command is executed.
+18:48:55 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:48:55 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:48:57 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:48:57 INFO  : Context for 'APU' is selected.
+18:48:59 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:48:59 INFO  : 'configparams force-mem-access 1' command is executed.
+18:48:59 INFO  : Context for 'APU' is selected.
+18:48:59 INFO  : 'stop' command is executed.
+18:49:04 INFO  : 'ps7_init' command is executed.
+18:49:04 INFO  : 'ps7_post_config' command is executed.
+18:49:04 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:49:04 INFO  : Context for processor 'microblaze_0' is selected.
+18:49:04 INFO  : Processor reset is completed for 'microblaze_0'.
+18:49:04 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:49:04 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:49:04 INFO  : Context for processor 'microblaze_0' is selected.
+18:49:04 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:49:05 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:49:06 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:49:06 INFO  : 'configparams force-mem-access 0' command is executed.
+18:49:06 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:49:06 INFO  : Memory regions updated for context APU
+18:49:06 INFO  : Memory regions updated for context MicroBlaze #0
+18:49:06 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:49:06 INFO  : Context for processor 'microblaze_0' is selected.
+18:49:06 INFO  : 'con' command is executed.
+18:49:06 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:49:06 INFO  : 'con' command is executed.
+18:49:06 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:49:06 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:52:02 INFO  : Disconnected from the channel tcfchan#11.
+18:52:03 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:52:04 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:52:04 INFO  : 'jtag frequency' command is executed.
+18:52:04 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:52:04 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:52:06 INFO  : FPGA configured successfully with bitstream "/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit"
+18:52:06 INFO  : Context for 'APU' is selected.
+18:52:08 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:52:08 INFO  : 'configparams force-mem-access 1' command is executed.
+18:52:08 INFO  : Context for 'APU' is selected.
+18:52:08 INFO  : 'stop' command is executed.
+18:52:13 INFO  : 'ps7_init' command is executed.
+18:52:13 INFO  : 'ps7_post_config' command is executed.
+18:52:13 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:52:13 INFO  : Context for processor 'microblaze_0' is selected.
+18:52:13 INFO  : Processor reset is completed for 'microblaze_0'.
+18:52:13 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:52:14 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:52:14 INFO  : Context for processor 'microblaze_0' is selected.
+18:52:14 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf' is downloaded to processor 'microblaze_0'.
+18:52:14 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:52:15 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:52:15 INFO  : 'configparams force-mem-access 0' command is executed.
+18:52:15 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1
+fpga -file /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/download.bit
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_bsp_xbram_example_1/Debug/MB0_bsp_xbram_example_1.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_bsp_xbram_example_1/Debug/CortexA_bsp_xbram_example_1.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:52:15 INFO  : Memory regions updated for context APU
+18:52:15 INFO  : Memory regions updated for context MicroBlaze #0
+18:52:15 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:52:15 INFO  : Context for processor 'microblaze_0' is selected.
+18:52:15 INFO  : 'con' command is executed.
+18:52:15 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:52:15 INFO  : 'con' command is executed.
+18:52:15 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:52:15 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa_bsp_xbram_example_1.elf_on_local.tcl'
+18:55:16 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A" && level==0} -index 1' command is executed.
+18:55:16 INFO  : 'fpga -state' command is executed.
+18:55:16 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:55:16 INFO  : Jtag cable 'Digilent Cora Z7 - 7007S 210370A92F69A' is selected.
+18:55:16 INFO  : 'jtag frequency' command is executed.
+18:55:16 INFO  : Sourcing of '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl' is done.
+18:55:16 INFO  : Context for 'APU' is selected.
+18:55:16 INFO  : Hardware design information is loaded from '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf'.
+18:55:16 INFO  : 'configparams force-mem-access 1' command is executed.
+18:55:16 INFO  : Context for 'APU' is selected.
+18:55:17 INFO  : 'stop' command is executed.
+18:55:22 INFO  : 'ps7_init' command is executed.
+18:55:22 INFO  : 'ps7_post_config' command is executed.
+18:55:22 INFO  : 'configparams mdm-detect-bscan-mask 2' command is executed.
+18:55:22 INFO  : Context for processor 'microblaze_0' is selected.
+18:55:22 INFO  : Processor reset is completed for 'microblaze_0'.
+18:55:22 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:55:22 INFO  : Processor reset is completed for 'ps7_cortexa9_0'.
+18:55:23 INFO  : Context for processor 'microblaze_0' is selected.
+18:55:23 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_Shared_BRAM/Debug/MB0_Shared_BRAM.elf' is downloaded to processor 'microblaze_0'.
+18:55:23 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:55:24 INFO  : The application '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_Shared_BRAM/Debug/CortexA_Shared_BRAM.elf' is downloaded to processor 'ps7_cortexa9_0'.
+18:55:24 INFO  : 'configparams force-mem-access 0' command is executed.
+18:55:24 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/ps7_init.tcl
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+loadhw -hw /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/design_1_wrapper_hw_platform_0/system.hdf -mem-ranges [list {0x40000000 0xbfffffff}]
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+stop
+ps7_init
+ps7_post_config
+configparams mdm-detect-bscan-mask 2
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+rst -processor
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+rst -processor
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/MB0_Shared_BRAM/Debug/MB0_Shared_BRAM.elf
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+dow /home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/CortexA_Shared_BRAM/Debug/CortexA_Shared_BRAM.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:55:24 INFO  : Memory regions updated for context APU
+18:55:24 INFO  : Memory regions updated for context MicroBlaze #0
+18:55:24 INFO  : Memory regions updated for context MicroBlaze Debug Module at USER2
+18:55:24 INFO  : Context for processor 'microblaze_0' is selected.
+18:55:24 INFO  : 'con' command is executed.
+18:55:24 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+18:55:24 INFO  : 'con' command is executed.
+18:55:24 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "microblaze*#0" && bscan=="USER2"  && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 1
+con
+targets -set -nocase -filter {name =~ "ARM*#0" && jtag_cable_name =~ "Digilent Cora Z7 - 7007S 210370A92F69A"} -index 0
+con
+----------------End of Script----------------
+
+18:55:24 INFO  : Launch script is exported to file '/home/tomal/Desktop/cmdTest/Test_Project_Share_Memory/Project_Share_Memory.sdk/.sdk/launch_scripts/xilinx_c-c++_application_(system_debugger)/system_debugger_using_debug_cortexa.elf_on_local.tcl'
