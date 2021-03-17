@@ -1,9 +1,11 @@
-import json
-import os
+#!/usr/bin/env python3
 
-def parse_config_file():
+import json
+import os, argparse
+
+def parse_config_file(file_path):
     global TEEConfigList, boardInfo, projectInfo, peripheralInfo, configFile
-    configFile = 'config.json'
+    configFile = file_path
 
     with open(configFile) as jsonFile:
         data = json.load(jsonFile)
@@ -1468,6 +1470,14 @@ def print_uart_config(peripheralInfo):
                     print("\t" + processorsName)
 
 def main():
+    parser = argparse.ArgumentParser(description="""
+    Parse config requires the following:
+    directory to the hardware configuration file
+    """,  formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument("-d", "--config_path", required=True, help="Path to configuration json")
+    args = parser.parse_args()
+    parse_config_file(args.config_path)
+    supperess_warnings()
     global tclFile, axiPortCount, uartList
 
     if os.path.exists(projectInfo['Location'] + "/design_bd.tcl"):
@@ -1561,6 +1571,6 @@ TEEConfigList = []
 boardInfo = {}
 projectInfo = {}
 peripheralInfo = {}
-parse_config_file()
-supperess_warnings()
-main()
+
+if __name__ == '__main__':
+    main()

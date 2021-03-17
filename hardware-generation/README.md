@@ -1,9 +1,8 @@
 # build-your-own-TEE
-This is a python3 script. Run command : python3 parse_config.py
+This is a python3 script. Run command : `./parse_config.py -d config_json_File_path`. We need to specify the configuration jason file with -d as the argument to the script. Example: `./parse_config.py -d ./Examples/config.json`
 
 # Test cases:
 To test different files you have to modify the configuration file name in the `parse_config.py` file.
-    Line number 6: configFile = 'config.json' change `configFile` variable to any desired name.
 
     # Test case 1 (oneTEE_config.json):
         This test create one Trusted Execution Environment along with one cortex-A processor on the PS side. There will be two peripherals, one UART and one GPIO
