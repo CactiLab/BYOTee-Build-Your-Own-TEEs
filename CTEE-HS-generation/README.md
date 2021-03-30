@@ -1,5 +1,6 @@
 # build-your-own-TEE
-This is a python3 script. Run command : `./parse_config.py -d config_json_File_path`. We need to specify the configuration jason file with -d as the argument to the script. Example: `./parse_config.py -d ./Examples/config.json`
+This is a python3 script. Run command : `./parse_config.py -d config_json_File_path`. We need to specify the configuration jason file with -d as the argument to the script. Example: `./parse_config.py -d ./Examples/config.json`. `parse_config.py` will create a `design_bd.tcl` file in the specified `Location` in the configuration JSON file. Now, use vivado command to generate the actual hardware project.
+Vivado command: `vivado -mode batch -source <your_Tcl_script>`. <your_Tcl_script> in you case is `design_bd.tcl`.
 
 # Test cases:
 To test different files you have to modify the configuration file name in the `parse_config.py` file.
