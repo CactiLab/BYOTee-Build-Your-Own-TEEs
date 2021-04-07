@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
+import argparse
 import json
-import os, argparse
+import os
+
 
 def parse_config_file(file_path):
     global TEEConfigList, boardInfo, projectInfo, peripheralInfo, configFile
@@ -19,15 +21,17 @@ def parse_config_file(file_path):
 
         print("Total TEEs : ", len(TEEConfigList))
 
+
 def search_peripheral_by_type(peripheralNode, reqPeripheralType):
     temp = []
 
     for key in peripheralNode.keys():
 
-        if peripheralInfo[key]['Type'] == reqPeripheralType :
+        if peripheralInfo[key]['Type'] == reqPeripheralType:
             temp.append(peripheralInfo[key])
 
     return temp
+
 
 def exclude_peripheral(excludedFrom, peripheralName):
     global tclFile
@@ -38,6 +42,7 @@ def exclude_peripheral(excludedFrom, peripheralName):
 
     exclude_bd_addr_seg [get_bd_addr_segs {excludedFrom}/Instruction/SEG_axi_uartlite_0_Reg]
     ''')
+
 
 def create_TEE_local_memory_cell(number, shared_bram_info):
     global tclFile
@@ -110,6 +115,7 @@ def create_TEE_local_memory_cell(number, shared_bram_info):
     }}
     ''')
 
+
 def create_TEE_Instances(number, dCache, iCache, processorImpl):
     global tclFile
     global cacheTracker
@@ -123,11 +129,11 @@ def create_TEE_Instances(number, dCache, iCache, processorImpl):
     CONFIG.C_DATA_SIZE {{{processorImpl}}} \\
     CONFIG.C_DCACHE_ADDR_TAG {{17}} \\
     CONFIG.C_DCACHE_BYTE_SIZE {{{dCache}}} \\
-    CONFIG.C_DCACHE_LINE_LEN {{8}} \\
+    CONFIG.C_DCACHE_LINE_LEN {{4}} \\
     CONFIG.C_DEBUG_ENABLED {{2}} \\
     CONFIG.C_D_AXI {{1}} \\
     CONFIG.C_D_LMB {{1}} \\
-    CONFIG.C_ICACHE_LINE_LEN {{8}} \\
+    CONFIG.C_ICACHE_LINE_LEN {{4}} \\
     CONFIG.C_ILL_OPCODE_EXCEPTION {{0}} \\
     CONFIG.C_I_AXI {{1}} \\
     CONFIG.C_I_LMB {{1}} \\
@@ -143,6 +149,7 @@ def create_TEE_Instances(number, dCache, iCache, processorImpl):
     create_hier_cell_microblaze_{str(number)}_local_memory [current_bd_instance .] microblaze_{str(number)}_local_memory
     ''')
 
+
 def create_MDM_block(size):
     global tclFile
 
@@ -157,15 +164,17 @@ def create_MDM_block(size):
     ] $mdm_1
     ''')
 
+
 def axi_connector_helper(portCount):
     currentAxiName = ''
 
     if (portCount < 10):
         currentAxiName = '0' + str(portCount)
-    else :
+    else:
         currentAxiName = str(portCount)
 
     return currentAxiName
+
 
 def connecting_interface(number):
     global tclFile, slaveAxiPortCount, cacheTracker
@@ -192,29 +201,31 @@ def connecting_interface(number):
         ''')
         slaveAxiPortCount = slaveAxiPortCount + 1
 
+
 def set_clock_for_all(size, uartSize, shared_bram_info):
     global tclFile, axiPortCount
 
     tclFile.write(f'''
-    connect_bd_net -net microblaze_{str(size)}_Clk  {" ".join('[get_bd_pins axi_bram_ctrl_0/s_axi_aclk]' for i in range(len(shared_bram_info)))} [get_bd_pins axi_gpio_0/s_axi_aclk] {" ".join(['[get_bd_pins axi_uartlite_'+str(i)+'/s_axi_aclk]' for i in range(uartSize)])} [get_bd_pins mdm_1/S_AXI_ACLK] {" ".join(['[get_bd_pins microblaze_'+str(r)+'/Clk] [get_bd_pins microblaze_'+str(r)+'_local_memory/LMB_Clk]'  for r in range(size + 1)])} [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] {" ".join(['[get_bd_pins ps7_0_axi_periph/M0'+str(i)+'_ACLK]' for i in range(uartSize + 2 + len(shared_bram_info))])} [get_bd_pins ps7_0_axi_periph/S00_ACLK] {" ".join(['[get_bd_pins ps7_0_axi_periph/S'+axi_connector_helper(r)+'_ACLK]'  for r in range(axiPortCount)])} [get_bd_pins rst_ps7_0_50M/slowest_sync_clk]
-    connect_bd_net -net rst_ps7_0_50M_bus_struct_reset {" ".join(['[get_bd_pins microblaze_'+str(r)+'_local_memory/SYS_Rst]'  for r in range(size+1)])} [get_bd_pins rst_ps7_0_50M/bus_struct_reset]
-    connect_bd_net -net rst_ps7_0_50M_mb_reset {" ".join(['[get_bd_pins microblaze_'+str(r)+'/Reset]'  for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/mb_reset]
-    connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn {" ".join('[get_bd_pins axi_bram_ctrl_0/s_axi_aresetn]' for i in range(len(shared_bram_info)))} [get_bd_pins axi_gpio_0/s_axi_aresetn] {" ".join(['[get_bd_pins axi_uartlite_'+str(i)+'/s_axi_aresetn]'  for i in range(uartSize)])} [get_bd_pins mdm_1/S_AXI_ARESETN] [get_bd_pins ps7_0_axi_periph/ARESETN] {" ".join(['[get_bd_pins ps7_0_axi_periph/M0'+str(i)+'_ARESETN]' for i in range(uartSize + 2 + len(shared_bram_info))])} {" ".join(['[get_bd_pins ps7_0_axi_periph/S'+axi_connector_helper(r)+'_ARESETN]'  for r in range(axiPortCount)])} [get_bd_pins rst_ps7_0_50M/peripheral_aresetn]
+    connect_bd_net -net microblaze_{str(size)}_Clk  {" ".join('[get_bd_pins axi_bram_ctrl_0/s_axi_aclk]' for i in range(len(shared_bram_info)))} [get_bd_pins axi_gpio_0/s_axi_aclk] {" ".join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aclk]' for i in range(uartSize)])} [get_bd_pins mdm_1/S_AXI_ACLK] {" ".join(['[get_bd_pins microblaze_' + str(r) + '/Clk] [get_bd_pins microblaze_' + str(r) + '_local_memory/LMB_Clk]' for r in range(size + 1)])} [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] {" ".join(['[get_bd_pins ps7_0_axi_periph/M0' + str(i) + '_ACLK]' for i in range(uartSize + 2 + len(shared_bram_info))])} [get_bd_pins ps7_0_axi_periph/S00_ACLK] {" ".join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axiPortCount)])} [get_bd_pins rst_ps7_0_50M/slowest_sync_clk]
+    connect_bd_net -net rst_ps7_0_50M_bus_struct_reset {" ".join(['[get_bd_pins microblaze_' + str(r) + '_local_memory/SYS_Rst]' for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/bus_struct_reset]
+    connect_bd_net -net rst_ps7_0_50M_mb_reset {" ".join(['[get_bd_pins microblaze_' + str(r) + '/Reset]' for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/mb_reset]
+    connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn {" ".join('[get_bd_pins axi_bram_ctrl_0/s_axi_aresetn]' for i in range(len(shared_bram_info)))} [get_bd_pins axi_gpio_0/s_axi_aresetn] {" ".join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aresetn]' for i in range(uartSize)])} [get_bd_pins mdm_1/S_AXI_ARESETN] [get_bd_pins ps7_0_axi_periph/ARESETN] {" ".join(['[get_bd_pins ps7_0_axi_periph/M0' + str(i) + '_ARESETN]' for i in range(uartSize + 2 + len(shared_bram_info))])} {" ".join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axiPortCount)])} [get_bd_pins rst_ps7_0_50M/peripheral_aresetn]
     ''')
+
 
 def create_MB_address_segment(number, BRAMsize, uartSize, shared_bram_info):
     global tclFile, uartList
     offset = '0x42C00000'
 
-    for i in range (uartSize):
+    for i in range(uartSize):
         tclFile.write(f'''
         create_bd_addr_seg -range 0x00010000 -offset {offset} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_uartlite_{i}/S_AXI/Reg] SEG_axi_uartlite_{i}_Reg
         create_bd_addr_seg -range 0x00010000 -offset {offset} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_uartlite_{i}/S_AXI/Reg] SEG_axi_uartlite_{i}_Reg
         ''')
-        offset = str(hex(int(offset , 16) + 65536 ))
+        offset = str(hex(int(offset, 16) + 65536))
     if len(shared_bram_info) == 1:
-        sharedMemorySize = shared_bram_info[0]['Size'].replace('KB','')
-        sharedMemorySize = hex(int(sharedMemorySize) * 1024 )
+        sharedMemorySize = shared_bram_info[0]['Size'].replace('KB', '')
+        sharedMemorySize = hex(int(sharedMemorySize) * 1024)
         tclFile.write(f'''
         create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_info[0]['Base Address']} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
         create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_info[0]['Base Address']} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
@@ -229,7 +240,8 @@ def create_MB_address_segment(number, BRAMsize, uartSize, shared_bram_info):
     create_bd_addr_seg -range 0x00001000 -offset 0x43400000 [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs mdm_1/S_AXI/Reg] SEG_mdm_1_Reg
     ''')
 
-def write_board_and_project_configurations(boardInfo, projectInfo) :
+
+def write_board_and_project_configurations(boardInfo, projectInfo):
     global tclFile
 
     tclFile.write(f'''
@@ -356,6 +368,7 @@ def write_board_and_project_configurations(boardInfo, projectInfo) :
     ##################################################################
     ''')
 
+
 def create_uart_interface_ports(uartSize):
     global tclFile
 
@@ -369,6 +382,7 @@ def create_uart_interface_ports(uartSize):
             tclFile.write(f'''
             set uart_rtl_{str(i - 1)} [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:uart_rtl:1.0 uart_rtl_{str(i - 1)} ]
             ''')
+
 
 def create_block_memory_generator(shared_bram_info):
     global tclFile
@@ -386,6 +400,7 @@ def create_block_memory_generator(shared_bram_info):
     ] $blk_mem_gen_0
     ''')
 
+
 def write_axi_bram_controller_instance():
     global tclFile
 
@@ -396,6 +411,7 @@ def write_axi_bram_controller_instance():
     CONFIG.SINGLE_PORT_BRAM {{1}} \\
     ] $axi_bram_ctrl_0
     ''')
+
 
 def write_root_design():
     global tclFile, uartList
@@ -441,6 +457,7 @@ def write_root_design():
     set btns_2bits [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 btns_2bits ]
     ''')
 
+
 def write_gpio_instances():
     global tclFile
 
@@ -454,42 +471,45 @@ def write_gpio_instances():
     ] $axi_gpio_0
     ''')
 
+
 def create_uart_lite_instance(uartSize):
     global tclFile, uartList
 
-    for i in range (len(uartList)):
+    for i in range(len(uartList)):
         uartNode = uartList[i]
         tclFile.write(f'''
         # Create instance: axi_uartlite_{i}, and set properties
         set axi_uartlite_{i} [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_{i} ]
         set_property -dict [ list \\
-        CONFIG.C_BAUDRATE {uartNode['Baud_Rate']} \\
+        CONFIG.C_BAUDRATE {{{uartNode['Baud_Rate']}}} \\
         ] $axi_uartlite_{i}
         ''')
 
-def ps_config_helper():
-    global uartList    
 
-    if ( len(uartList) > 0 ):
+def ps_config_helper():
+    global uartList
+
+    if (len(uartList) > 0):
         return 1
 
     return 0
+
 
 def write_uart_properties():
     global tclFile
     uartList = search_peripheral_by_type(peripheralInfo, 'UART_Lite')
 
-    for i in range (len(uartList)):
+    for i in range(len(uartList)):
         uartNode = uartList[i]
         tclFile.write(
-f'''CONFIG.PCW_UART{i}_BAUD_RATE {{{uartNode['Baud_Rate']}}} \\
+            f'''CONFIG.PCW_UART{i}_BAUD_RATE {{{uartNode['Baud_Rate']}}} \\
     CONFIG.PCW_UART{i}_GRP_FULL_ENABLE {{0}} \\
     CONFIG.PCW_UART{i}_PERIPHERAL_ENABLE {{1}} \\
     CONFIG.PCW_UART{i}_UART{i}_IO {{MIO 14 .. 15}} \\
     ''')
 
     tclFile.write(
-f'''CONFIG.PCW_UART_PERIPHERAL_CLKSRC {{IO PLL}} \\
+        f'''CONFIG.PCW_UART_PERIPHERAL_CLKSRC {{IO PLL}} \\
     CONFIG.PCW_UART_PERIPHERAL_DIVISOR0 {{10}} \\
     CONFIG.PCW_UART_PERIPHERAL_FREQMHZ {{100}} \\
     CONFIG.PCW_UART_PERIPHERAL_VALID {{1}} \\
@@ -581,6 +601,7 @@ f'''CONFIG.PCW_UART_PERIPHERAL_CLKSRC {{IO PLL}} \\
     CONFIG.PCW_USE_M_AXI_GP0 {{1}} \\
     ] $processing_system7_0
     ''')
+
 
 def write_ps_config():
     global tclFile
@@ -955,6 +976,7 @@ def write_ps_config():
     CONFIG.PCW_TPIU_PERIPHERAL_FREQMHZ {{200}} \\
     ''')
 
+
 def write_ps_AXI(slave_size, master_size):
     global tclFile
 
@@ -971,27 +993,29 @@ def write_ps_AXI(slave_size, master_size):
     set rst_ps7_0_50M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ps7_0_50M ]
     ''')
 
+
 def write_peripheral_interface_connection(uartLiteSize, shared_bram_info):
     global tclFile
 
-    if len(shared_bram_info) == 1: 
-         tclFile.write(f'''
+    if len(shared_bram_info) == 1:
+        tclFile.write(f'''
     connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTA [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA] [get_bd_intf_pins blk_mem_gen_0/BRAM_PORTA]
     ''')
     tclFile.write(f'''
     connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports btns_2bits] [get_bd_intf_pins axi_gpio_0/GPIO]
     ''')
 
-    for i in range (uartLiteSize):
+    for i in range(uartLiteSize):
 
         if (i == 0):
             tclFile.write(f'''
             connect_bd_intf_net -intf_net axi_uartlite_{i}_UART [get_bd_intf_ports uart_rtl] [get_bd_intf_pins axi_uartlite_{i}/UART]
             ''')
-        else :
+        else:
             tclFile.write(f'''
-            connect_bd_intf_net -intf_net axi_uartlite_{i}_UART [get_bd_intf_ports uart_rtl_{i-1}] [get_bd_intf_pins axi_uartlite_{i}/UART]
+            connect_bd_intf_net -intf_net axi_uartlite_{i}_UART [get_bd_intf_ports uart_rtl_{i - 1}] [get_bd_intf_pins axi_uartlite_{i}/UART]
             ''')
+
 
 def write_ps_interface_connections(uartLiteSize, shared_bram_info):
     global tclFile
@@ -1013,6 +1037,7 @@ def write_ps_interface_connections(uartLiteSize, shared_bram_info):
         connect_bd_intf_net -intf_net ps7_0_axi_periph_M0{i + 2 + uartLiteSize}_AXI [get_bd_intf_pins axi_bram_ctrl_0/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M0{i + 2 + uartLiteSize}_AXI]
         ''')
 
+
 def write_port_connections():
     global tclFile
 
@@ -1022,8 +1047,8 @@ def write_port_connections():
 
     uartList = search_peripheral_by_type(peripheralInfo, 'UART_Lite')
 
-    for i in range (len(uartList)):
-        uartNode = uartList [i]
+    for i in range(len(uartList)):
+        uartNode = uartList[i]
 
         if (len(uartNode['Data_Transfer']) > 0):
             tclFile.write(f'''
@@ -1035,12 +1060,13 @@ def write_port_connections():
     connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_ps7_0_50M/ext_reset_in]
     ''')
 
+
 def write_ps_address_segment(uartSize, shared_bram_info):
     global tclFile
 
     if len(shared_bram_info) == 1:
-        sharedMemorySize = shared_bram_info[0]['Size'].replace('KB','')
-        sharedMemorySize = hex(int(sharedMemorySize) * 1024 )
+        sharedMemorySize = shared_bram_info[0]['Size'].replace('KB', '')
+        sharedMemorySize = hex(int(sharedMemorySize) * 1024)
         tclFile.write(f'''
         create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_info[0]['Base Address']} [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
         ''')
@@ -1056,7 +1082,8 @@ def write_ps_address_segment(uartSize, shared_bram_info):
         tclFile.write(f'''
         create_bd_addr_seg -range 0x00010000 -offset {offset} [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_uartlite_{i}/S_AXI/Reg] SEG_axi_uartlite_{i}_Reg
         ''')
-        offset = str(hex(int(offset , 16) + 65536 ))
+        offset = str(hex(int(offset, 16) + 65536))
+
 
 def write_synthesis_implementation_bitStream_properties(boardInfo, projectInfo):
     global tclFile
@@ -1429,11 +1456,12 @@ def write_synthesis_implementation_bitStream_properties(boardInfo, projectInfo):
     move_dashboard_gadget -name {{utilization_2}} -row 1 -col 1
     move_dashboard_gadget -name {{methodology_1}} -row 2 -col 1
 
-    make_wrapper -files [get_files "{projectInfo['Location']}{projectInfo ['Folder_Name']}/{projectInfo['Name']}.srcs/sources_1/bd/design_1/design_1.bd"] -top
-    add_files -norecurse "{projectInfo['Location']}{projectInfo ['Folder_Name']}/{projectInfo['Name']}.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v"
+    make_wrapper -files [get_files "{projectInfo['Location']}{projectInfo['Folder_Name']}/{projectInfo['Name']}.srcs/sources_1/bd/design_1/design_1.bd"] -top
+    add_files -norecurse "{projectInfo['Location']}{projectInfo['Folder_Name']}/{projectInfo['Name']}.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v"
     ''')
 
-def supperess_warnings():
+
+def suppress_warnings():
     global projectInfo
 
     try:
@@ -1447,21 +1475,24 @@ def supperess_warnings():
 
     warn.close()
 
+
 def open_TCL_file_to_write():
     global tclFile
-    print("Opening TCL file to create system hardware design at location : " + projectInfo['Location'] + "design_bd.tcl")
+    print(
+        "Opening TCL file to create system hardware design at location : " + projectInfo['Location'] + "design_bd.tcl")
 
     try:
         tclFile = open(os.path.join(projectInfo['Location'], "design_bd.tcl"), "a+")
     except Exception as e:
         print("Unable to open secrets file: {e}".format(e=e))
 
+
 def print_uart_config(peripheralInfo):
     global uartList
 
     for key in peripheralInfo.keys():
 
-        if peripheralInfo[key]['Type'] == 'UART_Lite' :
+        if peripheralInfo[key]['Type'] == 'UART_Lite':
             print(key + "-> peripheral can be accessed thorugh processors:")
 
             for processorsName in peripheralInfo[key]['Data_Transfer'].keys():
@@ -1469,99 +1500,102 @@ def print_uart_config(peripheralInfo):
                 if (peripheralInfo[key]['Data_Transfer'][processorsName] == 'True'):
                     print("\t" + processorsName)
 
+
 def main():
     parser = argparse.ArgumentParser(description="""
     Parse config requires the following:
     directory to the hardware configuration file
-    """,  formatter_class=argparse.RawTextHelpFormatter)
+    """, formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("-d", "--config_path", required=True, help="Path to configuration json")
     args = parser.parse_args()
     parse_config_file(args.config_path)
-    supperess_warnings()
+    suppress_warnings()
     global tclFile, axiPortCount, uartList
 
     if os.path.exists(projectInfo['Location'] + "/design_bd.tcl"):
         os.remove(projectInfo['Location'] + "/design_bd.tcl")
-    
+
     open_TCL_file_to_write()
     uartList = search_peripheral_by_type(peripheralInfo, 'UART_Lite')
     write_board_and_project_configurations(boardInfo, projectInfo)
     shared_bram_info = search_peripheral_by_type(peripheralInfo, "block RAM generator")
-    
-    if len(shared_bram_info) >= 1 :
+
+    if len(shared_bram_info) >= 1:
         create_block_memory_generator(shared_bram_info)
         write_axi_bram_controller_instance()
 
     for i in range(len(TEEConfigList)):
         create_TEE_local_memory_cell(i, shared_bram_info)
-    
+
     write_root_design()
     create_uart_interface_ports(len(uartList))
     write_gpio_instances()
     create_uart_lite_instance(len(uartList))
     create_MDM_block(len(TEEConfigList))
     axiPortCount = 4 * len(TEEConfigList) + 1
-    
+
     for i in range(len(TEEConfigList)):
         temp = {}
         temp['dCache'] = 1
         temp['iCache'] = 1
-        dCache = TEEConfigList [i]['Cache_Configuration']['Data_cache']
-        iCache = TEEConfigList [i]['Cache_Configuration']['Instruction_cache']
-        processorImpl = int(TEEConfigList [i]['MicroBlaze_Implementation_bits'])
+        dCache = TEEConfigList[i]['Cache_Configuration']['Data_cache']
+        iCache = TEEConfigList[i]['Cache_Configuration']['Instruction_cache']
+        processorImpl = int(TEEConfigList[i]['MicroBlaze_Implementation_bits'])
 
         if (dCache == ''):
-            dCache = str(0)
+            dCache = str(8)
             temp['dCache'] = 0
             axiPortCount = axiPortCount - 1
 
         if (iCache == ''):
-            iCache = str(0)
+            iCache = str(8)
             temp['iCache'] = 0
             axiPortCount = axiPortCount - 1
         cacheTracker.append(temp)
-        create_TEE_Instances(i,int(dCache.replace('KB','')) * 1024 ,int(iCache.replace('KB','')) * 1024, processorImpl)
-    
+        create_TEE_Instances(i, int(dCache.replace('KB', '')) * 1024, int(iCache.replace('KB', '')) * 1024,
+                             processorImpl)
+
     write_ps_config()
     write_uart_properties()
-    write_ps_AXI(axiPortCount , 2 + len(uartList) + len(shared_bram_info))
+    write_ps_AXI(axiPortCount, 2 + len(uartList) + len(shared_bram_info))
     write_peripheral_interface_connection(len(uartList), shared_bram_info)
 
     for i in range(len(TEEConfigList)):
         connecting_interface(i)
 
-    write_ps_interface_connections(len(uartList),shared_bram_info)
+    write_ps_interface_connections(len(uartList), shared_bram_info)
     set_clock_for_all(len(TEEConfigList) - 1, len(uartList), shared_bram_info)
     write_port_connections()
 
     for i in range(len(TEEConfigList)):
         BRAM_Size = TEEConfigList[i]['Local_Memory']['Size']
-        BRAM_Size = BRAM_Size.replace('KB','')
-        BRAM_Size = hex(int(BRAM_Size) * 1024 )
-        #print (BRAM_Size)
-        create_MB_address_segment(i, BRAM_Size , len(uartList), shared_bram_info)
+        BRAM_Size = BRAM_Size.replace('KB', '')
+        BRAM_Size = hex(int(BRAM_Size) * 1024)
+        # print (BRAM_Size)
+        create_MB_address_segment(i, BRAM_Size, len(uartList), shared_bram_info)
 
     write_ps_address_segment(len(uartList), shared_bram_info)
-    
-    for i in range (len(uartList)):
+
+    for i in range(len(uartList)):
         uartNode = uartList[i]
 
-        for key in uartNode ['Data_Transfer'] :
-            #print(list(uartNode ['Data_Transfer'].keys()).index("REE"))
-            processorName  = ''
+        for key in uartNode['Data_Transfer']:
+            # print(list(uartNode ['Data_Transfer'].keys()).index("REE"))
+            processorName = ''
             peripheralName = 'axi_uartlite_0'
 
             if (key == 'REE'):
                 processorName = 'processing_system7_0'
             else:
-                processorName = 'microblaze_' + str(list(uartNode ['Data_Transfer'].keys()).index(key) - 1)
+                processorName = 'microblaze_' + str(list(uartNode['Data_Transfer'].keys()).index(key) - 1)
 
-            if (uartNode ['Data_Transfer'][key] == 'False'):
-                exclude_peripheral(processorName,peripheralName)
-            
-    write_synthesis_implementation_bitStream_properties(boardInfo,projectInfo)
+            if (uartNode['Data_Transfer'][key] == 'False'):
+                exclude_peripheral(processorName, peripheralName)
+
+    write_synthesis_implementation_bitStream_properties(boardInfo, projectInfo)
     tclFile.close()
     print_uart_config(peripheralInfo)
+
 
 slaveAxiPortCount = 0
 numberOfTEE = 0
