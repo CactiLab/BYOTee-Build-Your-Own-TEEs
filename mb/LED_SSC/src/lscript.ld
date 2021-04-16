@@ -46,17 +46,7 @@ SECTIONS
 .vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 } 
-/*
-.lib : {
 
-	libc.a 
-	libgcc.a 
-	libgloss.a 
-	libm.a 
-    libxil.a(.text)
-	libxil.a(.text.*)
-}  > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-*/
 .test : {
     *LED.o(.text)
 	*LED.o(.text.*)
@@ -162,6 +152,22 @@ SECTIONS
    *(.gcc_except_table)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
+.tdata : {
+   __tdata_start = .;
+   *(.tdata)
+   *(.tdata.*)
+   *(.gnu.linkonce.td.*)
+   __tdata_end = .;
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+.tbss : {
+   __tbss_start = .;
+   *(.tbss)
+   *(.tbss.*)
+   *(.gnu.linkonce.tb.*)
+   __tbss_end = .;
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
 .sdata : {
    . = ALIGN(8);
    __sdata_start = .;
@@ -181,22 +187,6 @@ SECTIONS
    __sbss_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.tdata : {
-   __tdata_start = .;
-   *(.tdata)
-   *(.tdata.*)
-   *(.gnu.linkonce.td.*)
-   __tdata_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
-.tbss : {
-   __tbss_start = .;
-   *(.tbss)
-   *(.tbss.*)
-   *(.gnu.linkonce.tb.*)
-   __tbss_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
 .bss (NOLOAD) : {
    . = ALIGN(4);
    __bss_start = .;
@@ -205,7 +195,7 @@ SECTIONS
    *(.gnu.linkonce.b.*)
    *(COMMON)
    . = ALIGN(4);
-   __bss_end = 0x7dd8;
+   __bss_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 _SDA_BASE_ = __sdata_start + ((__sbss_end - __sdata_start) / 2 );
@@ -233,16 +223,3 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 
 _end = .;
 }
-
-_SDA_BASE_ = 0x9338;
-_SDA2_BASE_ = 0x9330;
-_crtinit = 0x1e94;
-
-__malloc_top_pad = 0x83e8;
-__malloc_current_mallinfo = 0x83f4;
-__malloc_max_sbrked_mem = 0x83ec;
-__malloc_max_total_mem = 0x83f0;
-errno = 0xd2cc;
-__errno = 0x7164;
-heap_ptr = 0x8420;
-__TMC_END__ = 0x8ce0;
