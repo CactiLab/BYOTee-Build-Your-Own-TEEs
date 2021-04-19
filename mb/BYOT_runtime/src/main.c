@@ -35,7 +35,7 @@ const struct color BLUE =   {0x0000, 0x0000, 0x01ff};
 volatile cmd_channel *c = (cmd_channel*)SHARED_DDR_BASE;
 
 // internal state store
-internal_state s;
+internal_state local_state;
 
 
 //////////////////////// INTERRUPT HANDLING ////////////////////////
@@ -54,13 +54,17 @@ void query_drm(){
 	mb_printf("Dummy: Check if calling procedure is ok \r\n");
 }
 void load_from_shared_to_local() {
-    memcpy(s.code, (void*)c->code, CODE_SIZE);
+    memcpy(local_state.code, (void*)c->code, CODE_SIZE);
+}
+void copy_input_from_shared_to_local() {
+    memcpy(local_state.input, (void*)c->input, INPUT_SIZE);
 }
 void load_code(){
 	int i;
 	load_from_shared_to_local();
+    //copy_input_from_shared_to_local();
 	mb_printf("-----Read code data-----\r\n");
-    i = ((int (*) (void))s.code)();
+    i = ((int (*) (void))local_state.code)();
 	mb_printf("Code to be executed value returned: '%d'\r\n",  i);
 }
 

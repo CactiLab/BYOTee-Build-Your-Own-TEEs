@@ -566,6 +566,15 @@ int main()
             set_working();
 
             // c->cmd is set by the miPod player
+            //There will be no command for BYOTEE DRM AUDIO example---- Need to fix a memory address where it will read input form.
+            /*
+            structure:
+                Number of Inputs (number_of_input)[2 bytes]
+                Size of first input() [ 2 bytes ]
+                First input
+                Size of Second input [ 2 bytes ]
+                Second input
+            */
             switch (c->cmd)
             {
             case LOGIN:
