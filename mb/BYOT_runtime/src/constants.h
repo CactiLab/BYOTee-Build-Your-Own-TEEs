@@ -23,7 +23,7 @@ struct color {
 };
 
 
-enum commands { LOAD_CODE, QUERY_DRM};
+enum commands { LOAD_CODE, QUERY_DRM, QUERY_PLAYER, QUERY_SONG, LOGIN, LOGOUT, SHARE, PLAY, STOP, DIGITAL_OUT, PAUSE, RESTART, FF, RW };
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
 
