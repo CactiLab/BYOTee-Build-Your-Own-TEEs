@@ -11,9 +11,8 @@
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 
 // protocol constants
-#define CODE_SIZE 2000
-#define INPUT_SIZE 2000
-#define OUTPUT_size 2000
+#define CODE_SIZE 50000
+
 
 // LED colors and controller
 struct color {
@@ -33,15 +32,15 @@ typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
    char code [CODE_SIZE];
-   char input[INPUT_SIZE];
-   char output [OUTPUT_size];
+   //char input[INPUT_SIZE];
+   //char output [OUTPUT_size];
 } cmd_channel;
 
 // store of internal state
 
 typedef struct {
     char code [CODE_SIZE];
-    char input[INPUT_SIZE];
-    char output[OUTPUT_size];
+    //char input[INPUT_SIZE];
+    //char output[OUTPUT_size];
 } internal_state;
 #endif /* SRC_CONSTANTS_H_ */

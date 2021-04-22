@@ -29,8 +29,8 @@ void parse_input(char *input, char **cmd, char **arg1, char **arg2, char **arg3,
     *cmd = strtok(input, " \r\n");
     *arg1 = strtok(NULL, " \r\n");
     *arg2 = strtok(NULL, " \r\n");
-    *arg3 = strtok(NULL, " \r\n");
-    *arg4 = strtok(NULL, " \r\n");
+    //*arg3 = strtok(NULL, " \r\n");
+    //*arg4 = strtok(NULL, " \r\n");
 }
 
 // prints the help message while not in playback
@@ -42,11 +42,10 @@ void print_help()
 
 // loads a file into the song buffer with the associate
 // returns the size of the file or 0 on error
-size_t load_file(char *fname, char *file_buf)
-{
-    int fd;
+size_t load_file(char *fname, char *file_buf) {
+    int fd, total_read_bytes = 0;;
     struct stat sb;
-
+    mp_printf("Inside load file function \r\n");
     fd = open(fname, O_RDONLY);
     if (fd == -1)
     {
@@ -59,8 +58,16 @@ size_t load_file(char *fname, char *file_buf)
         mp_printf("Failed to stat file! Error = %d\r\n", errno);
         return 0;
     }
+    if ( sb.st_size > CODE_SIZE)
+    {
+    	mp_printf("Code size if bigger than buffer space can not execute SSC code\r\n");
+    	return 0;
+    }
 
-    read(fd, file_buf, sb.st_size);
+    while (total_read_bytes < sb.st_size)
+    {
+    	total_read_bytes += read(fd, file_buf, sb.st_size);
+    }
     close(fd);
 
     mp_printf("Loaded file into shared buffer (%dB)\r\n", sb.st_size);
@@ -101,6 +108,7 @@ void load_code(char *fileName)
         continue; // wait for DRM to dump file
     mp_printf("Finished executing file\r\n");
 }
+/*
 void load_song_file(char *code_file,char *song_file)
 {
     if (!load_file(song_file, (void *)&c->input))
@@ -119,7 +127,8 @@ void load_song_file(char *code_file,char *song_file)
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
     mp_printf("Song file loaded\r\n");
-}
+} */
+/*
 void query_song(char *code_file, char *song_file_name) {
     // load file into shared buffer
     if (!load_file(fileName, (void *)&c->code))
@@ -138,9 +147,8 @@ void query_song(char *code_file, char *song_file_name) {
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
     mp_printf("Finished Query file\r\n");
-    /* reading query result from ouput will follow*/
     
-}
+}*/
 int main(int argc, char **argv)
 {
     int mem;
@@ -181,14 +189,14 @@ int main(int argc, char **argv)
         else if (!strcmp(cmd, "load_code"))
         {
             load_code(arg1);
-            if (!strcmp(arg2, "play") && arg3 != NULL)
+           /* if (!strcmp(arg2, "play") && arg3 != NULL)
             {
                 load_song_file(arg1, arg3);
             }
             else if (!strcmp(arg2, "query") && arg3 != NULL) 
             {
                 query_song(arg1, arg3);
-            }
+            }*/
         }
         else
         {
@@ -202,3 +210,4 @@ int main(int argc, char **argv)
 
     return 0;
 }
+

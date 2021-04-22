@@ -40,7 +40,7 @@ def setup_sdcard(device):
 
     print("Formatting SD Card...")
     # format sd card and create filesystems
-    subprocess.check_call("sudo sfdisk --force %s < ectf_sd.sfdisk > /dev/null" % (device), shell=True)
+    subprocess.check_call("sudo sfdisk --force %s < BYOT_sd.sfdisk > /dev/null" % (device), shell=True)
     subprocess.check_call("sudo mkfs.fat -F 32 -n BOOT -I %s1 > /dev/null" % (device), shell=True)
     subprocess.check_call("sudo mkfs.ext4 -L root %s2 > /dev/null" % (device), shell=True)
 
@@ -186,6 +186,8 @@ def main():
                               "script will fail."))
     args = parser.parse_args()
     print("Secucirty Sensitive code directory" + str(args.SSC))
+    #while True:
+     #   try:
     # verify boot bin
     boot_file = args.boot_path
     if not os.path.isfile(boot_file):
@@ -221,6 +223,8 @@ def main():
     copy_imageub(args.device, args.imageub)
 
     exit(0)
+      #  except:
+       #     print("=====================got error running again==========================")
 
 
 if __name__ == '__main__':

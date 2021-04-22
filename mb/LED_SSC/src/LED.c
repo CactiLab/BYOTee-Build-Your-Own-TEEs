@@ -23,6 +23,7 @@ int dummy()
 {
     usleep(500);
 }
+
 int temp = 0xf1; /* attribute golbal variables*/
 
 /*int _test()

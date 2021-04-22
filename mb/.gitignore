@@ -11,4 +11,6 @@ RemoteSystemsTempFiles
 *.jou
 *.log
 webtalk
+*.hdf
+mb/Cora-Z7-07S/
 

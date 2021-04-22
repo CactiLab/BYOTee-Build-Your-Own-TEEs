@@ -56,10 +56,12 @@ void query_drm(){
 void load_from_shared_to_local() {
     memcpy(local_state.code, (void*)c->code, CODE_SIZE);
 }
+/*
 void copy_input_from_shared_to_local() {
     memcpy(local_state.input, (void*)c->input, INPUT_SIZE);
-}
+}*/
 void load_code(){
+	mb_printf("Inside Load Code Funciton\r\n");
 	int i;
 	load_from_shared_to_local();
     //copy_input_from_shared_to_local();

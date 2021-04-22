@@ -12,9 +12,10 @@
 // miPod constants
 #define USR_CMD_SZ 64
 
-#define CODE_SIZE 2000
-#define INPUT_SIZE 2000
-#define OUTPUT_size 2000
+#define CODE_SIZE 50000
+//#define INPUT_SIZE 2000
+//#define OUTPUT_size 2000
+
 
 // printing utility
 #define MP_PROMPT "mP> "
@@ -26,7 +27,7 @@
 
 // shared buffer values
 //enum commands { QUERY_PLAYER, QUERY_SONG, LOGIN, LOGOUT, SHARE, PLAY, STOP, DIGITAL_OUT, PAUSE, RESTART, FF, RW };
-enum commands { LOAD_CODE, QUERY_DRM};
+enum commands { LOAD_CODE, QUERY_DRM, QUERY_PLAYER, QUERY_SONG, LOGIN, LOGOUT, SHARE, PLAY, STOP, DIGITAL_OUT, PAUSE, RESTART, FF, RW };
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
 
@@ -35,8 +36,8 @@ typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
    char code [CODE_SIZE];
-   char input[INPUT_SIZE];
-   char output[OUTPUT_size];
+   //char input[INPUT_SIZE];
+   //char output[OUTPUT_size];
 } cmd_channel;
 
 #endif /* SRC_MIPOD_H_ */

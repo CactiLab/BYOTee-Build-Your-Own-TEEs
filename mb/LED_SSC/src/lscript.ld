@@ -48,6 +48,7 @@ SECTIONS
 } 
 
 .test : {
+	*(.text.ssc_entry)
     *LED.o(.text)
 	*LED.o(.text.*)
 	*platform.o(.text)
