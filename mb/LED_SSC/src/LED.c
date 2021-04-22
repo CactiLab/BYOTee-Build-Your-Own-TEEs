@@ -36,11 +36,11 @@ int fw_add()
 }
 int main() /* NO main function should be there is SSC. Example : ssc_main */
 {
-    init_platform();
+    //init_platform();
     u32 *led = (u32 *)XPAR_RGB_PWM_0_PWM_AXI_BASEADDR;
     xil_printf("Setting LED color blue from SSC \n\r");
     setLED(led, BLUE);
     temp = temp + 1;
-    cleanup_platform();
+   // cleanup_platform();
     return fw_add() + temp;
 }

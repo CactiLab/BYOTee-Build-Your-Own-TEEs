@@ -45,7 +45,21 @@ SECTIONS
 .vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 } 
+.ssc.buffer 0x50:
+{
+	KEEP(*(.ssc.code.buffer))
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
+.bss (NOLOAD) : {
+   . = ALIGN(4);
+   __bss_start = .;
+   *(.bss)
+   *(.bss.*)
+   *(.gnu.linkonce.b.*)
+   *(COMMON)
+   . = ALIGN(4);
+   __bss_end = .;
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 .test : {
     *main.o(.text)
@@ -56,7 +70,7 @@ SECTIONS
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0x1bf4: {
+.text : {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
@@ -188,16 +202,6 @@ SECTIONS
    __tbss_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.bss (NOLOAD) : {
-   . = ALIGN(4);
-   __bss_start = .;
-   *(.bss)
-   *(.bss.*)
-   *(.gnu.linkonce.b.*)
-   *(COMMON)
-   . = ALIGN(4);
-   __bss_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 _SDA_BASE_ = __sdata_start + ((__sbss_end - __sdata_start) / 2 );
 

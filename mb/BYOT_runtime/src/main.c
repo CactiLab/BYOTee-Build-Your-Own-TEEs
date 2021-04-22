@@ -35,7 +35,7 @@ const struct color BLUE =   {0x0000, 0x0000, 0x01ff};
 volatile cmd_channel *c = (cmd_channel*)SHARED_DDR_BASE;
 
 // internal state store
-internal_state local_state;
+internal_state __attribute__((section (".ssc.code.buffer"))) local_state;
 
 
 //////////////////////// INTERRUPT HANDLING ////////////////////////

@@ -44,3 +44,4 @@ typedef struct {
     //char output[OUTPUT_size];
 } internal_state;
 #endif /* SRC_CONSTANTS_H_ */
+
