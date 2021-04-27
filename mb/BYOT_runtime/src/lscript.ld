@@ -167,6 +167,7 @@ SECTIONS
    *(.gcc_except_table)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
+
 .sdata : {
    . = ALIGN(8);
    __sdata_start = .;

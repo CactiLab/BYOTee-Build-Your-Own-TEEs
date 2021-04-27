@@ -227,3 +227,9 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 
 _end = .;
 }
+
+_SDA_BASE_ = 0x14ae0;
+_SDA2_BASE_ = 0x14ad8;
+__TMC_END__ = 0x14464;
+_crtinit = 0xd5fc;
+

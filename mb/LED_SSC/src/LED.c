@@ -22,6 +22,8 @@ const struct color BLUE = {0x0000, 0x0000, 0x01ff};
 int dummy()
 {
     usleep(500);
+    init_platform();
+    cleanup_platform();
 }
 
 int temp = 0xf1; /* attribute golbal variables*/
