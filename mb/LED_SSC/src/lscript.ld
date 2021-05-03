@@ -227,4 +227,4 @@ _end = .;
 _SDA_BASE_ = 0x14ae0;
 _SDA2_BASE_ = 0x14ad8;
 __TMC_END__ = 0x14464;
-_crtinit = 0xd5fc;
+//_crtinit = 0xd5fc;
