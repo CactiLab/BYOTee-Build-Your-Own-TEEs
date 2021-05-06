@@ -37,7 +37,8 @@ volatile cmd_channel *c = (cmd_channel*)SHARED_DDR_BASE;
 // internal state store
 internal_state __attribute__((section (".ssc.code.buffer"))) local_state;
 data_content __attribute__((section (".ssc.data.buffer"))) ssc_data;
-//char __attribute__((section (".ssc.data.buffer"))) ssc_data [2000];
+ro_data_content __attribute__((section (".ssc.ro.data.buffer"))) ssc_ro_data;
+
 
 
 //////////////////////// INTERRUPT HANDLING ////////////////////////
@@ -85,8 +86,8 @@ void format_SSC_code() {
 	ro_data_size = get_unsigned_int(temp_buffer);
 
 	memcpy(local_state.code, ((void*)c->code + 24), sss_code_size);
-	memcpy(data_bf, ((void*)c->code + 24 + sss_code_size), data_sec_size);
-	memcpy(rodata_bf, ((void*)c->code + 24 + sss_code_size + data_sec_size), ro_data_size);
+	memcpy(ssc_data.data, ((void*)c->code + 24 + sss_code_size), data_sec_size);
+	memcpy(ssc_ro_data.ro_data, ((void*)c->code + 24 + sss_code_size + data_sec_size), ro_data_size);
 }
 void load_code(){
 	mb_printf("Inside Load Code Funciton\r\n");

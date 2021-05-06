@@ -12,7 +12,8 @@
 
 // protocol constants
 #define CODE_SIZE 50000
-
+#define DATA_SIZE 2000
+#define RO_DATA_SIZE 2000
 
 // LED colors and controller
 struct color {
@@ -44,10 +45,12 @@ typedef struct {
     //char output[OUTPUT_size];
 } internal_state;
 typedef struct {
-    char data [2000];
-    //char input[INPUT_SIZE];
-    //char output[OUTPUT_size];
+    char data [DATA_SIZE];
 } data_content;
+
+typedef struct {
+    char ro_data [RO_DATA_SIZE];
+} ro_data_content;
 
 #endif /* SRC_CONSTANTS_H_ */
 
