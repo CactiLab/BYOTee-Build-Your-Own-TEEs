@@ -43,5 +43,11 @@ typedef struct {
     //char input[INPUT_SIZE];
     //char output[OUTPUT_size];
 } internal_state;
+typedef struct {
+    char data [2000];
+    //char input[INPUT_SIZE];
+    //char output[OUTPUT_size];
+} data_content;
+
 #endif /* SRC_CONSTANTS_H_ */
 

@@ -43,7 +43,7 @@ void print_help()
 // loads a file into the song buffer with the associate
 // returns the size of the file or 0 on error
 size_t load_file(char *fname, char *file_buf) {
-    int fd, total_read_bytes = 0;;
+    int fd, total_read_bytes = 0;
     struct stat sb;
     mp_printf("Inside load file function \r\n");
     fd = open(fname, O_RDONLY);

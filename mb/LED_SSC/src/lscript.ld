@@ -57,12 +57,6 @@ SECTIONS
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0xd35c: {
-   *(.text)
-   *(.text.*) 
-   *(.gnu.linkonce.t.*)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
 .data : {
    . = ALIGN(4);
    __data_start = .;
@@ -71,6 +65,24 @@ SECTIONS
    *(.gnu.linkonce.d.*)
    __data_end = . + 0x4;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+
+.rodata : {
+   __rodata_start = .;
+   *(.rodata)
+   *(.rodata.*)
+   *(.gnu.linkonce.r.*)
+   __rodata_end = 0x77f4;
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+
+
+.text 0xe1c4 : {
+   *(.text)
+   *(.text.*) 
+   *(.gnu.linkonce.t.*)
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
 
 .init : {
    KEEP (*(.init))
@@ -100,14 +112,6 @@ SECTIONS
    KEEP (*(.dtors))
    PROVIDE(__DTOR_END__ = .);
    PROVIDE(___DTORS_END___ = .);
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
-.rodata : {
-   __rodata_start = .;
-   *(.rodata)
-   *(.rodata.*)
-   *(.gnu.linkonce.r.*)
-   __rodata_end = 0x77f4;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 .sdata2 : {

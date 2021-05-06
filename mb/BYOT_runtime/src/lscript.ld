@@ -45,21 +45,37 @@ SECTIONS
 .vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 } 
+
 .ssc.buffer 0x50:
 {
 	KEEP(*(.ssc.code.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.bss (NOLOAD) : {
+.data : {
    . = ALIGN(4);
-   __bss_start = .;
-   *(.bss)
-   *(.bss.*)
-   *(.gnu.linkonce.b.*)
-   *(COMMON)
-   . = ALIGN(4);
-   __bss_end = .;
+   __data_start = .;
+   *(.data)
+   *(.data.*)
+   *(.gnu.linkonce.d.*)
+   __data_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+.rodata : {
+   __rodata_start = .;
+   *(.rodata)
+   *(.rodata.*)
+   *(.gnu.linkonce.r.*)
+   __rodata_end = .;
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+/*
+.ssc.data.buffer 0x13ed4:
+{
+	KEEP(*(.ssc.code.buffer))
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+*/
+
+
 
 .test : {
     *main.o(.text)
@@ -74,16 +90,6 @@ SECTIONS
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
-
-.data : {
-   . = ALIGN(4);
-   __data_start = .;
-   *(.data)
-   *(.data.*)
-   *(.gnu.linkonce.d.*)
-   __data_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 .init : {
@@ -114,14 +120,6 @@ SECTIONS
    KEEP (*(.dtors))
    PROVIDE(__DTOR_END__ = .);
    PROVIDE(___DTORS_END___ = .);
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
-.rodata : {
-   __rodata_start = .;
-   *(.rodata)
-   *(.rodata.*)
-   *(.gnu.linkonce.r.*)
-   __rodata_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 .sdata2 : {
@@ -187,6 +185,16 @@ SECTIONS
    __sbss_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
+.bss (NOLOAD) : {
+   . = ALIGN(4);
+   __bss_start = .;
+   *(.bss)
+   *(.bss.*)
+   *(.gnu.linkonce.b.*)
+   *(COMMON)
+   . = ALIGN(4);
+   __bss_end = .;
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 .tdata : {
    __tdata_start = .;
    *(.tdata)

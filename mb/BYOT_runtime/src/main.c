@@ -36,6 +36,8 @@ volatile cmd_channel *c = (cmd_channel*)SHARED_DDR_BASE;
 
 // internal state store
 internal_state __attribute__((section (".ssc.code.buffer"))) local_state;
+data_content __attribute__((section (".ssc.data.buffer"))) ssc_data;
+//char __attribute__((section (".ssc.data.buffer"))) ssc_data [2000];
 
 
 //////////////////////// INTERRUPT HANDLING ////////////////////////
@@ -56,14 +58,41 @@ void query_drm(){
 void load_from_shared_to_local() {
     memcpy(local_state.code, (void*)c->code, CODE_SIZE);
 }
-/*
-void copy_input_from_shared_to_local() {
-    memcpy(local_state.input, (void*)c->input, INPUT_SIZE);
-}*/
+
+void format_SSC_code() {
+	unsigned int ssc_code_address = 0, data_sec_address = 0, ro_data_sec_address= 0;
+	unsigned int sss_code_size = 0, data_sec_size = 0, ro_data_size = 0;
+	unsigned char temp_buffer [4];
+	unsigned char data_bf[2000];
+	unsigned char rodata_bf[2000];
+
+	memcpy(temp_buffer, (void*)c->code , 4);
+	ssc_code_address = get_unsigned_int(temp_buffer);
+
+	memcpy(temp_buffer, (void*)c->code + 4, 4);
+	data_sec_address = get_unsigned_int(temp_buffer);
+
+	memcpy(temp_buffer, (void*)c->code + 8, 4);
+	ro_data_sec_address = get_unsigned_int(temp_buffer);
+
+	memcpy(temp_buffer, (void*)c->code + 12, 4);
+	sss_code_size = get_unsigned_int(temp_buffer);
+
+	memcpy(temp_buffer, (void*)c->code + 16, 4);
+	data_sec_size = get_unsigned_int(temp_buffer);
+
+	memcpy(temp_buffer, (void*)c->code + 20, 4);
+	ro_data_size = get_unsigned_int(temp_buffer);
+
+	memcpy(local_state.code, ((void*)c->code + 24), sss_code_size);
+	memcpy(data_bf, ((void*)c->code + 24 + sss_code_size), data_sec_size);
+	memcpy(rodata_bf, ((void*)c->code + 24 + sss_code_size + data_sec_size), ro_data_size);
+}
 void load_code(){
 	mb_printf("Inside Load Code Funciton\r\n");
 	int i;
-	load_from_shared_to_local();
+	format_SSC_code();
+	//load_from_shared_to_local();
     //copy_input_from_shared_to_local();
 	mb_printf("-----Read code data-----\r\n");
     i = ((int (*) (void))local_state.code)();

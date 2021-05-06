@@ -147,3 +147,9 @@ XStatus fnConfigDma(XAxiDma *AxiDma)
 
 	return XST_SUCCESS;
 }
+
+u32 get_unsigned_int(unsigned char *loc_buffer) {
+	u32 result;
+	result = (*(loc_buffer) << 24 | *(loc_buffer + 1) << 16 | *(loc_buffer + 2) << 8 | *(loc_buffer + 3));
+	return result;
+}
