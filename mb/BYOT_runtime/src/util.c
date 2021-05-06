@@ -148,8 +148,12 @@ XStatus fnConfigDma(XAxiDma *AxiDma)
 	return XST_SUCCESS;
 }
 
-u32 get_unsigned_int(unsigned char *loc_buffer) {
-	u32 result;
-	result = (*(loc_buffer) << 24 | *(loc_buffer + 1) << 16 | *(loc_buffer + 2) << 8 | *(loc_buffer + 3));
-	return result;
+void get_unsigned_int(unsigned char *loc_buffer, ssc_meta_data *result) {
+
+	result->ssc_code_address = (*(loc_buffer) << 24 | *(loc_buffer + 1) << 16 | *(loc_buffer + 2) << 8 | *(loc_buffer + 3));
+	result->data_sec_address = (*(loc_buffer + 4) << 24 | *(loc_buffer + 5) << 16 | *(loc_buffer + 6) << 8 | *(loc_buffer + 7));
+	result->ro_data_sec_address = (*(loc_buffer + 8) << 24 | *(loc_buffer + 9) << 16 | *(loc_buffer + 10) << 8 | *(loc_buffer + 11));
+	result->sss_code_size = (*(loc_buffer + 12) << 24 | *(loc_buffer + 13) << 16 | *(loc_buffer + 14) << 8 | *(loc_buffer + 15));
+	result->data_sec_size = (*(loc_buffer + 16) << 24 | *(loc_buffer + 17) << 16 | *(loc_buffer + 18) << 8 | *(loc_buffer + 19));
+	result->ro_data_size = (*(loc_buffer + 20) << 24 | *(loc_buffer + 21) << 16 | *(loc_buffer + 22) << 8 | *(loc_buffer + 23));
 }

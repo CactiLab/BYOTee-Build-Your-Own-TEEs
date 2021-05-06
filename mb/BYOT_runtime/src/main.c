@@ -61,33 +61,17 @@ void load_from_shared_to_local() {
 }
 
 void format_SSC_code() {
-	unsigned int ssc_code_address = 0, data_sec_address = 0, ro_data_sec_address= 0;
-	unsigned int sss_code_size = 0, data_sec_size = 0, ro_data_size = 0;
-	unsigned char temp_buffer [4];
-	unsigned char data_bf[2000];
-	unsigned char rodata_bf[2000];
+	ssc_meta_data recived_meta_data;
+	unsigned char temp_buffer [24];
 
-	memcpy(temp_buffer, (void*)c->code , 4);
-	ssc_code_address = get_unsigned_int(temp_buffer);
+	memset(&recived_meta_data, 0, sizeof(ssc_meta_data));
 
-	memcpy(temp_buffer, (void*)c->code + 4, 4);
-	data_sec_address = get_unsigned_int(temp_buffer);
+	memcpy(temp_buffer, (void*)c->code , 24);
+	get_unsigned_int(temp_buffer, &recived_meta_data);
 
-	memcpy(temp_buffer, (void*)c->code + 8, 4);
-	ro_data_sec_address = get_unsigned_int(temp_buffer);
-
-	memcpy(temp_buffer, (void*)c->code + 12, 4);
-	sss_code_size = get_unsigned_int(temp_buffer);
-
-	memcpy(temp_buffer, (void*)c->code + 16, 4);
-	data_sec_size = get_unsigned_int(temp_buffer);
-
-	memcpy(temp_buffer, (void*)c->code + 20, 4);
-	ro_data_size = get_unsigned_int(temp_buffer);
-
-	memcpy(local_state.code, ((void*)c->code + 24), sss_code_size);
-	memcpy(ssc_data.data, ((void*)c->code + 24 + sss_code_size), data_sec_size);
-	memcpy(ssc_ro_data.ro_data, ((void*)c->code + 24 + sss_code_size + data_sec_size), ro_data_size);
+	memcpy(local_state.code, ((void*)c->code + 24), recived_meta_data.sss_code_size);
+	memcpy(ssc_data.data, ((void*)c->code + 24 + recived_meta_data.sss_code_size), recived_meta_data.data_sec_size);
+	memcpy(ssc_ro_data.ro_data, ((void*)c->code + 24 + recived_meta_data.sss_code_size + recived_meta_data.data_sec_size), recived_meta_data.ro_data_size);
 }
 void load_code(){
 	mb_printf("Inside Load Code Funciton\r\n");

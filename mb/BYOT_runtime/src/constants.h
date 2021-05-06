@@ -52,5 +52,14 @@ typedef struct {
     char ro_data [RO_DATA_SIZE];
 } ro_data_content;
 
+typedef struct {
+	unsigned int ssc_code_address;
+	unsigned int data_sec_address;
+	unsigned int ro_data_sec_address;
+	unsigned int sss_code_size;
+	unsigned int data_sec_size;
+	unsigned int ro_data_size;
+} ssc_meta_data;
+
 #endif /* SRC_CONSTANTS_H_ */
 
