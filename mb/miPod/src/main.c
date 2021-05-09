@@ -29,7 +29,7 @@ void parse_input(char *input, char **cmd, char **arg1, char **arg2, char **arg3,
     *cmd = strtok(input, " \r\n");
     *arg1 = strtok(NULL, " \r\n");
     *arg2 = strtok(NULL, " \r\n");
-    //*arg3 = strtok(NULL, " \r\n");
+    *arg3 = strtok(NULL, " \r\n");
     //*arg4 = strtok(NULL, " \r\n");
 }
 
@@ -92,8 +92,18 @@ bool copy_to_shared(char *fileName) {
     }
     return true;
 }*/
+void login(char *username, char *pin) {
+    if (!username || !pin) {
+        mp_printf("Invalid user name/PIN\r\n");
+        print_help();
+        return;
+    }
+    strcpy((void*)c->input, "login");
+    strcpy((void*)c->input + COMMAND_SIZE, username);
+    strcpy((void*)c->input + COMMAND_SIZE + USERNAME_SZ , pin);
+}
 //////////////////////// MAIN ////////////////////////
-void load_code(char *fileName)
+void load_code(char *fileName, char *arg2, char *arg3)
 {
     // load file into shared buffer
     if (!load_file(fileName, (void *)&c->code))
@@ -101,6 +111,12 @@ void load_code(char *fileName)
         mp_printf("Failed to load code!\r\n");
         return -1;
     }
+
+    if (!strcmp(arg2, "login"))
+	{
+		login(arg2, arg3);
+	}
+
     send_command(LOAD_CODE);
     while (c->drm_state == STOPPED)
         continue; // wait for DRM to start working
@@ -188,7 +204,7 @@ int main(int argc, char **argv)
         }
         else if (!strcmp(cmd, "load_code"))
         {
-            load_code(arg1);
+            load_code(arg1, arg2, arg3);
            /* if (!strcmp(arg2, "play") && arg3 != NULL)
             {
                 load_song_file(arg1, arg3);

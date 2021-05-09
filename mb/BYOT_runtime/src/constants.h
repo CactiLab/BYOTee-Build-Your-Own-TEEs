@@ -14,6 +14,10 @@
 #define CODE_SIZE 50000
 #define DATA_SIZE 2000
 #define RO_DATA_SIZE 2000
+#define USERNAME_SZ 64
+#define MAX_PIN_SZ 64
+#define INPUT_SIZE 2000
+#define OUTPUT_SIZE 2000
 
 // LED colors and controller
 struct color {
@@ -33,17 +37,18 @@ typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
    char code [CODE_SIZE];
+   char input[INPUT_SIZE];
    //char input[INPUT_SIZE];
-   //char output [OUTPUT_size];
+   //char output[OUTPUT_SIZE];
 } cmd_channel;
 
 // store of internal state
 
 typedef struct {
     char code [CODE_SIZE];
-    //char input[INPUT_SIZE];
     //char output[OUTPUT_size];
 } internal_state;
+
 typedef struct {
     char data [DATA_SIZE];
 } data_content;

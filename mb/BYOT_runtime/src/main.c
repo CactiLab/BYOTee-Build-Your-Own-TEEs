@@ -38,7 +38,7 @@ volatile cmd_channel *c = (cmd_channel*)SHARED_DDR_BASE;
 internal_state __attribute__((section (".ssc.code.buffer"))) local_state;
 data_content __attribute__((section (".ssc.data.buffer"))) ssc_data;
 ro_data_content __attribute__((section (".ssc.ro.data.buffer"))) ssc_ro_data;
-
+char  __attribute__((section (".ssc.input.buffer"))) ssc_input_buffer[INPUT_SIZE];
 
 
 //////////////////////// INTERRUPT HANDLING ////////////////////////
@@ -59,7 +59,9 @@ void query_drm(){
 void load_from_shared_to_local() {
     memcpy(local_state.code, (void*)c->code, CODE_SIZE);
 }
+void format_SSC_input() {
 
+}
 void format_SSC_code() {
 	ssc_meta_data recived_meta_data;
 	unsigned char temp_buffer [24];

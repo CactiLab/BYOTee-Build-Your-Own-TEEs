@@ -34,7 +34,7 @@ const struct color BLUE = {0x0000, 0x0000, 0x01ff};
 
 // shared command channel -- read/write for both PS and PL
 volatile cmd_channel *c = (cmd_channel *)SHARED_DDR_BASE;
-
+volatile char *input = (char *)0x189f8;
 // internal state store
 internal_state s;
 
@@ -519,98 +519,12 @@ void digital_out()
 
 int main()
 {
-    u32 status;
-
-    init_platform();
-    microblaze_register_handler((XInterruptHandler)myISR, (void *)0);
-    microblaze_enable_interrupts();
-
-    // Initialize the interrupt controller driver so that it is ready to use.
-    status = XIntc_Initialize(&InterruptController, XPAR_INTC_0_DEVICE_ID);
-    if (status != XST_SUCCESS)
-    {
-        return XST_FAILURE;
-    }
-
-    // Set up the Interrupt System.
-    status = SetUpInterruptSystem(&InterruptController, (XInterruptHandler)myISR);
-    if (status != XST_SUCCESS)
-    {
-        return XST_FAILURE;
-    }
-
-    // Congigure the DMA
-    status = fnConfigDma(&sAxiDma);
-    if (status != XST_SUCCESS)
-    {
-        mb_printf("DMA configuration ERROR\r\n");
-        return XST_FAILURE;
-    }
-
-    // Start the LED
-    enableLED(led);
-    set_stopped();
-
-    // clear command channel
-    memset((void *)c, 0, sizeof(cmd_channel));
-
-    mb_printf("Audio DRM Module has Booted\n\r");
-
-    // Handle commands forever
-    while (1)
-    {
-        // wait for interrupt to start
-        if (InterruptProcessed)
-        {
-            InterruptProcessed = FALSE;
-            set_working();
-
-            // c->cmd is set by the miPod player
-            //There will be no command for BYOTEE DRM AUDIO example---- Need to fix a memory address where it will read input form.
-            /*
-            structure:
-                Number of Inputs (number_of_input)[2 bytes]
-                Size of first input() [ 2 bytes ]
-                First input
-                Size of Second input [ 2 bytes ]
-                Second input
-            */
-            switch (c->cmd)
-            {
-            case LOGIN:
-                login();
-                break;
-            case LOGOUT:
-                logout();
-                break;
-            case QUERY_PLAYER:
-                query_player();
-                break;
-            case QUERY_SONG:
-                query_song();
-                break;
-            case SHARE:
-                share_song();
-                break;
-            case PLAY:
-                play_song();
-                mb_printf("Done Playing Song\r\n");
-                break;
-            case DIGITAL_OUT:
-                digital_out();
-                break;
-            default:
-                break;
-            }
-
-            // reset statuses and sleep to allowe player to recognize WORKING state
-            strcpy((char *)c->username, s.username);
-            c->login_status = s.logged_in;
-            usleep(500);
-            set_stopped();
-        }
-    }
-
-    cleanup_platform();
+	char *cmd, *username, *pin;
+	memcpy(cmd, input, COMMAND_SIZE);
+	if (!strcmp(cmd, "login")) {
+		memcpy(username, input + COMMAND_SIZE, USERNAME_SZ);
+		memcpy(pin, input + COMMAND_SIZE + USERNAME_SZ, MAX_PIN_SZ);
+		login(username, pin);
+	}
     return 0;
 }

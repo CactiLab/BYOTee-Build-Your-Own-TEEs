@@ -28,6 +28,7 @@
 #define MAX_USERS 64
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
+#define COMMAND_SIZE 10
 #define MAX_SONG_SZ (1 << 25)
 
 // LED colors and controller
