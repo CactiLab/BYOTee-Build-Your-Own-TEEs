@@ -10,7 +10,7 @@
 #include "xintc.h"
 #include "constants.h"
 #include "sleep.h"
-
+#include "BYOT_header.h"
 //////////////////////// GLOBALS ////////////////////////
 
 // audio DMA access
@@ -222,9 +222,6 @@ int is_locked()
     return locked;
 }
 
-// copy the local song metadata into buf in the correct format
-// returns the size of the metadata in buf (including the metadata size field)
-// song metadata should be loaded before call
 int gen_song_md(char *buf)
 {
     buf[0] = ((5 + s.song_md.num_regions + s.song_md.num_users) / 2) * 2; // account for parity
@@ -237,9 +234,6 @@ int gen_song_md(char *buf)
     return buf[0];
 }
 
-//////////////////////// COMMAND FUNCTIONS ////////////////////////
-
-// attempt to log in to the credentials in the shared buffer
 void login()
 {
     if (s.logged_in)
