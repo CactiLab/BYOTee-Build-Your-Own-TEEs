@@ -89,7 +89,10 @@ void load_code(){
 int fw_add() {
 	return 5 + 3;
 }
+void forward_to_ssc()
+{
 
+}
 int main() {
     u32 status;
 
@@ -137,9 +140,8 @@ int main() {
             case LOAD_CODE:
             	load_code();
                 break;
-            case QUERY_DRM:
-            	query_drm();
             default:
+            	forward_to_ssc();
                 break;
             }
             usleep(500);
