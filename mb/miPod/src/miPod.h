@@ -28,7 +28,7 @@
 
 // shared buffer values
 //enum commands { QUERY_PLAYER, QUERY_SONG, LOGIN, LOGOUT, SHARE, PLAY, STOP, DIGITAL_OUT, PAUSE, RESTART, FF, RW };
-enum commands { LOAD_CODE, SSC_COMMAND};
+enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
 

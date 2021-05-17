@@ -38,6 +38,16 @@ void print_help()
     mp_printf("  load_code <fileName> : load code to be executed in Microblaze\r\n");
 }
 
+void query_drm()
+{
+    send_command(QUERY_DRM);
+    while (c->drm_state == STOPPED)
+        continue; // wait for DRM to start working
+    while (c->drm_state == WORKING)
+        continue; // wait for DRM to dump file
+    mp_printf("Dummy query\r\n");
+}
+
 // loads a file into the song buffer with the associate
 // returns the size of the file or 0 on error
 size_t load_file(char *fname, char *file_buf) {
@@ -178,7 +188,7 @@ int main(int argc, char **argv)
     mp_printf("Command channel open at %p (%dB)\r\n", c, sizeof(cmd_channel));
 
     // dump player information before command loop
-    //query_drm();
+    query_drm();
 
     // go into command loop until exit is requested
     while (1)

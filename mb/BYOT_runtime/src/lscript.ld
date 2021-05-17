@@ -64,12 +64,12 @@ SECTIONS
    *(.text.*)
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-/*
-.ssc.data.buffer 0x13db4:
+
+.ssc.data.buffer 0x191c8:
 {
 	KEEP(*(.ssc.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-/*
+
 .data : {
    . = ALIGN(4);
    __data_start = .;
@@ -108,12 +108,12 @@ SECTIONS
    PROVIDE(__DTOR_END__ = .);
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-/*
-.ssc.ro.data.buffer 0x14ff4:
+
+.ssc.ro.data.buffer 0x1a764:
 {
 	KEEP(*(.ssc.ro.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-*/
+
 
 .rodata : {
    __rodata_start = .;

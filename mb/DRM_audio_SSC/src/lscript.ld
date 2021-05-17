@@ -57,13 +57,13 @@ SECTIONS
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0xd1e8: {
+.text 0xd290: {
    *(.text)
    *(.text.*) 
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.data 0x13db4: {
+.data 0x191c8: {
    . = ALIGN(4);
    __data_start = .;
    *(.data)
@@ -102,7 +102,7 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.rodata 0x14ff4: {
+.rodata 0x1a764: {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)

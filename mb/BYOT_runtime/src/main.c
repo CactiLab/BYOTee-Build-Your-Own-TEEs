@@ -91,6 +91,9 @@ int fw_add() {
 }
 void forward_to_ssc()
 {
+	memcpy(ssc_input_buffer,(void*)c->input, INPUT_SIZE);
+	mb_printf("------------------Give execution to SSC----------------");
+	i = ((int (*) (void))local_state.code)();
 
 }
 int main() {
@@ -140,8 +143,13 @@ int main() {
             case LOAD_CODE:
             	load_code();
                 break;
-            default:
+            case QUERY_DRM:
+            	query_drm();
+            	break;
+            case SSC_COMMAND:
             	forward_to_ssc();
+            	break;
+            default:
                 break;
             }
             usleep(500);

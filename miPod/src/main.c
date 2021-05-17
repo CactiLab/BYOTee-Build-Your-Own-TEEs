@@ -24,13 +24,11 @@ void send_command(int cmd)
     system("devmem 0x41200000 32 1");
 }
 
-void parse_input(char *input, char **cmd, char **arg1, char **arg2, char **arg3, char **arg4)
+void parse_input(char *input, char **cmd, char **arg1, char **arg2)
 {
     *cmd = strtok(input, " \r\n");
     *arg1 = strtok(NULL, " \r\n");
     *arg2 = strtok(NULL, " \r\n");
-    //*arg3 = strtok(NULL, " \r\n");
-    //*arg4 = strtok(NULL, " \r\n");
 }
 
 // prints the help message while not in playback
@@ -40,10 +38,20 @@ void print_help()
     mp_printf("  load_code <fileName> : load code to be executed in Microblaze\r\n");
 }
 
+void query_drm()
+{
+    send_command(QUERY_DRM);
+    while (c->drm_state == STOPPED)
+        continue; // wait for DRM to start working
+    while (c->drm_state == WORKING)
+        continue; // wait for DRM to dump file
+    mp_printf("Dummy query\r\n");
+}
+
 // loads a file into the song buffer with the associate
 // returns the size of the file or 0 on error
 size_t load_file(char *fname, char *file_buf) {
-    int fd, total_read_bytes = 0;
+    int fd, total_read_bytes = 0;;
     struct stat sb;
     mp_printf("Inside load file function \r\n");
     fd = open(fname, O_RDONLY);
@@ -74,15 +82,6 @@ size_t load_file(char *fname, char *file_buf) {
     return sb.st_size;
 }
 
-void query_drm()
-{
-    send_command(QUERY_DRM);
-    while (c->drm_state == STOPPED)
-        continue; // wait for DRM to start working
-    while (c->drm_state == WORKING)
-        continue; // wait for DRM to dump file
-    mp_printf("Dummy query\r\n");
-}
 /*
 bool copy_to_shared(char *fileName) {
     if (!load_file(fileName, (void *)&c->code))
@@ -92,6 +91,26 @@ bool copy_to_shared(char *fileName) {
     }
     return true;
 }*/
+void login(char *username, char *pin) {
+    if (!username || !pin) {
+        mp_printf("Invalid user name/PIN\r\n");
+        print_help();
+        return;
+    }
+    strcpy((void*)c->input, "login");
+    strcpy((void*)c->input + COMMAND_SIZE, username);
+    strcpy((void*)c->input + COMMAND_SIZE + USERNAME_SZ , pin);
+    send_command(SSC_COMMAND);
+    while (c->drm_state == STOPPED)
+        continue; // wait for DRM to start working
+    while (c->drm_state == WORKING)
+        continue; // wait for DRM to dump file
+    mp_printf("Finished Query file\r\n");
+}
+void logout() {
+	strcpy((void*)c->input, "logout");
+	send_command(SSC_COMMAND);
+}
 //////////////////////// MAIN ////////////////////////
 void load_code(char *fileName)
 {
@@ -101,6 +120,7 @@ void load_code(char *fileName)
         mp_printf("Failed to load code!\r\n");
         return -1;
     }
+
     send_command(LOAD_CODE);
     while (c->drm_state == STOPPED)
         continue; // wait for DRM to start working
@@ -128,27 +148,28 @@ void load_song_file(char *code_file,char *song_file)
         continue; // wait for DRM to dump file
     mp_printf("Song file loaded\r\n");
 } */
-/*
-void query_song(char *code_file, char *song_file_name) {
+
+void query_song(char *song_file_name) {
     // load file into shared buffer
-    if (!load_file(fileName, (void *)&c->code))
-    {
-        mp_printf("Failed to load code!\r\n");
-        return -1;
-    }
-    if (!load_file(song_file, (void *)&c->input))
+	if (!song_file_name) {
+	        mp_printf("Invalid file name\r\n");
+	        print_help();
+	        return;
+	    }
+	strcpy((void*)c->input, "query");
+    if (!load_file(song_file_name, (void *)&c->input + COMMAND_SIZE))
     {
         mp_printf("Failed to load song file!\r\n");
         return -1;
     }
-    send_command(QUERY_SONG);
+    send_command(SSC_COMMAND);
     while (c->drm_state == STOPPED)
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
     mp_printf("Finished Query file\r\n");
     
-}*/
+}
 int main(int argc, char **argv)
 {
     int mem;
@@ -177,7 +198,7 @@ int main(int argc, char **argv)
         fgets(usr_cmd, USR_CMD_SZ, stdin);
 
         // parse and handle command
-        parse_input(usr_cmd, &cmd, &arg1, &arg2, &arg3, &arg4);
+        parse_input(usr_cmd, &cmd, &arg1, &arg2);
         if (!cmd)
         {
             continue;
@@ -189,14 +210,18 @@ int main(int argc, char **argv)
         else if (!strcmp(cmd, "load_code"))
         {
             load_code(arg1);
-           /* if (!strcmp(arg2, "play") && arg3 != NULL)
-            {
-                load_song_file(arg1, arg3);
-            }
-            else if (!strcmp(arg2, "query") && arg3 != NULL) 
-            {
-                query_song(arg1, arg3);
-            }*/
+        }
+        else if (!strcmp(cmd, "login"))
+        {
+        	login(arg1, arg2);
+        }
+        else if (!strcmp(cmd, "logout"))
+        {
+        	logout();
+        }
+        else if (!strcmp(cmd, "query"))
+        {
+        	 query_song(arg1);
         }
         else
         {
