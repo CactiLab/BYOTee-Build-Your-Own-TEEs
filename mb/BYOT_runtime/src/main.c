@@ -93,7 +93,8 @@ void forward_to_ssc()
 {
 	memcpy(ssc_input_buffer,(void*)c->input, INPUT_SIZE);
 	mb_printf("------------------Give execution to SSC----------------");
-	i = ((int (*) (void))local_state.code)();
+	//((int (*) (void))local_state.code)();
+	ssc();
 
 }
 int main() {
