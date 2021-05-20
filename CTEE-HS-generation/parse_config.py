@@ -3,10 +3,11 @@
 import argparse
 import json
 import os
+import textwrap
 
 
 def parse_config_file(file_path):
-    global TEEConfigList, boardInfo, projectInfo, peripheralInfo, configFile
+    global configFile, TEEConfigList, boardInfo, projectInfo, peripheralInfo, interruptInfo
     configFile = file_path
 
     with open(configFile) as jsonFile:
@@ -14,7 +15,12 @@ def parse_config_file(file_path):
         temp = data['TEEs']
         boardInfo = data['Board']
         projectInfo = data['Project']
-        peripheralInfo = data['Peripherals']
+
+        if 'Peripherals' in data:
+            peripheralInfo = data['Peripherals']
+
+        if 'Interrupts' in data:
+            interruptInfo = data['Interrupts']
 
         for key in temp:
             TEEConfigList.append(temp[key])
@@ -38,16 +44,16 @@ def exclude_peripheral(excludedFrom, peripheralName):
 
     tclFile.write(f'''
     # Exclude Address Segments
-    exclude_bd_addr_seg [get_bd_addr_segs {excludedFrom}/Data/SEG_axi_uartlite_0_Reg]
+    exclude_bd_addr_seg [get_bd_addr_segs {excludedFrom}/Data/SEG_{peripheralName}_Reg]
 
-    exclude_bd_addr_seg [get_bd_addr_segs {excludedFrom}/Instruction/SEG_axi_uartlite_0_Reg]
+    exclude_bd_addr_seg [get_bd_addr_segs {excludedFrom}/Instruction/SEG_{peripheralName}_Reg]
     ''')
 
 
 def create_TEE_local_memory_cell(number, shared_bram_info):
     global tclFile
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     # Hierarchical cell: microblaze_{str(number)}_local_memory
     proc create_hier_cell_microblaze_{str(number)}_local_memory {{ parentCell nameHier }} {{
     variable script_folder	
@@ -83,22 +89,22 @@ def create_TEE_local_memory_cell(number, shared_bram_info):
     # Create instance: dlmb_bram_if_cntlr, and set properties	
     set dlmb_bram_if_cntlr [ create_bd_cell -type ip -vlnv xilinx.com:ip:lmb_bram_if_cntlr:4.0 dlmb_bram_if_cntlr ]	
     set_property -dict [ list \\
-    CONFIG.C_ECC {{0}} \\
+      CONFIG.C_ECC {{0}} \\
     ] $dlmb_bram_if_cntlr	
     # Create instance: dlmb_v10, and set properties	
     set dlmb_v10 [ create_bd_cell -type ip -vlnv xilinx.com:ip:lmb_v10:3.0 dlmb_v10 ]	
     # Create instance: ilmb_bram_if_cntlr, and set properties	
     set ilmb_bram_if_cntlr [ create_bd_cell -type ip -vlnv xilinx.com:ip:lmb_bram_if_cntlr:4.0 ilmb_bram_if_cntlr ]	
     set_property -dict [ list \\
-    CONFIG.C_ECC {{0}} \\
+      CONFIG.C_ECC {{0}} \\
     ] $ilmb_bram_if_cntlr	
     # Create instance: ilmb_v10, and set properties	
     set ilmb_v10 [ create_bd_cell -type ip -vlnv xilinx.com:ip:lmb_v10:3.0 ilmb_v10 ]	
     # Create instance: lmb_bram, and set properties	
     set lmb_bram [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 lmb_bram ]	
     set_property -dict [ list \\
-    CONFIG.Memory_Type {{True_Dual_Port_RAM}} \\
-    CONFIG.use_bram_block {{BRAM_Controller}} \\
+      CONFIG.Memory_Type {{True_Dual_Port_RAM}} \\
+      CONFIG.use_bram_block {{BRAM_Controller}} \\
     ] $lmb_bram
     # Create interface connections	
     connect_bd_intf_net -intf_net microblaze_{str(number)}_dlmb [get_bd_intf_pins DLMB] [get_bd_intf_pins dlmb_v10/LMB_M]	
@@ -109,60 +115,60 @@ def create_TEE_local_memory_cell(number, shared_bram_info):
     connect_bd_intf_net -intf_net microblaze_{str(number)}_ilmb_cntlr [get_bd_intf_pins ilmb_bram_if_cntlr/BRAM_PORT] [get_bd_intf_pins lmb_bram/BRAM_PORTB]
     # Create port connections	
     connect_bd_net -net SYS_Rst_1 [get_bd_pins SYS_Rst] [get_bd_pins dlmb_bram_if_cntlr/LMB_Rst] [get_bd_pins dlmb_v10/SYS_Rst] [get_bd_pins ilmb_bram_if_cntlr/LMB_Rst] [get_bd_pins ilmb_v10/SYS_Rst]	
-    connect_bd_net -net microblaze_{str(number)}_Clk [get_bd_pins LMB_Clk] {" ".join('[get_bd_pins axi_bram_ctrl_0/s_axi_aclk]' for i in range(len(shared_bram_info)))} [get_bd_pins dlmb_bram_if_cntlr/LMB_Clk] [get_bd_pins dlmb_v10/LMB_Clk] [get_bd_pins ilmb_bram_if_cntlr/LMB_Clk] [get_bd_pins ilmb_v10/LMB_Clk]	
+    connect_bd_net -net microblaze_{str(number)}_Clk [get_bd_pins LMB_Clk] {" ".join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aclk]' for i in range(len(shared_bram_info))])} [get_bd_pins dlmb_bram_if_cntlr/LMB_Clk] [get_bd_pins dlmb_v10/LMB_Clk] [get_bd_pins ilmb_bram_if_cntlr/LMB_Clk] [get_bd_pins ilmb_v10/LMB_Clk]	
     # Restore current instance	
     current_bd_instance $oldCurInst	
     }}
-    ''')
+    '''))
 
 
 def create_TEE_Instances(number, dCache, iCache, processorImpl):
     global tclFile
     global cacheTracker
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     # Create instance: microblaze_{str(number)}, and set properties
     set microblaze_{str(number)} [ create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze:11.0 microblaze_{str(number)} ]
     set_property -dict [ list \\
-    CONFIG.C_ADDR_TAG_BITS {{16}} \\
-    CONFIG.C_CACHE_BYTE_SIZE {{{iCache}}} \\
-    CONFIG.C_DATA_SIZE {{{processorImpl}}} \\
-    CONFIG.C_DCACHE_ADDR_TAG {{17}} \\
-    CONFIG.C_DCACHE_BYTE_SIZE {{{dCache}}} \\
-    CONFIG.C_DCACHE_LINE_LEN {{4}} \\
-    CONFIG.C_DEBUG_ENABLED {{2}} \\
-    CONFIG.C_D_AXI {{1}} \\
-    CONFIG.C_D_LMB {{1}} \\
-    CONFIG.C_ICACHE_LINE_LEN {{4}} \\
-    CONFIG.C_ILL_OPCODE_EXCEPTION {{0}} \\
-    CONFIG.C_I_AXI {{1}} \\
-    CONFIG.C_I_LMB {{1}} \\
-    CONFIG.C_M_AXI_D_BUS_EXCEPTION {{0}} \\
-    CONFIG.C_RESET_MSR_ICE {{0}} \\
-    CONFIG.C_UNALIGNED_EXCEPTIONS {{0}} \\
-    CONFIG.C_USE_DCACHE {{{cacheTracker[number]['dCache']}}} \\
-    CONFIG.C_USE_ICACHE {{{cacheTracker[number]['iCache']}}} \\
-    CONFIG.G_USE_EXCEPTIONS {{0}} \\
+      CONFIG.C_ADDR_TAG_BITS {{16}} \\
+      CONFIG.C_CACHE_BYTE_SIZE {{{iCache}}} \\
+      CONFIG.C_DATA_SIZE {{{processorImpl}}} \\
+      CONFIG.C_DCACHE_ADDR_TAG {{17}} \\
+      CONFIG.C_DCACHE_BYTE_SIZE {{{dCache}}} \\
+      CONFIG.C_DCACHE_LINE_LEN {{4}} \\
+      CONFIG.C_DEBUG_ENABLED {{2}} \\
+      CONFIG.C_D_AXI {{1}} \\
+      CONFIG.C_D_LMB {{1}} \\
+      CONFIG.C_ICACHE_LINE_LEN {{4}} \\
+      CONFIG.C_ILL_OPCODE_EXCEPTION {{0}} \\
+      CONFIG.C_I_AXI {{1}} \\
+      CONFIG.C_I_LMB {{1}} \\
+      CONFIG.C_M_AXI_D_BUS_EXCEPTION {{0}} \\
+      CONFIG.C_RESET_MSR_ICE {{0}} \\
+      CONFIG.C_UNALIGNED_EXCEPTIONS {{0}} \\
+      CONFIG.C_USE_DCACHE {{{cacheTracker[number]['dCache']}}} \\
+      CONFIG.C_USE_ICACHE {{{cacheTracker[number]['iCache']}}} \\
+      CONFIG.G_USE_EXCEPTIONS {{0}} \\
     ] $microblaze_{str(number)}
 
     # Create instance: microblaze_{str(number)}_local_memory
     create_hier_cell_microblaze_{str(number)}_local_memory [current_bd_instance .] microblaze_{str(number)}_local_memory
-    ''')
+    '''))
 
 
 def create_MDM_block(size):
     global tclFile
 
-    tclFile.write(f'''
-    # Create instance: mdm_1, and set properties
-    set mdm_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mdm:3.2 mdm_1 ]
+    tclFile.write(textwrap.dedent(f'''
+    # Create instance: mdm_0, and set properties
+    set mdm_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mdm:3.2 mdm_0 ]
     set_property -dict [ list \\
-    CONFIG.C_ADDR_SIZE {{32}} \\
-    CONFIG.C_MB_DBG_PORTS {{{str(size)}}} \\
-    CONFIG.C_M_AXI_ADDR_WIDTH {{32}} \\
-    CONFIG.C_USE_UART {{1}} \\
-    ] $mdm_1
-    ''')
+      CONFIG.C_ADDR_SIZE {{32}} \\
+      CONFIG.C_MB_DBG_PORTS {{{str(size)}}} \\
+      CONFIG.C_M_AXI_ADDR_WIDTH {{32}} \\
+      CONFIG.C_USE_UART {{1}} \\
+    ] $mdm_0
+    '''))
 
 
 def axi_connector_helper(portCount):
@@ -179,72 +185,88 @@ def axi_connector_helper(portCount):
 def connecting_interface(number):
     global tclFile, slaveAxiPortCount, cacheTracker
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     connect_bd_intf_net -intf_net microblaze_{str(number)}_M_AXI_DP [get_bd_intf_pins microblaze_{str(number)}/M_AXI_DP] [get_bd_intf_pins ps7_0_axi_periph/S{axi_connector_helper(slaveAxiPortCount + 1)}_AXI]
     connect_bd_intf_net -intf_net microblaze_{str(number)}_M_AXI_IP [get_bd_intf_pins microblaze_{str(number)}/M_AXI_IP] [get_bd_intf_pins ps7_0_axi_periph/S{axi_connector_helper(slaveAxiPortCount + 2)}_AXI]
-    connect_bd_intf_net -intf_net microblaze_{str(number)}_debug [get_bd_intf_pins mdm_1/MBDEBUG_{str(number)}] [get_bd_intf_pins microblaze_{str(number)}/DEBUG]
+    connect_bd_intf_net -intf_net microblaze_{str(number)}_debug [get_bd_intf_pins mdm_0/MBDEBUG_{str(number)}] [get_bd_intf_pins microblaze_{str(number)}/DEBUG]
     connect_bd_intf_net -intf_net microblaze_{str(number)}_dlmb_1 [get_bd_intf_pins microblaze_{str(number)}/DLMB] [get_bd_intf_pins microblaze_{str(number)}_local_memory/DLMB]
     connect_bd_intf_net -intf_net microblaze_{str(number)}_ilmb_1 [get_bd_intf_pins microblaze_{str(number)}/ILMB] [get_bd_intf_pins microblaze_{str(number)}_local_memory/ILMB]
-    ''')
+    '''))
 
     slaveAxiPortCount = slaveAxiPortCount + 2
 
     if (cacheTracker[number]['dCache'] == 1):
-        tclFile.write(f'''
+        tclFile.write(textwrap.dedent(f'''
         connect_bd_intf_net -intf_net microblaze_{str(number)}_M_AXI_DC [get_bd_intf_pins microblaze_{str(number)}/M_AXI_DC] [get_bd_intf_pins ps7_0_axi_periph/S{axi_connector_helper(slaveAxiPortCount + 1)}_AXI]
-        ''')
+        '''))
         slaveAxiPortCount = slaveAxiPortCount + 1
 
     if (cacheTracker[number]['iCache'] == 1):
-        tclFile.write(f'''
+        tclFile.write(textwrap.dedent(f'''
         connect_bd_intf_net -intf_net microblaze_{str(number)}_M_AXI_IC [get_bd_intf_pins microblaze_{str(number)}/M_AXI_IC] [get_bd_intf_pins ps7_0_axi_periph/S{axi_connector_helper(slaveAxiPortCount + 1)}_AXI]
-        ''')
+        '''))
         slaveAxiPortCount = slaveAxiPortCount + 1
 
 
-def set_clock_for_all(size, uartSize, shared_bram_info):
-    global tclFile, axiPortCount
+def set_clock_for_all(size, uartSize, shared_bram_info, interruptInfoSize):
+    global tclFile, axiPortCount, peripheralInfo
 
-    tclFile.write(f'''
-    connect_bd_net -net microblaze_{str(size)}_Clk  {" ".join('[get_bd_pins axi_bram_ctrl_0/s_axi_aclk]' for i in range(len(shared_bram_info)))} [get_bd_pins axi_gpio_0/s_axi_aclk] {" ".join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aclk]' for i in range(uartSize)])} [get_bd_pins mdm_1/S_AXI_ACLK] {" ".join(['[get_bd_pins microblaze_' + str(r) + '/Clk] [get_bd_pins microblaze_' + str(r) + '_local_memory/LMB_Clk]' for r in range(size + 1)])} [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] {" ".join(['[get_bd_pins ps7_0_axi_periph/M0' + str(i) + '_ACLK]' for i in range(uartSize + 2 + len(shared_bram_info))])} [get_bd_pins ps7_0_axi_periph/S00_ACLK] {" ".join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axiPortCount)])} [get_bd_pins rst_ps7_0_50M/slowest_sync_clk]
+    clk_wizard_list = search_peripheral_by_type(peripheralInfo, 'Clocking_Wizard')
+    system_ila_info = search_peripheral_by_type(peripheralInfo, "System_ILA")
+
+    tclFile.write(textwrap.dedent(f'''
+    connect_bd_net -net microblaze_{str(size)}_Clk {" ".join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aclk]' for i in range(len(shared_bram_info))])} [get_bd_pins axi_gpio_0/s_axi_aclk] {" ".join(['[get_bd_pins axi_intc_' + str(i) + '/s_axi_aclk]' for i in range(interruptInfoSize)])} {" ".join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aclk]' for i in range(uartSize)])} [get_bd_pins mdm_0/S_AXI_ACLK] {" ".join(['[get_bd_pins microblaze_' + str(r) + '/Clk] [get_bd_pins microblaze_' + str(r) + '_local_memory/LMB_Clk]' for r in range(size + 1)])} [get_bd_pins mb_axi_mem_interconnect_0/ACLK] {" ".join(['[get_bd_pins mb_axi_mem_interconnect_0/M0' + str(i) + '_ACLK]' for i in range(axiMasterCount)])} {" ".join(['[get_bd_pins mb_axi_mem_interconnect_0/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axiPortCount)])} [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] {" ".join(['[get_bd_pins ps7_0_axi_periph/M0' + str(i) + '_ACLK]' for i in range(axiMasterCount)])} {" ".join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axiPortCount)])} [get_bd_pins rst_ps7_0_50M/slowest_sync_clk] {" ".join(['[get_bd_pins clk_wiz_' + str(i) + '/clk_in1]' for i in range(len(clk_wizard_list))])} {" ".join(['[get_bd_pins system_ila_' + str(i) + '/clk]' for i in range(len(system_ila_info))])}
     connect_bd_net -net rst_ps7_0_50M_bus_struct_reset {" ".join(['[get_bd_pins microblaze_' + str(r) + '_local_memory/SYS_Rst]' for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/bus_struct_reset]
     connect_bd_net -net rst_ps7_0_50M_mb_reset {" ".join(['[get_bd_pins microblaze_' + str(r) + '/Reset]' for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/mb_reset]
-    connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn {" ".join('[get_bd_pins axi_bram_ctrl_0/s_axi_aresetn]' for i in range(len(shared_bram_info)))} [get_bd_pins axi_gpio_0/s_axi_aresetn] {" ".join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aresetn]' for i in range(uartSize)])} [get_bd_pins mdm_1/S_AXI_ARESETN] [get_bd_pins ps7_0_axi_periph/ARESETN] {" ".join(['[get_bd_pins ps7_0_axi_periph/M0' + str(i) + '_ARESETN]' for i in range(uartSize + 2 + len(shared_bram_info))])} {" ".join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axiPortCount)])} [get_bd_pins rst_ps7_0_50M/peripheral_aresetn]
-    ''')
+    connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn {" ".join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aresetn]' for i in range(len(shared_bram_info))])} [get_bd_pins axi_gpio_0/s_axi_aresetn] {" ".join(['[get_bd_pins axi_intc_' + str(i) + '/s_axi_aresetn]' for i in range(interruptInfoSize)])} {" ".join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aresetn]' for i in range(uartSize)])} [get_bd_pins mdm_0/S_AXI_ARESETN] [get_bd_pins mb_axi_mem_interconnect_0/ARESETN] {" ".join(['[get_bd_pins mb_axi_mem_interconnect_0/M0' + str(i) + '_ARESETN]' for i in range(axiMasterCount)])} {" ".join(['[get_bd_pins mb_axi_mem_interconnect_0/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axiPortCount)])} [get_bd_pins ps7_0_axi_periph/ARESETN] {" ".join(['[get_bd_pins ps7_0_axi_periph/M0' + str(i) + '_ARESETN]' for i in range(axiMasterCount)])} {" ".join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axiPortCount)])} [get_bd_pins rst_ps7_0_50M/peripheral_aresetn]
+    '''))
 
 
-def create_MB_address_segment(number, BRAMsize, uartSize, shared_bram_info):
+def create_MB_address_segment(number, BRAMsize, uartSize, shared_bram_info, interruptInfo):
     global tclFile, uartList
     offset = '0x42C00000'
 
     for i in range(uartSize):
-        tclFile.write(f'''
+        tclFile.write(textwrap.dedent(f'''
         create_bd_addr_seg -range 0x00010000 -offset {offset} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_uartlite_{i}/S_AXI/Reg] SEG_axi_uartlite_{i}_Reg
         create_bd_addr_seg -range 0x00010000 -offset {offset} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_uartlite_{i}/S_AXI/Reg] SEG_axi_uartlite_{i}_Reg
-        ''')
+        '''))
         offset = str(hex(int(offset, 16) + 65536))
     if len(shared_bram_info) == 1:
         sharedMemorySize = shared_bram_info[0]['Size'].replace('KB', '')
         sharedMemorySize = hex(int(sharedMemorySize) * 1024)
-        tclFile.write(f'''
-        create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_info[0]['Base Address']} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
-        create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_info[0]['Base Address']} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
-        ''')
+        tclFile.write(textwrap.dedent(f'''
+        create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_info[0]['Base_Address']} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
+        create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_info[0]['Base_Address']} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
+        '''))
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     create_bd_addr_seg -range 0x00010000 -offset 0x41200000 [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
     create_bd_addr_seg -range 0x00010000 -offset 0x41200000 [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
+    '''))
+
+    interrupt_memory_base = 0x41800000
+    interrupt_memory_step = 0x10000
+
+    for i in range(len(interruptInfo)):
+        interrupt_memory_offset = interrupt_memory_base + i * interrupt_memory_step
+        tclFile.write(textwrap.dedent(f'''
+        create_bd_addr_seg -range 0x00010000 -offset {interrupt_memory_offset : #0{10}X} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_intc_{i}/S_AXI/Reg] SEG_axi_intc_{i}_Reg
+        create_bd_addr_seg -range 0x00010000 -offset {interrupt_memory_offset : #0{10}X} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_intc_{i}/S_AXI/Reg] SEG_axi_intc_{i}_Reg
+        '''))
+
+    tclFile.write(textwrap.dedent(f'''
     create_bd_addr_seg -range {BRAMsize} -offset 0x00000000 [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs microblaze_{str(number)}_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] SEG_dlmb_bram_if_cntlr_Mem
     create_bd_addr_seg -range {BRAMsize} -offset 0x00000000 [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs microblaze_{str(number)}_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] SEG_ilmb_bram_if_cntlr_Mem
-    create_bd_addr_seg -range 0x00001000 -offset 0x43400000 [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs mdm_1/S_AXI/Reg] SEG_mdm_1_Reg
-    create_bd_addr_seg -range 0x00001000 -offset 0x43400000 [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs mdm_1/S_AXI/Reg] SEG_mdm_1_Reg
-    ''')
+    create_bd_addr_seg -range 0x00001000 -offset 0x43400000 [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs mdm_0/S_AXI/Reg] SEG_mdm_0_Reg
+    create_bd_addr_seg -range 0x00001000 -offset 0x43400000 [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs mdm_0/S_AXI/Reg] SEG_mdm_0_Reg
+    '''))
 
 
 def write_board_and_project_configurations(boardInfo, projectInfo):
     global tclFile
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     ################################################################
     # This is a generated script based on design: design_1
     #
@@ -366,7 +388,7 @@ def write_board_and_project_configurations(boardInfo, projectInfo):
     ##################################################################
     # DESIGN PROCs
     ##################################################################
-    ''')
+    '''))
 
 
 def create_uart_interface_ports(uartSize):
@@ -375,48 +397,107 @@ def create_uart_interface_ports(uartSize):
     for i in range(uartSize):
 
         if (i == 0):
-            tclFile.write(f'''
+            tclFile.write(textwrap.dedent(f'''
             set uart_rtl [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:uart_rtl:1.0 uart_rtl ]
-            ''')
+            '''))
         else:
-            tclFile.write(f'''
+            tclFile.write(textwrap.dedent(f'''
             set uart_rtl_{str(i - 1)} [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:uart_rtl:1.0 uart_rtl_{str(i - 1)} ]
-            ''')
+            '''))
 
 
 def create_block_memory_generator(shared_bram_info):
     global tclFile
 
-    tclFile.write(f'''
-     # Create instance: blk_mem_gen_0, and set properties
+    tclFile.write(textwrap.dedent(f'''
+    # Create instance: blk_mem_gen_0, and set properties
     set blk_mem_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 blk_mem_gen_0 ]
     set_property -dict [ list \\
-    CONFIG.Enable_B {{Always_Enabled}} \\
-    CONFIG.Memory_Type {{{shared_bram_info[0]["Memory_type"]}}} \\
-    CONFIG.Port_B_Clock {{0}} \\
-    CONFIG.Port_B_Enable_Rate {{0}} \\
-    CONFIG.Port_B_Write_Rate {{0}} \\
-    CONFIG.Use_RSTB_Pin {{false}} \\
+      CONFIG.Enable_B {{Always_Enabled}} \\
+      CONFIG.Memory_Type {{{shared_bram_info[0]["Memory_type"]}}} \\
+      CONFIG.Port_B_Clock {{0}} \\
+      CONFIG.Port_B_Enable_Rate {{0}} \\
+      CONFIG.Port_B_Write_Rate {{0}} \\
+      CONFIG.Use_RSTB_Pin {{false}} \\
     ] $blk_mem_gen_0
-    ''')
+    '''))
 
 
-def write_axi_bram_controller_instance():
+def create_axi_bram_controller_instance():
     global tclFile
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     # Create instance: axi_bram_ctrl_0, and set properties
     set axi_bram_ctrl_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_bram_ctrl_0 ]
     set_property -dict [ list \\
-    CONFIG.SINGLE_PORT_BRAM {{1}} \\
+      CONFIG.SINGLE_PORT_BRAM {{1}} \\
     ] $axi_bram_ctrl_0
-    ''')
+    '''))
+
+
+def create_axi_interrupt_instance():
+    global tclFile, interruptInfo
+
+    for i in range(len(interruptInfo)):
+        tclFile.write(textwrap.dedent(f'''
+        # Create instance: axi_intc_{i}, and set properties
+        set axi_intc_{i} [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc:4.1 axi_intc_{i} ]
+        '''))
+
+
+def create_clk_wizard_instance(clk_wizard_info):
+    global tclFile
+
+    backslash = '\\'
+    for i in range(len(clk_wizard_info)):
+        tclFile.write(textwrap.dedent(f'''
+        # Create instance: clk_wiz_{i}, and set properties
+        set clk_wiz_{i} [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz_{i} ]
+        set_property -dict [ list \\
+          CONFIG.CLKOUT1_JITTER {{448.322}} \\
+          CONFIG.CLKOUT1_PHASE_ERROR {{335.207}} \\
+          CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {{24.576}} \\
+          CONFIG.CLKOUT2_JITTER {{783.134}} \\
+          CONFIG.CLKOUT2_PHASE_ERROR {{565.323}} \\
+          CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {{100.000}} \\
+          {'CONFIG.CLKOUT2_USED {false} ' + backslash if not 'clk_out2' in clk_wizard_info[i] else backslash}
+          CONFIG.CLKOUT3_JITTER {{783.134}} \\
+          CONFIG.CLKOUT3_PHASE_ERROR {{565.323}} \\
+          CONFIG.CLKOUT3_REQUESTED_OUT_FREQ {{100.000}} \\
+          CONFIG.CLKOUT3_REQUESTED_PHASE {{0.000}} \\
+          {'CONFIG.CLKOUT3_USED {false} ' + backslash if not 'clk_out3' in clk_wizard_info[i] else backslash}
+          CONFIG.MMCM_CLKFBOUT_MULT_F {{34.250}} \\
+          CONFIG.MMCM_CLKOUT0_DIVIDE_F {{27.875}} \\
+          CONFIG.MMCM_CLKOUT1_DIVIDE {{1}} \\
+          CONFIG.MMCM_CLKOUT2_DIVIDE {{1}} \\
+          CONFIG.MMCM_CLKOUT2_PHASE {{0.000}} \\
+          CONFIG.MMCM_DIVCLK_DIVIDE {{5}} \\
+          CONFIG.NUM_OUT_CLKS {{1}} \\
+        ] $clk_wiz_{i}
+        '''))
+
+
+def create_system_ila_instance(system_ila_info):
+    global tclFile
+
+    backslash = '\\'
+    newline = '\n'
+    for i in range(len(system_ila_info)):
+        tclFile.write(textwrap.dedent(f'''
+        # Create instance: system_ila_0, and set properties
+        set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
+        set_property -dict [ list \\
+          CONFIG.C_MON_TYPE {{NATIVE}} \\
+          CONFIG.C_NUM_OF_PROBES {{{system_ila_info[i]['Number_of_Probes']}}} \\
+          {(' ' + backslash + newline + '          ').join(['CONFIG.C_PROBE0_TYPE {0}' for _ in range(int(system_ila_info[i]['Number_of_Probes']))])} \\
+        ] $system_ila_0
+        '''))
 
 
 def write_root_design():
     global tclFile, uartList
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     # Procedure to create entire design; Provide argument to make
     # procedure reusable. If parentCell is "", will use root.
     proc create_root_design {{ parentCell }} {{
@@ -453,37 +534,59 @@ def write_root_design():
     set DDR [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 DDR ]
 
     set FIXED_IO [ create_bd_intf_port -mode Master -vlnv xilinx.com:display_processing_system7:fixedio_rtl:1.0 FIXED_IO ]
+    '''))
 
-    set btns_2bits [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 btns_2bits ]
-    ''')
+    gpio_list = search_peripheral_by_type(peripheralInfo, 'AXI_GPIO')
+    if len(gpio_list) == 1:
+        gpio_instance = gpio_list[0]
+        if 'Board_Interface' in gpio_instance:
+            tclFile.write(textwrap.dedent(f'''
+            set btns_2bits [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 btns_2bits ]
+            '''))
 
 
-def write_gpio_instances():
+def create_gpio_instances():
     global tclFile
 
-    tclFile.write(f'''
-    # Create ports
-    # Create instance: axi_gpio_0, and set properties
-    set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 axi_gpio_0 ]
-    set_property -dict [ list \\
-    CONFIG.GPIO_BOARD_INTERFACE {{btns_2bits}} \\
-    CONFIG.USE_BOARD_FLOW {{true}} \\
-    ] $axi_gpio_0
-    ''')
+    gpio_list = search_peripheral_by_type(peripheralInfo, 'AXI_GPIO')
+    if len(gpio_list) == 1:
+        tclFile.write(textwrap.dedent(f'''
+        # Create ports
+        # Create instance: axi_gpio_0, and set properties
+        set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 axi_gpio_0 ]
+        '''))
+
+        gpio_instance = gpio_list[0]
+
+        if 'Board_Interface' in gpio_instance:
+            tclFile.write(textwrap.dedent((f'''
+            set_property -dict [ list \\
+              CONFIG.GPIO_BOARD_INTERFACE {{btns_2bits}} \\
+              CONFIG.USE_BOARD_FLOW {{true}} \\
+            ] $axi_gpio_0
+            ''')))
+        else:
+            tclFile.write(textwrap.dedent((f'''
+            set_property -dict [ list \\
+              CONFIG.C_ALL_OUTPUTS {{1}} \\
+              CONFIG.C_GPIO_WIDTH {{1}} \\
+              CONFIG.C_INTERRUPT_PRESENT {{0}} \\
+            ] $axi_gpio_0
+            ''')))
 
 
-def create_uart_lite_instance(uartSize):
+def create_uart_lite_instance():
     global tclFile, uartList
 
     for i in range(len(uartList)):
         uartNode = uartList[i]
-        tclFile.write(f'''
+        tclFile.write(textwrap.dedent(f'''
         # Create instance: axi_uartlite_{i}, and set properties
         set axi_uartlite_{i} [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_{i} ]
         set_property -dict [ list \\
-        CONFIG.C_BAUDRATE {{{uartNode['Baud_Rate']}}} \\
+          CONFIG.C_BAUDRATE {{{uartNode['Baud_Rate']}}} \\
         ] $axi_uartlite_{i}
-        ''')
+        '''))
 
 
 def ps_config_helper():
@@ -501,594 +604,643 @@ def write_uart_properties():
 
     for i in range(len(uartList)):
         uartNode = uartList[i]
-        tclFile.write(
-            f'''CONFIG.PCW_UART{i}_BAUD_RATE {{{uartNode['Baud_Rate']}}} \\
-    CONFIG.PCW_UART{i}_GRP_FULL_ENABLE {{0}} \\
-    CONFIG.PCW_UART{i}_PERIPHERAL_ENABLE {{1}} \\
-    CONFIG.PCW_UART{i}_UART{i}_IO {{MIO 14 .. 15}} \\
-    ''')
+        tclFile.write(textwrap.indent(textwrap.dedent(f'''
+        CONFIG.PCW_UART{i}_BAUD_RATE {{{uartNode['Baud_Rate']}}} \\
+        CONFIG.PCW_UART{i}_GRP_FULL_ENABLE {{0}} \\
+        CONFIG.PCW_UART{i}_PERIPHERAL_ENABLE {{1}} \\
+        CONFIG.PCW_UART{i}_UART{i}_IO {{MIO 14 .. 15}} \\
+        '''), '  ')[1:])
 
-    tclFile.write(
-        f'''CONFIG.PCW_UART_PERIPHERAL_CLKSRC {{IO PLL}} \\
-    CONFIG.PCW_UART_PERIPHERAL_DIVISOR0 {{10}} \\
-    CONFIG.PCW_UART_PERIPHERAL_FREQMHZ {{100}} \\
-    CONFIG.PCW_UART_PERIPHERAL_VALID {{1}} \\
-    CONFIG.PCW_UIPARAM_ACT_DDR_FREQ_MHZ {{525.000000}} \\
-    CONFIG.PCW_UIPARAM_DDR_ADV_ENABLE {{0}} \\
-    CONFIG.PCW_UIPARAM_DDR_AL {{0}} \\
-    CONFIG.PCW_UIPARAM_DDR_BANK_ADDR_COUNT {{3}} \\
-    CONFIG.PCW_UIPARAM_DDR_BL {{8}} \\
-    CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY0 {{0.223}} \\
-    CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY1 {{0.212}} \\
-    CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY2 {{0.085}} \\
-    CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY3 {{0.092}} \\
-    CONFIG.PCW_UIPARAM_DDR_BUS_WIDTH {{16 Bit}} \\
-    CONFIG.PCW_UIPARAM_DDR_CL {{7}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_0_LENGTH_MM {{15.8}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_0_PACKAGE_LENGTH {{80.4535}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_0_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_1_LENGTH_MM {{15.8}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_1_PACKAGE_LENGTH {{80.4535}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_1_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_2_LENGTH_MM {{0}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_2_PACKAGE_LENGTH {{80.4535}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_2_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_3_LENGTH_MM {{0}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_3_PACKAGE_LENGTH {{80.4535}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_3_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_CLOCK_STOP_EN {{0}} \\
-    CONFIG.PCW_UIPARAM_DDR_COL_ADDR_COUNT {{10}} \\
-    CONFIG.PCW_UIPARAM_DDR_CWL {{6}} \\
-    CONFIG.PCW_UIPARAM_DDR_DEVICE_CAPACITY {{4096 MBits}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_0_LENGTH_MM {{15.6}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_0_PACKAGE_LENGTH {{105.056}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_0_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_1_LENGTH_MM {{18.8}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_1_PACKAGE_LENGTH {{66.904}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_1_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_2_LENGTH_MM {{0}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_2_PACKAGE_LENGTH {{89.1715}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_2_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_3_LENGTH_MM {{0}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_3_PACKAGE_LENGTH {{113.63}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_3_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_0 {{0.040}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_1 {{0.058}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_2 {{-0.009}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_3 {{-0.033}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_0_LENGTH_MM {{16.5}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_0_PACKAGE_LENGTH {{98.503}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_0_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_1_LENGTH_MM {{18}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_1_PACKAGE_LENGTH {{68.5855}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_1_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_2_LENGTH_MM {{0}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_2_PACKAGE_LENGTH {{90.295}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_2_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_3_LENGTH_MM {{0}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_3_PACKAGE_LENGTH {{103.977}} \\
-    CONFIG.PCW_UIPARAM_DDR_DQ_3_PROPOGATION_DELAY {{160}} \\
-    CONFIG.PCW_UIPARAM_DDR_DRAM_WIDTH {{16 Bits}} \\
-    CONFIG.PCW_UIPARAM_DDR_ECC {{Disabled}} \\
-    CONFIG.PCW_UIPARAM_DDR_ENABLE {{1}} \\
-    CONFIG.PCW_UIPARAM_DDR_FREQ_MHZ {{525}} \\
-    CONFIG.PCW_UIPARAM_DDR_HIGH_TEMP {{Normal (0-85)}} \\
-    CONFIG.PCW_UIPARAM_DDR_MEMORY_TYPE {{DDR 3}} \\
-    CONFIG.PCW_UIPARAM_DDR_PARTNO {{MT41K256M16 RE-125}} \\
-    CONFIG.PCW_UIPARAM_DDR_ROW_ADDR_COUNT {{15}} \\
-    CONFIG.PCW_UIPARAM_DDR_SPEED_BIN {{DDR3_1066F}} \\
-    CONFIG.PCW_UIPARAM_DDR_TRAIN_DATA_EYE {{1}} \\
-    CONFIG.PCW_UIPARAM_DDR_TRAIN_READ_GATE {{1}} \\
-    CONFIG.PCW_UIPARAM_DDR_TRAIN_WRITE_LEVEL {{1}} \\
-    CONFIG.PCW_UIPARAM_DDR_T_FAW {{40.0}} \\
-    CONFIG.PCW_UIPARAM_DDR_T_RAS_MIN {{35.0}} \\
-    CONFIG.PCW_UIPARAM_DDR_T_RC {{48.75}} \\
-    CONFIG.PCW_UIPARAM_DDR_T_RCD {{7}} \\
-    CONFIG.PCW_UIPARAM_DDR_T_RP {{7}} \\
-    CONFIG.PCW_UIPARAM_DDR_USE_INTERNAL_VREF {{0}} \\
-    CONFIG.PCW_USB0_PERIPHERAL_ENABLE {{1}} \\
-    CONFIG.PCW_USB0_PERIPHERAL_FREQMHZ {{60}} \\
-    CONFIG.PCW_USB0_RESET_ENABLE {{1}} \\
-    CONFIG.PCW_USB0_RESET_IO {{MIO 46}} \\
-    CONFIG.PCW_USB0_USB0_IO {{MIO 28 .. 39}} \\
-    CONFIG.PCW_USB1_RESET_ENABLE {{0}} \\
-    CONFIG.PCW_USB_RESET_ENABLE {{1}} \\
-    CONFIG.PCW_USB_RESET_POLARITY {{Active Low}} \\
-    CONFIG.PCW_USB_RESET_SELECT {{Share reset pin}} \\
-    CONFIG.PCW_USE_AXI_NONSECURE {{0}} \\
-    CONFIG.PCW_USE_CROSS_TRIGGER {{0}} \\
-    CONFIG.PCW_USE_FABRIC_INTERRUPT {{{ps_config_helper()}}} \\
-    CONFIG.PCW_USE_M_AXI_GP0 {{1}} \\
+    tclFile.write(textwrap.dedent(f'''
+      CONFIG.PCW_UART_PERIPHERAL_CLKSRC {{IO PLL}} \\
+      CONFIG.PCW_UART_PERIPHERAL_DIVISOR0 {{10}} \\
+      CONFIG.PCW_UART_PERIPHERAL_FREQMHZ {{100}} \\
+      CONFIG.PCW_UART_PERIPHERAL_VALID {{1}} \\
+      CONFIG.PCW_UIPARAM_ACT_DDR_FREQ_MHZ {{525.000000}} \\
+      CONFIG.PCW_UIPARAM_DDR_ADV_ENABLE {{0}} \\
+      CONFIG.PCW_UIPARAM_DDR_AL {{0}} \\
+      CONFIG.PCW_UIPARAM_DDR_BANK_ADDR_COUNT {{3}} \\
+      CONFIG.PCW_UIPARAM_DDR_BL {{8}} \\
+      CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY0 {{0.223}} \\
+      CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY1 {{0.212}} \\
+      CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY2 {{0.085}} \\
+      CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY3 {{0.092}} \\
+      CONFIG.PCW_UIPARAM_DDR_BUS_WIDTH {{16 Bit}} \\
+      CONFIG.PCW_UIPARAM_DDR_CL {{7}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_0_LENGTH_MM {{15.8}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_0_PACKAGE_LENGTH {{80.4535}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_0_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_1_LENGTH_MM {{15.8}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_1_PACKAGE_LENGTH {{80.4535}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_1_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_2_LENGTH_MM {{0}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_2_PACKAGE_LENGTH {{80.4535}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_2_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_3_LENGTH_MM {{0}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_3_PACKAGE_LENGTH {{80.4535}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_3_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_CLOCK_STOP_EN {{0}} \\
+      CONFIG.PCW_UIPARAM_DDR_COL_ADDR_COUNT {{10}} \\
+      CONFIG.PCW_UIPARAM_DDR_CWL {{6}} \\
+      CONFIG.PCW_UIPARAM_DDR_DEVICE_CAPACITY {{4096 MBits}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_0_LENGTH_MM {{15.6}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_0_PACKAGE_LENGTH {{105.056}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_0_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_1_LENGTH_MM {{18.8}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_1_PACKAGE_LENGTH {{66.904}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_1_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_2_LENGTH_MM {{0}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_2_PACKAGE_LENGTH {{89.1715}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_2_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_3_LENGTH_MM {{0}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_3_PACKAGE_LENGTH {{113.63}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_3_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_0 {{0.040}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_1 {{0.058}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_2 {{-0.009}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_3 {{-0.033}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_0_LENGTH_MM {{16.5}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_0_PACKAGE_LENGTH {{98.503}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_0_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_1_LENGTH_MM {{18}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_1_PACKAGE_LENGTH {{68.5855}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_1_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_2_LENGTH_MM {{0}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_2_PACKAGE_LENGTH {{90.295}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_2_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_3_LENGTH_MM {{0}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_3_PACKAGE_LENGTH {{103.977}} \\
+      CONFIG.PCW_UIPARAM_DDR_DQ_3_PROPOGATION_DELAY {{160}} \\
+      CONFIG.PCW_UIPARAM_DDR_DRAM_WIDTH {{16 Bits}} \\
+      CONFIG.PCW_UIPARAM_DDR_ECC {{Disabled}} \\
+      CONFIG.PCW_UIPARAM_DDR_ENABLE {{1}} \\
+      CONFIG.PCW_UIPARAM_DDR_FREQ_MHZ {{525}} \\
+      CONFIG.PCW_UIPARAM_DDR_HIGH_TEMP {{Normal (0-85)}} \\
+      CONFIG.PCW_UIPARAM_DDR_MEMORY_TYPE {{DDR 3}} \\
+      CONFIG.PCW_UIPARAM_DDR_PARTNO {{MT41K256M16 RE-125}} \\
+      CONFIG.PCW_UIPARAM_DDR_ROW_ADDR_COUNT {{15}} \\
+      CONFIG.PCW_UIPARAM_DDR_SPEED_BIN {{DDR3_1066F}} \\
+      CONFIG.PCW_UIPARAM_DDR_TRAIN_DATA_EYE {{1}} \\
+      CONFIG.PCW_UIPARAM_DDR_TRAIN_READ_GATE {{1}} \\
+      CONFIG.PCW_UIPARAM_DDR_TRAIN_WRITE_LEVEL {{1}} \\
+      CONFIG.PCW_UIPARAM_DDR_T_FAW {{40.0}} \\
+      CONFIG.PCW_UIPARAM_DDR_T_RAS_MIN {{35.0}} \\
+      CONFIG.PCW_UIPARAM_DDR_T_RC {{48.75}} \\
+      CONFIG.PCW_UIPARAM_DDR_T_RCD {{7}} \\
+      CONFIG.PCW_UIPARAM_DDR_T_RP {{7}} \\
+      CONFIG.PCW_UIPARAM_DDR_USE_INTERNAL_VREF {{0}} \\
+      CONFIG.PCW_USB0_PERIPHERAL_ENABLE {{1}} \\
+      CONFIG.PCW_USB0_PERIPHERAL_FREQMHZ {{60}} \\
+      CONFIG.PCW_USB0_RESET_ENABLE {{1}} \\
+      CONFIG.PCW_USB0_RESET_IO {{MIO 46}} \\
+      CONFIG.PCW_USB0_USB0_IO {{MIO 28 .. 39}} \\
+      CONFIG.PCW_USB1_RESET_ENABLE {{0}} \\
+      CONFIG.PCW_USB_RESET_ENABLE {{1}} \\
+      CONFIG.PCW_USB_RESET_POLARITY {{Active Low}} \\
+      CONFIG.PCW_USB_RESET_SELECT {{Share reset pin}} \\
+      CONFIG.PCW_USE_AXI_NONSECURE {{0}} \\
+      CONFIG.PCW_USE_CROSS_TRIGGER {{0}} \\
+      CONFIG.PCW_USE_FABRIC_INTERRUPT {{{ps_config_helper()}}} \\
+      CONFIG.PCW_USE_M_AXI_GP0 {{1}} \\
     ] $processing_system7_0
-    ''')
+    ''')[1:])
 
 
 def write_ps_config():
     global tclFile
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     # Create instance: processing_system7_0, and set properties
     set processing_system7_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.5 processing_system7_0 ]
     set_property -dict [ list \\
-    CONFIG.PCW_ACT_APU_PERIPHERAL_FREQMHZ {{650.000000}} \\
-    CONFIG.PCW_ACT_CAN_PERIPHERAL_FREQMHZ {{10.000000}} \\
-    CONFIG.PCW_ACT_DCI_PERIPHERAL_FREQMHZ {{10.096154}} \\
-    CONFIG.PCW_ACT_ENET0_PERIPHERAL_FREQMHZ {{125.000000}} \\
-    CONFIG.PCW_ACT_ENET1_PERIPHERAL_FREQMHZ {{10.000000}} \\
-    CONFIG.PCW_ACT_FPGA0_PERIPHERAL_FREQMHZ {{50.000000}} \\
-    CONFIG.PCW_ACT_FPGA1_PERIPHERAL_FREQMHZ {{10.000000}} \\
-    CONFIG.PCW_ACT_FPGA2_PERIPHERAL_FREQMHZ {{10.000000}} \\
-    CONFIG.PCW_ACT_FPGA3_PERIPHERAL_FREQMHZ {{10.000000}} \\
-    CONFIG.PCW_ACT_PCAP_PERIPHERAL_FREQMHZ {{200.000000}} \\
-    CONFIG.PCW_ACT_QSPI_PERIPHERAL_FREQMHZ {{10.000000}} \\
-    CONFIG.PCW_ACT_SDIO_PERIPHERAL_FREQMHZ {{100.000000}} \\
-    CONFIG.PCW_ACT_SMC_PERIPHERAL_FREQMHZ {{10.000000}} \\
-    CONFIG.PCW_ACT_SPI_PERIPHERAL_FREQMHZ {{10.000000}} \\
-    CONFIG.PCW_ACT_TPIU_PERIPHERAL_FREQMHZ {{200.000000}} \\
-    CONFIG.PCW_ACT_TTC0_CLK0_PERIPHERAL_FREQMHZ {{108.333336}} \\
-    CONFIG.PCW_ACT_TTC0_CLK1_PERIPHERAL_FREQMHZ {{108.333336}} \\
-    CONFIG.PCW_ACT_TTC0_CLK2_PERIPHERAL_FREQMHZ {{108.333336}} \\
-    CONFIG.PCW_ACT_TTC1_CLK0_PERIPHERAL_FREQMHZ {{108.333336}} \\
-    CONFIG.PCW_ACT_TTC1_CLK1_PERIPHERAL_FREQMHZ {{108.333336}} \\
-    CONFIG.PCW_ACT_TTC1_CLK2_PERIPHERAL_FREQMHZ {{108.333336}} \\
-    CONFIG.PCW_ACT_UART_PERIPHERAL_FREQMHZ {{100.000000}} \\
-    CONFIG.PCW_ACT_WDT_PERIPHERAL_FREQMHZ {{108.333336}} \\
-    CONFIG.PCW_APU_CLK_RATIO_ENABLE {{6:2:1}} \\
-    CONFIG.PCW_APU_PERIPHERAL_FREQMHZ {{650}} \\
-    CONFIG.PCW_ARMPLL_CTRL_FBDIV {{26}} \\
-    CONFIG.PCW_CAN_PERIPHERAL_DIVISOR0 {{1}} \\
-    CONFIG.PCW_CAN_PERIPHERAL_DIVISOR1 {{1}} \\
-    CONFIG.PCW_CLK0_FREQ {{50000000}} \\
-    CONFIG.PCW_CLK1_FREQ {{10000000}} \\
-    CONFIG.PCW_CLK2_FREQ {{10000000}} \\
-    CONFIG.PCW_CLK3_FREQ {{10000000}} \\
-    CONFIG.PCW_CPU_CPU_6X4X_MAX_RANGE {{667}} \\
-    CONFIG.PCW_CPU_CPU_PLL_FREQMHZ {{1300.000}} \\
-    CONFIG.PCW_CPU_PERIPHERAL_CLKSRC {{ARM PLL}} \\
-    CONFIG.PCW_CPU_PERIPHERAL_DIVISOR0 {{2}} \\
-    CONFIG.PCW_CRYSTAL_PERIPHERAL_FREQMHZ {{50}} \\
-    CONFIG.PCW_DCI_PERIPHERAL_CLKSRC {{DDR PLL}} \\
-    CONFIG.PCW_DCI_PERIPHERAL_DIVISOR0 {{52}} \\
-    CONFIG.PCW_DCI_PERIPHERAL_DIVISOR1 {{2}} \\
-    CONFIG.PCW_DCI_PERIPHERAL_FREQMHZ {{10.159}} \\
-    CONFIG.PCW_DDRPLL_CTRL_FBDIV {{21}} \\
-    CONFIG.PCW_DDR_DDR_PLL_FREQMHZ {{1050.000}} \\
-    CONFIG.PCW_DDR_HPRLPR_QUEUE_PARTITION {{HPR(0)/LPR(32)}} \\
-    CONFIG.PCW_DDR_HPR_TO_CRITICAL_PRIORITY_LEVEL {{15}} \\
-    CONFIG.PCW_DDR_LPR_TO_CRITICAL_PRIORITY_LEVEL {{2}} \\
-    CONFIG.PCW_DDR_PERIPHERAL_CLKSRC {{DDR PLL}} \\
-    CONFIG.PCW_DDR_PERIPHERAL_DIVISOR0 {{2}} \\
-    CONFIG.PCW_DDR_PORT0_HPR_ENABLE {{0}} \\
-    CONFIG.PCW_DDR_PORT1_HPR_ENABLE {{0}} \\
-    CONFIG.PCW_DDR_PORT2_HPR_ENABLE {{0}} \\
-    CONFIG.PCW_DDR_PORT3_HPR_ENABLE {{0}} \\
-    CONFIG.PCW_DDR_RAM_BASEADDR {{0x00100000}} \\
-    CONFIG.PCW_DDR_RAM_HIGHADDR {{0x1FFFFFFF}} \\
-    CONFIG.PCW_DDR_WRITE_TO_CRITICAL_PRIORITY_LEVEL {{2}} \\
-    CONFIG.PCW_ENET0_ENET0_IO {{MIO 16 .. 27}} \\
-    CONFIG.PCW_ENET0_GRP_MDIO_ENABLE {{1}} \\
-    CONFIG.PCW_ENET0_GRP_MDIO_IO {{MIO 52 .. 53}} \\
-    CONFIG.PCW_ENET0_PERIPHERAL_CLKSRC {{IO PLL}} \\
-    CONFIG.PCW_ENET0_PERIPHERAL_DIVISOR0 {{8}} \\
-    CONFIG.PCW_ENET0_PERIPHERAL_DIVISOR1 {{1}} \\
-    CONFIG.PCW_ENET0_PERIPHERAL_ENABLE {{1}} \\
-    CONFIG.PCW_ENET0_PERIPHERAL_FREQMHZ {{1000 Mbps}} \\
-    CONFIG.PCW_ENET0_RESET_ENABLE {{1}} \\
-    CONFIG.PCW_ENET0_RESET_IO {{MIO 9}} \\
-    CONFIG.PCW_ENET1_GRP_MDIO_ENABLE {{0}} \\
-    CONFIG.PCW_ENET1_PERIPHERAL_CLKSRC {{IO PLL}} \\
-    CONFIG.PCW_ENET1_PERIPHERAL_DIVISOR0 {{1}} \\
-    CONFIG.PCW_ENET1_PERIPHERAL_DIVISOR1 {{1}} \\
-    CONFIG.PCW_ENET1_PERIPHERAL_ENABLE {{0}} \\
-    CONFIG.PCW_ENET1_PERIPHERAL_FREQMHZ {{1000 Mbps}} \\
-    CONFIG.PCW_ENET1_RESET_ENABLE {{0}} \\
-    CONFIG.PCW_ENET_RESET_ENABLE {{1}} \\
-    CONFIG.PCW_ENET_RESET_POLARITY {{Active Low}} \\
-    CONFIG.PCW_ENET_RESET_SELECT {{Share reset pin}} \\
-    CONFIG.PCW_EN_4K_TIMER {{0}} \\
-    CONFIG.PCW_EN_EMIO_UART0 {{0}} \\
-    CONFIG.PCW_EN_ENET0 {{1}} \\
-    CONFIG.PCW_EN_GPIO {{1}} \\
-    CONFIG.PCW_EN_SDIO0 {{1}} \\
-    CONFIG.PCW_EN_UART0 {{1}} \\
-    CONFIG.PCW_EN_USB0 {{1}} \\
-    CONFIG.PCW_FCLK0_PERIPHERAL_DIVISOR0 {{5}} \\
-    CONFIG.PCW_FCLK0_PERIPHERAL_DIVISOR1 {{4}} \\
-    CONFIG.PCW_FCLK1_PERIPHERAL_DIVISOR0 {{1}} \\
-    CONFIG.PCW_FCLK1_PERIPHERAL_DIVISOR1 {{1}} \\
-    CONFIG.PCW_FCLK2_PERIPHERAL_DIVISOR0 {{1}} \\
-    CONFIG.PCW_FCLK2_PERIPHERAL_DIVISOR1 {{1}} \\
-    CONFIG.PCW_FCLK3_PERIPHERAL_DIVISOR0 {{1}} \\
-    CONFIG.PCW_FCLK3_PERIPHERAL_DIVISOR1 {{1}} \\
-    CONFIG.PCW_FPGA_FCLK0_ENABLE {{1}} \\
-    CONFIG.PCW_FPGA_FCLK1_ENABLE {{0}} \\
-    CONFIG.PCW_FPGA_FCLK2_ENABLE {{0}} \\
-    CONFIG.PCW_FPGA_FCLK3_ENABLE {{0}} \\
-    CONFIG.PCW_GPIO_MIO_GPIO_ENABLE {{1}} \\
-    CONFIG.PCW_GPIO_MIO_GPIO_IO {{MIO}} \\
-    CONFIG.PCW_GPIO_PERIPHERAL_ENABLE {{0}} \\
-    CONFIG.PCW_I2C0_RESET_ENABLE {{0}} \\
-    CONFIG.PCW_I2C1_RESET_ENABLE {{0}} \\
-    CONFIG.PCW_I2C_PERIPHERAL_FREQMHZ {{25}} \\
-    CONFIG.PCW_I2C_RESET_ENABLE {{1}} \\
-    CONFIG.PCW_IOPLL_CTRL_FBDIV {{20}} \\
-    CONFIG.PCW_IO_IO_PLL_FREQMHZ {{1000.000}} \\
-    CONFIG.PCW_IRQ_F2P_INTR {{{ps_config_helper()}}} \\
-    CONFIG.PCW_IRQ_F2P_MODE {{DIRECT}} \\
-    CONFIG.PCW_MIO_0_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_0_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_0_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_0_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_10_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_10_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_10_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_10_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_11_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_11_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_11_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_11_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_12_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_12_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_12_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_12_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_13_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_13_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_13_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_13_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_14_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_14_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_14_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_14_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_15_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_15_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_15_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_15_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_16_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_16_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_16_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_16_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_17_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_17_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_17_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_17_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_18_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_18_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_18_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_18_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_19_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_19_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_19_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_19_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_1_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_1_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_1_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_1_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_20_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_20_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_20_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_20_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_21_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_21_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_21_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_21_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_22_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_22_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_22_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_22_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_23_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_23_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_23_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_23_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_24_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_24_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_24_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_24_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_25_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_25_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_25_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_25_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_26_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_26_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_26_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_26_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_27_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_27_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_27_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_27_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_28_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_28_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_28_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_28_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_29_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_29_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_29_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_29_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_2_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_2_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_2_PULLUP {{disabled}} \\
-    CONFIG.PCW_MIO_2_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_30_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_30_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_30_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_30_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_31_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_31_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_31_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_31_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_32_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_32_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_32_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_32_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_33_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_33_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_33_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_33_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_34_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_34_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_34_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_34_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_35_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_35_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_35_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_35_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_36_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_36_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_36_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_36_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_37_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_37_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_37_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_37_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_38_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_38_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_38_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_38_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_39_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_39_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_39_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_39_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_3_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_3_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_3_PULLUP {{disabled}} \\
-    CONFIG.PCW_MIO_3_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_40_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_40_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_40_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_40_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_41_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_41_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_41_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_41_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_42_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_42_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_42_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_42_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_43_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_43_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_43_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_43_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_44_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_44_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_44_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_44_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_45_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_45_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_45_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_45_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_46_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_46_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_46_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_46_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_47_DIRECTION {{in}} \\
-    CONFIG.PCW_MIO_47_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_47_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_47_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_48_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_48_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_48_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_48_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_49_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_49_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_49_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_49_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_4_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_4_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_4_PULLUP {{disabled}} \\
-    CONFIG.PCW_MIO_4_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_50_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_50_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_50_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_50_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_51_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_51_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_51_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_51_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_52_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_52_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_52_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_52_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_53_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_53_IOTYPE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_MIO_53_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_53_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_5_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_5_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_5_PULLUP {{disabled}} \\
-    CONFIG.PCW_MIO_5_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_6_DIRECTION {{inout}} \\
-    CONFIG.PCW_MIO_6_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_6_PULLUP {{disabled}} \\
-    CONFIG.PCW_MIO_6_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_7_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_7_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_7_PULLUP {{disabled}} \\
-    CONFIG.PCW_MIO_7_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_8_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_8_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_8_PULLUP {{disabled}} \\
-    CONFIG.PCW_MIO_8_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_9_DIRECTION {{out}} \\
-    CONFIG.PCW_MIO_9_IOTYPE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_MIO_9_PULLUP {{enabled}} \\
-    CONFIG.PCW_MIO_9_SLEW {{slow}} \\
-    CONFIG.PCW_MIO_TREE_PERIPHERALS {{GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#ENET Reset#GPIO#GPIO#GPIO#GPIO#UART 0#UART 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#SD 0#SD 0#SD 0#SD 0#SD 0#SD 0#USB Reset#SD 0#GPIO#GPIO#GPIO#GPIO#Enet 0#Enet 0}} \\
-    CONFIG.PCW_MIO_TREE_SIGNALS {{gpio[0]#gpio[1]#gpio[2]#gpio[3]#gpio[4]#gpio[5]#gpio[6]#gpio[7]#gpio[8]#reset#gpio[10]#gpio[11]#gpio[12]#gpio[13]#rx#tx#tx_clk#txd[0]#txd[1]#txd[2]#txd[3]#tx_ctl#rx_clk#rxd[0]#rxd[1]#rxd[2]#rxd[3]#rx_ctl#data[4]#dir#stp#nxt#data[0]#data[1]#data[2]#data[3]#clk#data[5]#data[6]#data[7]#clk#cmd#data[0]#data[1]#data[2]#data[3]#reset#cd#gpio[48]#gpio[49]#gpio[50]#gpio[51]#mdc#mdio}} \\
-    CONFIG.PCW_OVERRIDE_BASIC_CLOCK {{0}} \\
-    CONFIG.PCW_PACKAGE_DDR_BOARD_DELAY0 {{0.191}} \\
-    CONFIG.PCW_PACKAGE_DDR_BOARD_DELAY1 {{0.181}} \\
-    CONFIG.PCW_PACKAGE_DDR_BOARD_DELAY2 {{0.085}} \\
-    CONFIG.PCW_PACKAGE_DDR_BOARD_DELAY3 {{0.092}} \\
-    CONFIG.PCW_PACKAGE_DDR_DQS_TO_CLK_DELAY_0 {{-0.023}} \\
-    CONFIG.PCW_PACKAGE_DDR_DQS_TO_CLK_DELAY_1 {{-0.005}} \\
-    CONFIG.PCW_PACKAGE_DDR_DQS_TO_CLK_DELAY_2 {{-0.009}} \\
-    CONFIG.PCW_PACKAGE_DDR_DQS_TO_CLK_DELAY_3 {{-0.033}} \\
-    CONFIG.PCW_PCAP_PERIPHERAL_CLKSRC {{IO PLL}} \\
-    CONFIG.PCW_PCAP_PERIPHERAL_DIVISOR0 {{5}} \\
-    CONFIG.PCW_PCAP_PERIPHERAL_FREQMHZ {{200}} \\
-    CONFIG.PCW_PJTAG_PERIPHERAL_ENABLE {{0}} \\
-    CONFIG.PCW_PLL_BYPASSMODE_ENABLE {{0}} \\
-    CONFIG.PCW_PRESET_BANK0_VOLTAGE {{LVCMOS 3.3V}} \\
-    CONFIG.PCW_PRESET_BANK1_VOLTAGE {{LVCMOS 1.8V}} \\
-    CONFIG.PCW_QSPI_GRP_FBCLK_ENABLE {{0}} \\
-    CONFIG.PCW_QSPI_GRP_IO1_ENABLE {{0}} \\
-    CONFIG.PCW_QSPI_GRP_SINGLE_SS_ENABLE {{0}} \\
-    CONFIG.PCW_QSPI_GRP_SS1_ENABLE {{0}} \\
-    CONFIG.PCW_QSPI_PERIPHERAL_CLKSRC {{IO PLL}} \\
-    CONFIG.PCW_QSPI_PERIPHERAL_DIVISOR0 {{1}} \\
-    CONFIG.PCW_QSPI_PERIPHERAL_ENABLE {{0}} \\
-    CONFIG.PCW_QSPI_PERIPHERAL_FREQMHZ {{200}} \\
-    CONFIG.PCW_SD0_GRP_CD_ENABLE {{1}} \\
-    CONFIG.PCW_SD0_GRP_CD_IO {{MIO 47}} \\
-    CONFIG.PCW_SD0_GRP_POW_ENABLE {{0}} \\
-    CONFIG.PCW_SD0_GRP_WP_ENABLE {{0}} \\
-    CONFIG.PCW_SD0_PERIPHERAL_ENABLE {{1}} \\
-    CONFIG.PCW_SD0_SD0_IO {{MIO 40 .. 45}} \\
-    CONFIG.PCW_SDIO_PERIPHERAL_CLKSRC {{IO PLL}} \\
-    CONFIG.PCW_SDIO_PERIPHERAL_DIVISOR0 {{10}} \\
-    CONFIG.PCW_SDIO_PERIPHERAL_FREQMHZ {{100}} \\
-    CONFIG.PCW_SDIO_PERIPHERAL_VALID {{1}} \\
-    CONFIG.PCW_SMC_PERIPHERAL_CLKSRC {{IO PLL}} \\
-    CONFIG.PCW_SMC_PERIPHERAL_DIVISOR0 {{1}} \\
-    CONFIG.PCW_SMC_PERIPHERAL_FREQMHZ {{100}} \\
-    CONFIG.PCW_SPI_PERIPHERAL_DIVISOR0 {{1}} \\
-    CONFIG.PCW_TPIU_PERIPHERAL_CLKSRC {{External}} \\
-    CONFIG.PCW_TPIU_PERIPHERAL_DIVISOR0 {{1}} \\
-    CONFIG.PCW_TPIU_PERIPHERAL_FREQMHZ {{200}} \\
-    ''')
+      CONFIG.PCW_ACT_APU_PERIPHERAL_FREQMHZ {{650.000000}} \\
+      CONFIG.PCW_ACT_CAN_PERIPHERAL_FREQMHZ {{10.000000}} \\
+      CONFIG.PCW_ACT_DCI_PERIPHERAL_FREQMHZ {{10.096154}} \\
+      CONFIG.PCW_ACT_ENET0_PERIPHERAL_FREQMHZ {{125.000000}} \\
+      CONFIG.PCW_ACT_ENET1_PERIPHERAL_FREQMHZ {{10.000000}} \\
+      CONFIG.PCW_ACT_FPGA0_PERIPHERAL_FREQMHZ {{50.000000}} \\
+      CONFIG.PCW_ACT_FPGA1_PERIPHERAL_FREQMHZ {{10.000000}} \\
+      CONFIG.PCW_ACT_FPGA2_PERIPHERAL_FREQMHZ {{10.000000}} \\
+      CONFIG.PCW_ACT_FPGA3_PERIPHERAL_FREQMHZ {{10.000000}} \\
+      CONFIG.PCW_ACT_PCAP_PERIPHERAL_FREQMHZ {{200.000000}} \\
+      CONFIG.PCW_ACT_QSPI_PERIPHERAL_FREQMHZ {{10.000000}} \\
+      CONFIG.PCW_ACT_SDIO_PERIPHERAL_FREQMHZ {{100.000000}} \\
+      CONFIG.PCW_ACT_SMC_PERIPHERAL_FREQMHZ {{10.000000}} \\
+      CONFIG.PCW_ACT_SPI_PERIPHERAL_FREQMHZ {{10.000000}} \\
+      CONFIG.PCW_ACT_TPIU_PERIPHERAL_FREQMHZ {{200.000000}} \\
+      CONFIG.PCW_ACT_TTC0_CLK0_PERIPHERAL_FREQMHZ {{108.333336}} \\
+      CONFIG.PCW_ACT_TTC0_CLK1_PERIPHERAL_FREQMHZ {{108.333336}} \\
+      CONFIG.PCW_ACT_TTC0_CLK2_PERIPHERAL_FREQMHZ {{108.333336}} \\
+      CONFIG.PCW_ACT_TTC1_CLK0_PERIPHERAL_FREQMHZ {{108.333336}} \\
+      CONFIG.PCW_ACT_TTC1_CLK1_PERIPHERAL_FREQMHZ {{108.333336}} \\
+      CONFIG.PCW_ACT_TTC1_CLK2_PERIPHERAL_FREQMHZ {{108.333336}} \\
+      CONFIG.PCW_ACT_UART_PERIPHERAL_FREQMHZ {{100.000000}} \\
+      CONFIG.PCW_ACT_WDT_PERIPHERAL_FREQMHZ {{108.333336}} \\
+      CONFIG.PCW_APU_CLK_RATIO_ENABLE {{6:2:1}} \\
+      CONFIG.PCW_APU_PERIPHERAL_FREQMHZ {{650}} \\
+      CONFIG.PCW_ARMPLL_CTRL_FBDIV {{26}} \\
+      CONFIG.PCW_CAN_PERIPHERAL_DIVISOR0 {{1}} \\
+      CONFIG.PCW_CAN_PERIPHERAL_DIVISOR1 {{1}} \\
+      CONFIG.PCW_CLK0_FREQ {{50000000}} \\
+      CONFIG.PCW_CLK1_FREQ {{10000000}} \\
+      CONFIG.PCW_CLK2_FREQ {{10000000}} \\
+      CONFIG.PCW_CLK3_FREQ {{10000000}} \\
+      CONFIG.PCW_CPU_CPU_6X4X_MAX_RANGE {{667}} \\
+      CONFIG.PCW_CPU_CPU_PLL_FREQMHZ {{1300.000}} \\
+      CONFIG.PCW_CPU_PERIPHERAL_CLKSRC {{ARM PLL}} \\
+      CONFIG.PCW_CPU_PERIPHERAL_DIVISOR0 {{2}} \\
+      CONFIG.PCW_CRYSTAL_PERIPHERAL_FREQMHZ {{50}} \\
+      CONFIG.PCW_DCI_PERIPHERAL_CLKSRC {{DDR PLL}} \\
+      CONFIG.PCW_DCI_PERIPHERAL_DIVISOR0 {{52}} \\
+      CONFIG.PCW_DCI_PERIPHERAL_DIVISOR1 {{2}} \\
+      CONFIG.PCW_DCI_PERIPHERAL_FREQMHZ {{10.159}} \\
+      CONFIG.PCW_DDRPLL_CTRL_FBDIV {{21}} \\
+      CONFIG.PCW_DDR_DDR_PLL_FREQMHZ {{1050.000}} \\
+      CONFIG.PCW_DDR_HPRLPR_QUEUE_PARTITION {{HPR(0)/LPR(32)}} \\
+      CONFIG.PCW_DDR_HPR_TO_CRITICAL_PRIORITY_LEVEL {{15}} \\
+      CONFIG.PCW_DDR_LPR_TO_CRITICAL_PRIORITY_LEVEL {{2}} \\
+      CONFIG.PCW_DDR_PERIPHERAL_CLKSRC {{DDR PLL}} \\
+      CONFIG.PCW_DDR_PERIPHERAL_DIVISOR0 {{2}} \\
+      CONFIG.PCW_DDR_PORT0_HPR_ENABLE {{0}} \\
+      CONFIG.PCW_DDR_PORT1_HPR_ENABLE {{0}} \\
+      CONFIG.PCW_DDR_PORT2_HPR_ENABLE {{0}} \\
+      CONFIG.PCW_DDR_PORT3_HPR_ENABLE {{0}} \\
+      CONFIG.PCW_DDR_RAM_BASEADDR {{0x00100000}} \\
+      CONFIG.PCW_DDR_RAM_HIGHADDR {{0x1FFFFFFF}} \\
+      CONFIG.PCW_DDR_WRITE_TO_CRITICAL_PRIORITY_LEVEL {{2}} \\
+      CONFIG.PCW_ENET0_ENET0_IO {{MIO 16 .. 27}} \\
+      CONFIG.PCW_ENET0_GRP_MDIO_ENABLE {{1}} \\
+      CONFIG.PCW_ENET0_GRP_MDIO_IO {{MIO 52 .. 53}} \\
+      CONFIG.PCW_ENET0_PERIPHERAL_CLKSRC {{IO PLL}} \\
+      CONFIG.PCW_ENET0_PERIPHERAL_DIVISOR0 {{8}} \\
+      CONFIG.PCW_ENET0_PERIPHERAL_DIVISOR1 {{1}} \\
+      CONFIG.PCW_ENET0_PERIPHERAL_ENABLE {{1}} \\
+      CONFIG.PCW_ENET0_PERIPHERAL_FREQMHZ {{1000 Mbps}} \\
+      CONFIG.PCW_ENET0_RESET_ENABLE {{1}} \\
+      CONFIG.PCW_ENET0_RESET_IO {{MIO 9}} \\
+      CONFIG.PCW_ENET1_GRP_MDIO_ENABLE {{0}} \\
+      CONFIG.PCW_ENET1_PERIPHERAL_CLKSRC {{IO PLL}} \\
+      CONFIG.PCW_ENET1_PERIPHERAL_DIVISOR0 {{1}} \\
+      CONFIG.PCW_ENET1_PERIPHERAL_DIVISOR1 {{1}} \\
+      CONFIG.PCW_ENET1_PERIPHERAL_ENABLE {{0}} \\
+      CONFIG.PCW_ENET1_PERIPHERAL_FREQMHZ {{1000 Mbps}} \\
+      CONFIG.PCW_ENET1_RESET_ENABLE {{0}} \\
+      CONFIG.PCW_ENET_RESET_ENABLE {{1}} \\
+      CONFIG.PCW_ENET_RESET_POLARITY {{Active Low}} \\
+      CONFIG.PCW_ENET_RESET_SELECT {{Share reset pin}} \\
+      CONFIG.PCW_EN_4K_TIMER {{0}} \\
+      CONFIG.PCW_EN_EMIO_UART0 {{0}} \\
+      CONFIG.PCW_EN_ENET0 {{1}} \\
+      CONFIG.PCW_EN_GPIO {{1}} \\
+      CONFIG.PCW_EN_SDIO0 {{1}} \\
+      CONFIG.PCW_EN_UART0 {{1}} \\
+      CONFIG.PCW_EN_USB0 {{1}} \\
+      CONFIG.PCW_FCLK0_PERIPHERAL_DIVISOR0 {{5}} \\
+      CONFIG.PCW_FCLK0_PERIPHERAL_DIVISOR1 {{4}} \\
+      CONFIG.PCW_FCLK1_PERIPHERAL_DIVISOR0 {{1}} \\
+      CONFIG.PCW_FCLK1_PERIPHERAL_DIVISOR1 {{1}} \\
+      CONFIG.PCW_FCLK2_PERIPHERAL_DIVISOR0 {{1}} \\
+      CONFIG.PCW_FCLK2_PERIPHERAL_DIVISOR1 {{1}} \\
+      CONFIG.PCW_FCLK3_PERIPHERAL_DIVISOR0 {{1}} \\
+      CONFIG.PCW_FCLK3_PERIPHERAL_DIVISOR1 {{1}} \\
+      CONFIG.PCW_FPGA_FCLK0_ENABLE {{1}} \\
+      CONFIG.PCW_FPGA_FCLK1_ENABLE {{0}} \\
+      CONFIG.PCW_FPGA_FCLK2_ENABLE {{0}} \\
+      CONFIG.PCW_FPGA_FCLK3_ENABLE {{0}} \\
+      CONFIG.PCW_GPIO_MIO_GPIO_ENABLE {{1}} \\
+      CONFIG.PCW_GPIO_MIO_GPIO_IO {{MIO}} \\
+      CONFIG.PCW_GPIO_PERIPHERAL_ENABLE {{0}} \\
+      CONFIG.PCW_I2C0_RESET_ENABLE {{0}} \\
+      CONFIG.PCW_I2C1_RESET_ENABLE {{0}} \\
+      CONFIG.PCW_I2C_PERIPHERAL_FREQMHZ {{25}} \\
+      CONFIG.PCW_I2C_RESET_ENABLE {{1}} \\
+      CONFIG.PCW_IOPLL_CTRL_FBDIV {{20}} \\
+      CONFIG.PCW_IO_IO_PLL_FREQMHZ {{1000.000}} \\
+      CONFIG.PCW_IRQ_F2P_INTR {{{ps_config_helper()}}} \\
+      CONFIG.PCW_IRQ_F2P_MODE {{DIRECT}} \\
+      CONFIG.PCW_MIO_0_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_0_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_0_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_0_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_10_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_10_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_10_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_10_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_11_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_11_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_11_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_11_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_12_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_12_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_12_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_12_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_13_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_13_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_13_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_13_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_14_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_14_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_14_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_14_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_15_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_15_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_15_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_15_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_16_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_16_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_16_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_16_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_17_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_17_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_17_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_17_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_18_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_18_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_18_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_18_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_19_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_19_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_19_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_19_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_1_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_1_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_1_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_1_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_20_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_20_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_20_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_20_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_21_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_21_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_21_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_21_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_22_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_22_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_22_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_22_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_23_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_23_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_23_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_23_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_24_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_24_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_24_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_24_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_25_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_25_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_25_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_25_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_26_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_26_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_26_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_26_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_27_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_27_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_27_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_27_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_28_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_28_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_28_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_28_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_29_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_29_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_29_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_29_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_2_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_2_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_2_PULLUP {{disabled}} \\
+      CONFIG.PCW_MIO_2_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_30_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_30_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_30_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_30_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_31_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_31_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_31_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_31_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_32_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_32_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_32_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_32_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_33_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_33_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_33_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_33_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_34_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_34_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_34_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_34_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_35_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_35_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_35_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_35_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_36_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_36_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_36_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_36_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_37_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_37_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_37_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_37_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_38_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_38_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_38_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_38_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_39_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_39_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_39_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_39_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_3_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_3_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_3_PULLUP {{disabled}} \\
+      CONFIG.PCW_MIO_3_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_40_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_40_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_40_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_40_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_41_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_41_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_41_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_41_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_42_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_42_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_42_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_42_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_43_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_43_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_43_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_43_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_44_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_44_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_44_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_44_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_45_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_45_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_45_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_45_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_46_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_46_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_46_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_46_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_47_DIRECTION {{in}} \\
+      CONFIG.PCW_MIO_47_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_47_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_47_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_48_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_48_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_48_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_48_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_49_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_49_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_49_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_49_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_4_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_4_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_4_PULLUP {{disabled}} \\
+      CONFIG.PCW_MIO_4_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_50_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_50_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_50_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_50_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_51_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_51_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_51_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_51_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_52_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_52_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_52_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_52_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_53_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_53_IOTYPE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_MIO_53_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_53_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_5_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_5_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_5_PULLUP {{disabled}} \\
+      CONFIG.PCW_MIO_5_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_6_DIRECTION {{inout}} \\
+      CONFIG.PCW_MIO_6_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_6_PULLUP {{disabled}} \\
+      CONFIG.PCW_MIO_6_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_7_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_7_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_7_PULLUP {{disabled}} \\
+      CONFIG.PCW_MIO_7_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_8_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_8_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_8_PULLUP {{disabled}} \\
+      CONFIG.PCW_MIO_8_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_9_DIRECTION {{out}} \\
+      CONFIG.PCW_MIO_9_IOTYPE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_MIO_9_PULLUP {{enabled}} \\
+      CONFIG.PCW_MIO_9_SLEW {{slow}} \\
+      CONFIG.PCW_MIO_TREE_PERIPHERALS {{GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#ENET Reset#GPIO#GPIO#GPIO#GPIO#UART 0#UART 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#SD 0#SD 0#SD 0#SD 0#SD 0#SD 0#USB Reset#SD 0#GPIO#GPIO#GPIO#GPIO#Enet 0#Enet 0}} \\
+      CONFIG.PCW_MIO_TREE_SIGNALS {{gpio[0]#gpio[1]#gpio[2]#gpio[3]#gpio[4]#gpio[5]#gpio[6]#gpio[7]#gpio[8]#reset#gpio[10]#gpio[11]#gpio[12]#gpio[13]#rx#tx#tx_clk#txd[0]#txd[1]#txd[2]#txd[3]#tx_ctl#rx_clk#rxd[0]#rxd[1]#rxd[2]#rxd[3]#rx_ctl#data[4]#dir#stp#nxt#data[0]#data[1]#data[2]#data[3]#clk#data[5]#data[6]#data[7]#clk#cmd#data[0]#data[1]#data[2]#data[3]#reset#cd#gpio[48]#gpio[49]#gpio[50]#gpio[51]#mdc#mdio}} \\
+      CONFIG.PCW_OVERRIDE_BASIC_CLOCK {{0}} \\
+      CONFIG.PCW_PACKAGE_DDR_BOARD_DELAY0 {{0.191}} \\
+      CONFIG.PCW_PACKAGE_DDR_BOARD_DELAY1 {{0.181}} \\
+      CONFIG.PCW_PACKAGE_DDR_BOARD_DELAY2 {{0.085}} \\
+      CONFIG.PCW_PACKAGE_DDR_BOARD_DELAY3 {{0.092}} \\
+      CONFIG.PCW_PACKAGE_DDR_DQS_TO_CLK_DELAY_0 {{-0.023}} \\
+      CONFIG.PCW_PACKAGE_DDR_DQS_TO_CLK_DELAY_1 {{-0.005}} \\
+      CONFIG.PCW_PACKAGE_DDR_DQS_TO_CLK_DELAY_2 {{-0.009}} \\
+      CONFIG.PCW_PACKAGE_DDR_DQS_TO_CLK_DELAY_3 {{-0.033}} \\
+      CONFIG.PCW_PCAP_PERIPHERAL_CLKSRC {{IO PLL}} \\
+      CONFIG.PCW_PCAP_PERIPHERAL_DIVISOR0 {{5}} \\
+      CONFIG.PCW_PCAP_PERIPHERAL_FREQMHZ {{200}} \\
+      CONFIG.PCW_PJTAG_PERIPHERAL_ENABLE {{0}} \\
+      CONFIG.PCW_PLL_BYPASSMODE_ENABLE {{0}} \\
+      CONFIG.PCW_PRESET_BANK0_VOLTAGE {{LVCMOS 3.3V}} \\
+      CONFIG.PCW_PRESET_BANK1_VOLTAGE {{LVCMOS 1.8V}} \\
+      CONFIG.PCW_QSPI_GRP_FBCLK_ENABLE {{0}} \\
+      CONFIG.PCW_QSPI_GRP_IO1_ENABLE {{0}} \\
+      CONFIG.PCW_QSPI_GRP_SINGLE_SS_ENABLE {{0}} \\
+      CONFIG.PCW_QSPI_GRP_SS1_ENABLE {{0}} \\
+      CONFIG.PCW_QSPI_PERIPHERAL_CLKSRC {{IO PLL}} \\
+      CONFIG.PCW_QSPI_PERIPHERAL_DIVISOR0 {{1}} \\
+      CONFIG.PCW_QSPI_PERIPHERAL_ENABLE {{0}} \\
+      CONFIG.PCW_QSPI_PERIPHERAL_FREQMHZ {{200}} \\
+      CONFIG.PCW_SD0_GRP_CD_ENABLE {{1}} \\
+      CONFIG.PCW_SD0_GRP_CD_IO {{MIO 47}} \\
+      CONFIG.PCW_SD0_GRP_POW_ENABLE {{0}} \\
+      CONFIG.PCW_SD0_GRP_WP_ENABLE {{0}} \\
+      CONFIG.PCW_SD0_PERIPHERAL_ENABLE {{1}} \\
+      CONFIG.PCW_SD0_SD0_IO {{MIO 40 .. 45}} \\
+      CONFIG.PCW_SDIO_PERIPHERAL_CLKSRC {{IO PLL}} \\
+      CONFIG.PCW_SDIO_PERIPHERAL_DIVISOR0 {{10}} \\
+      CONFIG.PCW_SDIO_PERIPHERAL_FREQMHZ {{100}} \\
+      CONFIG.PCW_SDIO_PERIPHERAL_VALID {{1}} \\
+      CONFIG.PCW_SMC_PERIPHERAL_CLKSRC {{IO PLL}} \\
+      CONFIG.PCW_SMC_PERIPHERAL_DIVISOR0 {{1}} \\
+      CONFIG.PCW_SMC_PERIPHERAL_FREQMHZ {{100}} \\
+      CONFIG.PCW_SPI_PERIPHERAL_DIVISOR0 {{1}} \\
+      CONFIG.PCW_TPIU_PERIPHERAL_CLKSRC {{External}} \\
+      CONFIG.PCW_TPIU_PERIPHERAL_DIVISOR0 {{1}} \\
+      CONFIG.PCW_TPIU_PERIPHERAL_FREQMHZ {{200}} \\
+    '''))
 
 
 def write_ps_AXI(slave_size, master_size):
     global tclFile
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
+    # Create instance: mb_axi_mem_interconnect_0, and set properties
+    set mb_axi_mem_interconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 mb_axi_mem_interconnect_0 ]
+    set_property -dict [ list \\
+      CONFIG.NUM_MI {{{master_size}}} \\
+      CONFIG.NUM_SI {{{slave_size}}} \\
+    ] $mb_axi_mem_interconnect_0
+    '''))
+
+    tclFile.write(textwrap.dedent(f'''
     # Create instance: ps7_0_axi_periph, and set properties
     set ps7_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 ps7_0_axi_periph ]
     set_property -dict [ list \\
-    CONFIG.ENABLE_ADVANCED_OPTIONS {{1}} \\
-    CONFIG.NUM_MI {{{master_size}}} \\
-    CONFIG.NUM_SI {{{slave_size}}} \\
+      CONFIG.ENABLE_ADVANCED_OPTIONS {{1}} \\
+      CONFIG.NUM_MI {{{master_size}}} \\
+      CONFIG.NUM_SI {{{slave_size}}} \\
     ] $ps7_0_axi_periph
 
     # Create instance: rst_ps7_0_50M, and set properties
     set rst_ps7_0_50M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ps7_0_50M ]
-    ''')
+    '''))
 
 
-def write_peripheral_interface_connection(uartLiteSize, shared_bram_info):
+def write_peripheral_interface_connection(uartList, shared_bram_info):
     global tclFile
 
     if len(shared_bram_info) == 1:
-        tclFile.write(f'''
-    connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTA [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA] [get_bd_intf_pins blk_mem_gen_0/BRAM_PORTA]
-    ''')
-    tclFile.write(f'''
-    connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports btns_2bits] [get_bd_intf_pins axi_gpio_0/GPIO]
-    ''')
+        tclFile.write(textwrap.dedent(f'''
+        connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTA [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA] [get_bd_intf_pins blk_mem_gen_0/BRAM_PORTA]
+        '''))
 
-    for i in range(uartLiteSize):
+    gpio_list = search_peripheral_by_type(peripheralInfo, 'AXI_GPIO')
+    if len(gpio_list) == 1:
+        gpio_instance = gpio_list[0]
+        if 'Board_Interface' in gpio_instance:
+            tclFile.write(textwrap.dedent(f'''
+            connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports btns_2bits] [get_bd_intf_pins axi_gpio_0/GPIO]
+            '''))
 
-        if (i == 0):
-            tclFile.write(f'''
+    for i in range(len(uartList)):
+        if i == 0:
+            tclFile.write(textwrap.dedent(f'''
             connect_bd_intf_net -intf_net axi_uartlite_{i}_UART [get_bd_intf_ports uart_rtl] [get_bd_intf_pins axi_uartlite_{i}/UART]
-            ''')
+            '''))
         else:
-            tclFile.write(f'''
+            tclFile.write(textwrap.dedent(f'''
             connect_bd_intf_net -intf_net axi_uartlite_{i}_UART [get_bd_intf_ports uart_rtl_{i - 1}] [get_bd_intf_pins axi_uartlite_{i}/UART]
-            ''')
+            '''))
 
 
-def write_ps_interface_connections(uartLiteSize, shared_bram_info):
+def write_ps_interface_connections(uartList, shared_bram_info, interruptInfo):
     global tclFile
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     connect_bd_intf_net -intf_net processing_system7_0_DDR [get_bd_intf_ports DDR] [get_bd_intf_pins processing_system7_0/DDR]
     connect_bd_intf_net -intf_net processing_system7_0_FIXED_IO [get_bd_intf_ports FIXED_IO] [get_bd_intf_pins processing_system7_0/FIXED_IO]
     connect_bd_intf_net -intf_net processing_system7_0_M_AXI_GP0 [get_bd_intf_pins processing_system7_0/M_AXI_GP0] [get_bd_intf_pins ps7_0_axi_periph/S00_AXI]
     connect_bd_intf_net -intf_net ps7_0_axi_periph_M00_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M00_AXI]
-    connect_bd_intf_net -intf_net ps7_0_axi_periph_M01_AXI [get_bd_intf_pins mdm_1/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M01_AXI]
-    ''')
+    connect_bd_intf_net -intf_net ps7_0_axi_periph_M01_AXI [get_bd_intf_pins mdm_0/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M01_AXI]
+    '''))
 
-    for i in range(uartLiteSize):
-        tclFile.write(f'''
+    for i in range(len(uartList)):
+        tclFile.write(textwrap.dedent(f'''
         connect_bd_intf_net -intf_net ps7_0_axi_periph_M0{i + 2}_AXI [get_bd_intf_pins axi_uartlite_{i}/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M0{i + 2}_AXI]
-        ''')
+        '''))
     for i in range(len(shared_bram_info)):
-        tclFile.write(f'''
-        connect_bd_intf_net -intf_net ps7_0_axi_periph_M0{i + 2 + uartLiteSize}_AXI [get_bd_intf_pins axi_bram_ctrl_0/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M0{i + 2 + uartLiteSize}_AXI]
-        ''')
+        tclFile.write(textwrap.dedent(f'''
+        connect_bd_intf_net -intf_net ps7_0_axi_periph_M0{i + 2 + len(uartList)}_AXI [get_bd_intf_pins axi_bram_ctrl_0/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M0{i + 2 + len(uartList)}_AXI]
+        '''))
+    for i in range(len(interruptInfo)):
+        tclFile.write(textwrap.dedent(f'''
+        connect_bd_intf_net -intf_net ps7_0_axi_periph_M0{i + 2 + len(uartList) + len(shared_bram_info)}_AXI [get_bd_intf_pins axi_intc_{i}/s_axi] [get_bd_intf_pins ps7_0_axi_periph/M0{i + 2 + len(uartList) + len(shared_bram_info)}_AXI]
+        '''))
+
+    for interrupt in interruptInfo:
+        interruptData = interruptInfo[interrupt]
+        if 'Interrupt' in interruptData:
+            tclFile.write(textwrap.dedent(f'''
+            connect_bd_intf_net -intf_net {interrupt}_interrupt [get_bd_intf_pins {interrupt}/interrupt] [get_bd_intf_pins {interruptData['Interrupt']}]
+            '''))
 
 
 def write_port_connections():
-    global tclFile
+    global tclFile, interruptInfo
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     connect_bd_net -net axi_uartlite_0_interrupt [get_bd_pins axi_uartlite_0/interrupt] [get_bd_pins processing_system7_0/IRQ_F2P]
-    ''')
+    '''))
 
-    uartList = search_peripheral_by_type(peripheralInfo, 'UART_Lite')
+    uart_list = search_peripheral_by_type(peripheralInfo, 'UART_Lite')
+    clk_wizard_list = search_peripheral_by_type(peripheralInfo, 'Clocking_Wizard')
 
-    for i in range(len(uartList)):
-        uartNode = uartList[i]
+    for i in range(len(uart_list)):
+        uart_node = uart_list[i]
 
-        if (len(uartNode['Data_Transfer']) > 0):
-            tclFile.write(f'''
+        if len(uart_node['Data_Transfer']) > 0:
+            tclFile.write(textwrap.dedent(f'''
             connect_bd_net -net axi_uartlite_{i}_tx [get_bd_pins axi_uartlite_{i}/rx] [get_bd_pins axi_uartlite_{i}/tx]
-            ''')
+            '''))
 
-    tclFile.write(f'''
-    connect_bd_net -net mdm_1_debug_sys_rst [get_bd_pins mdm_1/Debug_SYS_Rst] [get_bd_pins rst_ps7_0_50M/mb_debug_sys_rst]
+    for interrupt in interruptInfo:
+        interrupt_data = interruptInfo[interrupt]
+        if 'Intr' in interrupt_data:
+            tclFile.write(textwrap.dedent(f'''
+            connect_bd_net -net {interrupt}_intr [get_bd_pins {interrupt}/intr] [get_bd_pins {interrupt_data['Intr']}]
+            '''))
+
+    for i in range(len(clk_wizard_list)):
+        clk_wizard_data = clk_wizard_list[i]
+        for j in range(1, 4):
+            if 'clk_out' + str(j) in clk_wizard_data:
+                tclFile.write(textwrap.dedent(f'''
+                connect_bd_net -net clk_wiz_{i}_clk_out{j} [get_bd_pins clk_wiz_{i}/clk_out{j}] [get_bd_pins {clk_wizard_data['clk_out' + str(j)]}]
+                '''))
+
+    tclFile.write(textwrap.dedent(f'''
+    connect_bd_net -net mdm_0_debug_sys_rst [get_bd_pins mdm_0/Debug_SYS_Rst] [get_bd_pins rst_ps7_0_50M/mb_debug_sys_rst] {" ".join(['[get_bd_pins clk_wiz_' + str(i) + '/reset]' for i in range(len(clk_wizard_list))])}
     connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_ps7_0_50M/ext_reset_in]
-    ''')
+    '''))
 
 
-def write_ps_address_segment(uartSize, shared_bram_info):
+def write_ps_address_segment(uartSize, shared_bram_info, interruptInfo):
     global tclFile
 
     if len(shared_bram_info) == 1:
         sharedMemorySize = shared_bram_info[0]['Size'].replace('KB', '')
         sharedMemorySize = hex(int(sharedMemorySize) * 1024)
-        tclFile.write(f'''
-        create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_info[0]['Base Address']} [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
-        ''')
+        tclFile.write(textwrap.dedent(f'''
+        create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_info[0]['Base_Address']} [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
+        '''))
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     create_bd_addr_seg -range 0x00010000 -offset 0x41200000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
-    create_bd_addr_seg -range 0x00001000 -offset 0x43400000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs mdm_1/S_AXI/Reg] SEG_mdm_1_Reg
-    ''')
+    create_bd_addr_seg -range 0x00001000 -offset 0x43400000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs mdm_0/S_AXI/Reg] SEG_mdm_0_Reg
+    '''))
+
+    interrupt_memory_base = 0x41800000
+    interrupt_memory_step = 0x10000
+
+    for i in range(len(interruptInfo)):
+        interrupt_memory_offset = interrupt_memory_base + i * interrupt_memory_step
+        tclFile.write(textwrap.dedent(f'''
+        create_bd_addr_seg -range 0x00010000 -offset {interrupt_memory_offset : #0{10}X} [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_intc_{i}/S_AXI/Reg] SEG_axi_intc_{i}_Reg
+        '''))
 
     offset = '0x42C00000'
 
     for i in range(uartSize):
-        tclFile.write(f'''
+        tclFile.write(textwrap.dedent(f'''
         create_bd_addr_seg -range 0x00010000 -offset {offset} [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_uartlite_{i}/S_AXI/Reg] SEG_axi_uartlite_{i}_Reg
-        ''')
+        '''))
         offset = str(hex(int(offset, 16) + 65536))
 
 
 def write_synthesis_implementation_bitStream_properties(boardInfo, projectInfo):
     global tclFile
 
-    tclFile.write(f'''
+    tclFile.write(textwrap.dedent(f'''
     # Restore current instance
     current_bd_instance $oldCurInst
 
@@ -1458,7 +1610,7 @@ def write_synthesis_implementation_bitStream_properties(boardInfo, projectInfo):
 
     make_wrapper -files [get_files "{projectInfo['Location']}{projectInfo['Folder_Name']}/{projectInfo['Name']}.srcs/sources_1/bd/design_1/design_1.bd"] -top
     add_files -norecurse "{projectInfo['Location']}{projectInfo['Folder_Name']}/{projectInfo['Name']}.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v"
-    ''')
+    '''))
 
 
 def suppress_warnings():
@@ -1468,10 +1620,10 @@ def suppress_warnings():
         warn = open(os.path.join(projectInfo['Location'], "tes.tcl"), "a+")
     except Exception as e:
         print("Unable to open secrets file: {e}".format(e=e))
-    warn.write(f'''
+    warn.write(textwrap.dedent(f'''
     set_property SEVERITY {{Warning}} [get_drc_checks NSTD-1]
     set_property SEVERITY {{Warning}} [get_drc_checks UCIO-1]
-    ''')
+    '''))
 
     warn.close()
 
@@ -1510,7 +1662,7 @@ def main():
     args = parser.parse_args()
     parse_config_file(args.config_path)
     suppress_warnings()
-    global tclFile, axiPortCount, uartList
+    global tclFile, axiPortCount, axiMasterCount, uartList, interruptInfo
 
     if os.path.exists(projectInfo['Location'] + "/design_bd.tcl"):
         os.remove(projectInfo['Location'] + "/design_bd.tcl")
@@ -1519,20 +1671,27 @@ def main():
     uartList = search_peripheral_by_type(peripheralInfo, 'UART_Lite')
     write_board_and_project_configurations(boardInfo, projectInfo)
     shared_bram_info = search_peripheral_by_type(peripheralInfo, "block RAM generator")
+    clk_wizard_info = search_peripheral_by_type(peripheralInfo, "Clocking_Wizard")
+    system_ila_info = search_peripheral_by_type(peripheralInfo, "System_ILA")
 
     if len(shared_bram_info) >= 1:
         create_block_memory_generator(shared_bram_info)
-        write_axi_bram_controller_instance()
+        create_axi_bram_controller_instance()
 
     for i in range(len(TEEConfigList)):
         create_TEE_local_memory_cell(i, shared_bram_info)
 
     write_root_design()
     create_uart_interface_ports(len(uartList))
-    write_gpio_instances()
-    create_uart_lite_instance(len(uartList))
+    create_gpio_instances()
+    create_axi_interrupt_instance()
+    create_clk_wizard_instance(clk_wizard_info)
+    create_system_ila_instance(system_ila_info)
+    create_uart_lite_instance()
     create_MDM_block(len(TEEConfigList))
+
     axiPortCount = 4 * len(TEEConfigList) + 1
+    axiMasterCount = 2 + len(uartList) + len(shared_bram_info) + len(interruptInfo)
 
     for i in range(len(TEEConfigList)):
         temp = {}
@@ -1557,14 +1716,14 @@ def main():
 
     write_ps_config()
     write_uart_properties()
-    write_ps_AXI(axiPortCount, 2 + len(uartList) + len(shared_bram_info))
-    write_peripheral_interface_connection(len(uartList), shared_bram_info)
+    write_ps_AXI(axiPortCount, axiMasterCount)
+    write_peripheral_interface_connection(uartList, shared_bram_info)
 
     for i in range(len(TEEConfigList)):
         connecting_interface(i)
 
-    write_ps_interface_connections(len(uartList), shared_bram_info)
-    set_clock_for_all(len(TEEConfigList) - 1, len(uartList), shared_bram_info)
+    write_ps_interface_connections(uartList, shared_bram_info, interruptInfo)
+    set_clock_for_all(len(TEEConfigList) - 1, len(uartList), shared_bram_info, len(interruptInfo))
     write_port_connections()
 
     for i in range(len(TEEConfigList)):
@@ -1572,9 +1731,9 @@ def main():
         BRAM_Size = BRAM_Size.replace('KB', '')
         BRAM_Size = hex(int(BRAM_Size) * 1024)
         # print (BRAM_Size)
-        create_MB_address_segment(i, BRAM_Size, len(uartList), shared_bram_info)
+        create_MB_address_segment(i, BRAM_Size, len(uartList), shared_bram_info, interruptInfo)
 
-    write_ps_address_segment(len(uartList), shared_bram_info)
+    write_ps_address_segment(len(uartList), shared_bram_info, interruptInfo)
 
     for i in range(len(uartList)):
         uartNode = uartList[i]
@@ -1600,11 +1759,13 @@ def main():
 slaveAxiPortCount = 0
 numberOfTEE = 0
 axiPortCount = 0
+axiMasterCount = 0
 cacheTracker = []
 TEEConfigList = []
 boardInfo = {}
 projectInfo = {}
 peripheralInfo = {}
+interruptInfo = {}
 
 if __name__ == '__main__':
     main()

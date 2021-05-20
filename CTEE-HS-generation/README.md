@@ -29,5 +29,4 @@ To test different files you have to modify the configuration file name in the `p
         This test create two Trusted Execution Environment along with one cortex-A processor on the PS side. There will be two peripherals, one UART and one GPIO. UART Lite will be accessable from all the processors. This configuration file will create a shared BRAM between the processors of size 32KB.
     
      # Test cse 5 (config.json):
-    
         This test case is used for development purpose.

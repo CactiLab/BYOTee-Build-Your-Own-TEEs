@@ -8,7 +8,7 @@
   "Project": {
     "Folder_Name" : "Shared_mem_with_two_MB",
     "Name": "Project_Shared_mem_with_two_MB",
-    "Location": "/home/tomal/Desktop/cmdTest/"
+    "Location": "/home/tomal/Downloads/Test/"
   },
   "REE": {
     "Clock_Speed": "50MHz",
@@ -74,7 +74,7 @@
     "shared_bram" : {
       "Type" : "block RAM generator",
       "Memory_type" : "Single_Port_RAM",
-      "Base Address" : "0x40000000",
+      "Base_Address" : "0x40000000",
       "Size" : "32KB"
 
     }
