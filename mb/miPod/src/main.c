@@ -51,7 +51,7 @@ void query_drm()
 // loads a file into the song buffer with the associate
 // returns the size of the file or 0 on error
 size_t load_file(char *fname, char *file_buf) {
-    int fd, total_read_bytes = 0;;
+    int fd, total_read_bytes = 0;
     struct stat sb;
     mp_printf("Inside load file function \r\n");
     fd = open(fname, O_RDONLY);
@@ -151,11 +151,12 @@ void load_song_file(char *code_file,char *song_file)
 
 void query_song(char *song_file_name) {
     // load file into shared buffer
-	if (!song_file_name) {
-	        mp_printf("Invalid file name\r\n");
-	        print_help();
-	        return;
-	    }
+	if (!song_file_name)
+	{
+		mp_printf("Invalid file name\r\n");
+		print_help();
+		return;
+	}
 	strcpy((void*)c->input, "query");
     if (!load_file(song_file_name, (void *)&c->input + COMMAND_SIZE))
     {

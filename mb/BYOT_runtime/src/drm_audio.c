@@ -20,6 +20,7 @@ static XAxiDma sAxiDma;
 
 // shared command channel -- read/write for both PS and PL
 player_input received_input;
+
 volatile char *input = (char *)0x189f8;
 // internal state store
 drm_internal_state s;
@@ -136,7 +137,7 @@ void login()
 {
     if (s.logged_in)
     {
-        mb_printf("Already logged in. Please log out first.\r\n");
+        mb_printf("User %s Already logged in. Please log out first.\r\n", s.username);
        // memcpy((void *)c->username, s.username, USERNAME_SZ);
         //memcpy((void *)c->pin, s.pin, MAX_PIN_SZ);
     }
@@ -176,17 +177,16 @@ void login()
         memset(received_input.pin, 0, MAX_PIN_SZ);
     }
 }
-/*
+
 // attempt to log out
 void logout()
 {
-    if (c->login_status)
+    if (s.logged_in)
     {
         mb_printf("Logging out...\r\n");
         s.logged_in = 0;
-        c->login_status = 0;
-        memset((void *)c->username, 0, USERNAME_SZ);
-        memset((void *)c->pin, 0, MAX_PIN_SZ);
+        memset(s.username, 0, USERNAME_SZ);
+        memset(s.pin, 0, MAX_PIN_SZ);
         s.uid = 0;
     }
     else
@@ -194,7 +194,32 @@ void logout()
         mb_printf("Not logged in\r\n");
     }
 }
-*/
+
+void query_song() {
+    char *name;
+
+    song song_data;
+    memcpy(&song_data, (void *)input, sizeof(song));
+
+
+    // copy owner name
+    uid_to_username(song_data.md.owner_id, &name, FALSE);
+
+    mb_printf("Owner: %s \r\n", name);
+    // copy region names
+   /*for (int i = 0; i < song_data.md.num_regions; i++) {
+        rid_to_region_name(s.song_md.rids[i], &name, FALSE);
+        strcpy((char *)q_region_lookup(c->query, i), name);
+    }
+
+    // copy authorized uid names
+    for (int i = 0; i < s.song_md.num_users; i++) {
+        uid_to_username(s.song_md.uids[i], &name, FALSE);
+        strcpy((char *)q_user_lookup(c->query, i), name);
+    }*/
+
+    mb_printf("Queried song (%d regions, %d users)\r\n", song_data.md.num_regions, song_data.md.num_users);
+}
 
 //////////////////////// MAIN ////////////////////////
 
@@ -209,6 +234,14 @@ int ssc()
 	if (!strcmp(received_input.cmd, "login")) {
 		xil_printf("LOGIN COMMAND received\r\n");
 		login();
+	}
+	else if (!strcmp(received_input.cmd, "logout")) {
+		xil_printf("LOGOUT COMMAND received\r\n");
+		logout();
+	}
+	else if (!strcmp(received_input.cmd, "query"))  {
+		xil_printf("Query song COMMAND received\r\n");
+		query_song();
 	}
     return 0;
 }

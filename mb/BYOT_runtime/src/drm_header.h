@@ -1,11 +1,29 @@
 // struct to interpret shared command channel
 #define COMMAND_SIZE 10
+
 typedef volatile struct __attribute__((__packed__))
 {
     char cmd[COMMAND_SIZE];
     char username[USERNAME_SZ];
     char pin[MAX_PIN_SZ];
 } player_input;
+
+
+typedef struct __attribute__((__packed__)) {
+    char md_size;
+    char owner_id;
+    char num_regions;
+    char num_users;
+    char buf[];
+} drm_md;
+
+typedef struct __attribute__((__packed__)) {
+    char packing1[4];
+    int file_size;
+    char packing2[32];
+    int wav_size;
+    drm_md md;
+} song;
 
 typedef struct
 {
