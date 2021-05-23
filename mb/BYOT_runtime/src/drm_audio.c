@@ -195,28 +195,43 @@ void logout()
     }
 }
 
+void load_song_md(song song_data) {
+	s.song_md.md_size = song_data.md.md_size;
+	s.song_md.owner_id = song_data.md.owner_id;
+	s.song_md.num_regions = song_data.md.num_regions;
+	s.song_md.num_users = song_data.md.num_users;
+	memcpy(s.song_md.rids, (void *)get_drm_rids(song_data), s.song_md.num_regions);
+	memcpy(s.song_md.uids, (void *)get_drm_uids(song_data), s.song_md.num_users);
+}
+
 void query_song() {
     char *name;
 
     song song_data;
-    memcpy(&song_data, (void *)input, sizeof(song));
+    memcpy(&song_data, (void *)input + COMMAND_SIZE, sizeof(song));
 
 
     // copy owner name
     uid_to_username(song_data.md.owner_id, &name, FALSE);
 
     mb_printf("Owner: %s \r\n", name);
+    load_song_md(song_data);
     // copy region names
-   /*for (int i = 0; i < song_data.md.num_regions; i++) {
-        rid_to_region_name(s.song_md.rids[i], &name, FALSE);
-        strcpy((char *)q_region_lookup(c->query, i), name);
-    }
-
+    mb_printf("Regions: ");
+	   for (int i = 0; i < s.song_md.num_regions; i++) {
+			rid_to_region_name(s.song_md.rids[i], &name, FALSE);
+			//strcpy((char *)q_region_lookup(c->query, i), name);
+			mb_printf("%s ", name);
+		}
+	   mb_printf("\r\n");
     // copy authorized uid names
+	mb_printf("Users: ");
     for (int i = 0; i < s.song_md.num_users; i++) {
         uid_to_username(s.song_md.uids[i], &name, FALSE);
-        strcpy((char *)q_user_lookup(c->query, i), name);
-    }*/
+       // strcpy((char *)q_user_lookup(c->query, i), name);
+        mb_printf("%s ", name);
+    }
+    mb_printf("\r\n");
 
     mb_printf("Queried song (%d regions, %d users)\r\n", song_data.md.num_regions, song_data.md.num_users);
 }

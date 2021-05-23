@@ -13,7 +13,7 @@
 #define USR_CMD_SZ 64
 
 #define CODE_SIZE 50000
-#define INPUT_SIZE 2000
+#define INPUT_SIZE 1200000
 #define OUTPUT_SIZE 2000
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64

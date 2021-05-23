@@ -66,11 +66,11 @@ size_t load_file(char *fname, char *file_buf) {
         mp_printf("Failed to stat file! Error = %d\r\n", errno);
         return 0;
     }
-    if ( sb.st_size > CODE_SIZE)
+  /*  if ( sb.st_size > CODE_SIZE)
     {
     	mp_printf("Code size if bigger than buffer space can not execute SSC code\r\n");
     	return 0;
-    }
+    }*/
 
     while (total_read_bytes < sb.st_size)
     {
