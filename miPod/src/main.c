@@ -128,26 +128,59 @@ void load_code(char *fileName)
         continue; // wait for DRM to dump file
     mp_printf("Finished executing file\r\n");
 }
-/*
-void load_song_file(char *code_file,char *song_file)
-{
-    if (!load_file(song_file, (void *)&c->input))
-    {
-        mp_printf("Failed to load song file!\r\n");
-        return -1;
+// attempts to share a song with a user
+void share_song(char *song_name, char *username) {
+    int fd;
+    unsigned int length;
+    ssize_t wrote, written = 0;
+
+    if (!username) {
+        mp_printf("Need song name and username\r\n");
+        print_help();
     }
-    if (!load_file(code_file, (void *)&c->code))
-    {
-        mp_printf("Failed to load code!\r\n");
-        return -1;
+
+    // load the song into the shared buffer
+    strcpy((char *)c->input, username);
+    if (!load_file(song_name, (void*)&c->input + 10)) {
+        mp_printf("Failed to load song!\r\n");
+        return;
     }
-    send_command(PLAY);
-    while (c->drm_state == STOPPED)
-        continue; // wait for DRM to start working
-    while (c->drm_state == WORKING)
-        continue; // wait for DRM to dump file
-    mp_printf("Song file loaded\r\n");
-} */
+
+   // strcpy((char *)c->input, username);
+
+    // drive DRM
+    send_command(SSC_COMMAND);
+    while (c->drm_state == STOPPED) continue; // wait for DRM to start working
+    while (c->drm_state == WORKING) continue; // wait for DRM to share song
+
+    // request was rejected if WAV length is 0
+   /* length = c->song.wav_size;
+    if (length == 0) {
+        mp_printf("Share rejected\r\n");
+        return;
+    }
+
+    // open output file
+    fd = open(song_name, O_WRONLY);
+    if (fd == -1){
+        mp_printf("Failed to open file! Error = %d\r\n", errno);
+        return;
+    }
+
+    // write song dump to file
+    mp_printf("Writing song to file '%s' (%dB)\r\n", song_name, length);
+    while (written < length) {
+        wrote = write(fd, (char *)&c->song + written, length - written);
+        if (wrote == -1) {
+            mp_printf("Error in writing file! Error = %d\r\n", errno);
+            return;
+        }
+        written += wrote;
+    }
+    close(fd);
+    mp_printf("Finished writing file\r\n");*/
+}
+
 
 void query_song(char *song_file_name) {
     // load file into shared buffer
@@ -224,6 +257,10 @@ int main(int argc, char **argv)
         {
         	 query_song(arg1);
         }
+        else if (!strcmp(cmd, "share"))
+	    {
+        	share_song(arg1, arg2);
+	    }
         else
         {
             mp_printf("Unrecognized command.\r\n\r\n");
