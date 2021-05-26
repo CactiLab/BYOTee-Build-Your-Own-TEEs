@@ -20,7 +20,7 @@ static XAxiDma sAxiDma;
 
 // shared command channel -- read/write for both PS and PL
 player_input received_input;
-
+volatile drm_audio_channel *drm_chnl = (drm_audio_channel*)SHARED_DDR_BASE;
 volatile char *input = (char *)0x189f8;
 // internal state store
 drm_internal_state s;
@@ -196,12 +196,13 @@ void logout()
 }
 
 void load_song_md(song song_data) {
-	s.song_md.md_size = song_data.md.md_size;
-	s.song_md.owner_id = song_data.md.owner_id;
-	s.song_md.num_regions = song_data.md.num_regions;
-	s.song_md.num_users = song_data.md.num_users;
-	memcpy(s.song_md.rids, (void *)get_drm_rids(song_data), s.song_md.num_regions);
-	memcpy(s.song_md.uids, (void *)get_drm_uids(song_data), s.song_md.num_users);
+	//s.song_md.md_size = song_data.md.md_size;
+	s.song_md.md_size = drm_chnl->song.md.md_size;
+	s.song_md.owner_id = drm_chnl->song.md.owner_id;
+	s.song_md.num_regions = drm_chnl->song.md.num_regions;
+	s.song_md.num_users = drm_chnl->song.md.num_users;
+	memcpy(s.song_md.rids, (void *)get_drm_rids(drm_chnl->song), s.song_md.num_regions);
+	memcpy(s.song_md.uids, (void *)get_drm_uids(drm_chnl->song), s.song_md.num_users);
 }
 
 void query_song() {

@@ -1,6 +1,6 @@
 // struct to interpret shared command channel
 #define COMMAND_SIZE 10
-
+#define SHARED_DDR_BASE (0x20000000 + 0x1CC00000 + 0xcf08)
 typedef volatile struct __attribute__((__packed__))
 {
     char cmd[COMMAND_SIZE];
@@ -34,6 +34,18 @@ typedef struct {
     u8 uids[64];
 } song_md;
 
+typedef volatile struct __attribute__((__packed__)) {
+    char cmd;                   // from commands enum
+    char drm_state;             // from states enum
+    char login_status;          // 0 = logged off, 1 = logged on
+    char padding;               // not used
+    // shared buffer is either a drm song or a query
+    union {
+        song song;
+       // query query;
+       // char buf[MAX_SONG_SZ]; // sets correct size of cmd_channel for allocation
+    };
+} drm_audio_channel;
 
 #define get_drm_rids(d) (d.md.buf)
 #define get_drm_uids(d) (d.md.buf + d.md.num_regions)

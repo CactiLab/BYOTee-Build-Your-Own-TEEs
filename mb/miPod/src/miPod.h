@@ -31,6 +31,21 @@
 enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
+typedef struct __attribute__((__packed__)) {
+    char md_size;
+    char owner_id;
+    char num_regions;
+    char num_users;
+    char buf[];
+} drm_md;
+
+typedef struct __attribute__((__packed__)) {
+    char packing1[4];
+    int file_size;
+    char packing2[32];
+    int wav_size;
+    drm_md md;
+} song;
 
 // struct to interpret shared command channel
 typedef volatile struct __attribute__((__packed__)) {
@@ -41,4 +56,16 @@ typedef volatile struct __attribute__((__packed__)) {
    //char output[OUTPUT_SIZE];
 } cmd_channel;
 
+typedef volatile struct __attribute__((__packed__)) {
+    char cmd;                   // from commands enum
+    char drm_state;             // from states enum
+    char login_status;          // 0 = logged off, 1 = logged on
+    char padding;               // not used
+    // shared buffer is either a drm song or a query
+    union {
+        song song;
+       // query query;
+       // char buf[MAX_SONG_SZ]; // sets correct size of cmd_channel for allocation
+    };
+} drm_audio_channel;
 #endif /* SRC_MIPOD_H_ */
