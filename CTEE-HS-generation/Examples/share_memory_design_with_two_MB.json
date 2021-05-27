@@ -72,7 +72,7 @@
       }
     },
     "shared_bram" : {
-      "Type" : "block RAM generator",
+      "Type" : "Block_RAM_Generator",
       "Memory_type" : "Single_Port_RAM",
       "Base_Address" : "0x40000000",
       "Size" : "32KB"

@@ -52,10 +52,15 @@
       }
     },
     "shared_bram" : {
-      "Type" : "block RAM generator",
-      "Memory_type" : "Single_Port_RAM",
+      "Type" : "Block_RAM_Generator",
+      "Memory_type" : "True_Dual_Port_RAM",
       "Base_Address" : "0x40000000",
       "Size" : "32KB"
+    },
+    "axi_dma_0" : {
+      "Type" : "AXI_Direct_Memory_Access",
+      "M_AXI_MM2S_Data_Width" : "32",
+      "MM2S_Burst_Size" : "16"
     },
     "clk_wiz_0" : {
       "Type" : "Clocking_Wizard",
@@ -79,6 +84,14 @@
       "Type" : "Concat",
       "Number_of_Ports" : "3",
       "dout" : "processing_system7_0/IRQ_F2P"
+    },
+    "xadc_wiz_0" : {
+      "Type" : "XADC_Wizard",
+      "ip2intc_irpt" : "xlconcat_0/In0"
+    },
+    "pwm_0" : {
+      "Type" : "Not_working_because_v2019_does_not_have_PWM",
+      "Number_of_PWM" : "6"
     }
   },
   "Interrupts" : {
