@@ -133,6 +133,66 @@ int username_to_uid(char *username, char *uid, int provisioned_only)
     return FALSE;
 }
 
+void load_song_md() {
+	s.song_md.md_size = drm_chnl->audio_data.song.md.md_size;
+	s.song_md.owner_id = drm_chnl->audio_data.song.md.owner_id;
+	s.song_md.num_regions = drm_chnl->audio_data.song.md.num_regions;
+	s.song_md.num_users = drm_chnl->audio_data.song.md.num_users;
+
+	memcpy(s.song_md.rids, (void *)get_drm_rids(drm_chnl->audio_data.song), s.song_md.num_regions);
+	memcpy(s.song_md.uids, (void *)get_drm_uids(drm_chnl->audio_data.song), s.song_md.num_users);
+}
+
+int gen_song_md(char *buf) {
+    buf[0] = ((5 + s.song_md.num_regions + s.song_md.num_users) / 2) * 2; // account for parity
+    buf[1] = s.song_md.owner_id;
+    buf[2] = s.song_md.num_regions;
+    buf[3] = s.song_md.num_users;
+    memcpy(buf + 4, s.song_md.rids, s.song_md.num_regions);
+    memcpy(buf + 4 + s.song_md.num_regions, s.song_md.uids, s.song_md.num_users);
+
+    return buf[0];
+}
+
+void share_song() {
+    int new_md_len, shift;
+    char new_md[256], uid;
+
+    // reject non-owner attempts to share
+    load_song_md();
+    if (!s.logged_in) {
+        mb_printf("No user is logged in. Cannot share song\r\n");
+        drm_chnl->audio_data.song.wav_size = 0;
+        return;
+    } else if (s.uid != s.song_md.owner_id) {
+        mb_printf("User '%s' is not song's owner. Cannot share song\r\n", s.username);
+        drm_chnl->audio_data.song.wav_size = 0;
+        return;
+    } else if (!username_to_uid((char *)drm_chnl->audio_data.username, &uid, TRUE)) {
+        mb_printf("Username not found\r\n");
+        drm_chnl->audio_data.song.wav_size = 0;
+        return;
+    }
+
+    // generate new song metadata
+    s.song_md.uids[s.song_md.num_users++] = uid;
+    new_md_len = gen_song_md(new_md);
+    shift = new_md_len - s.song_md.md_size;
+
+    // shift over song and add new metadata
+    if (shift) {
+        memmove((void *)get_drm_song(drm_chnl->audio_data.song) + shift, (void *)get_drm_song(drm_chnl->audio_data.song), drm_chnl->audio_data.song.wav_size);
+    }
+    memcpy((void *)&drm_chnl->audio_data.song.md, new_md, new_md_len);
+
+    // update file size
+    drm_chnl->audio_data.song.file_size += shift;
+    drm_chnl->audio_data.song.wav_size  += shift;
+
+    mb_printf("Shared song with '%s'\r\n", drm_chnl->audio_data.username);
+}
+
+
 void login()
 {
     if (s.logged_in)
@@ -195,16 +255,6 @@ void logout()
     }
 }
 
-void load_song_md() {
-	s.song_md.md_size = drm_chnl->audio_data.song.md.md_size;
-	s.song_md.owner_id = drm_chnl->audio_data.song.md.owner_id;
-	s.song_md.num_regions = drm_chnl->audio_data.song.md.num_regions;
-	s.song_md.num_users = drm_chnl->audio_data.song.md.num_users;
-
-	memcpy(s.song_md.rids, (void *)get_drm_rids(drm_chnl->audio_data.song), s.song_md.num_regions);
-	memcpy(s.song_md.uids, (void *)get_drm_uids(drm_chnl->audio_data.song), s.song_md.num_users);
-}
-
 void query_song() {
 
     char *name;
@@ -248,6 +298,10 @@ int ssc()
 	else if (!strcmp(received_input.cmd, "query"))  {
 		xil_printf("Query song COMMAND received\r\n");
 		query_song();
+	}
+	else if (!strcmp(received_input.cmd, "share"))  {
+		xil_printf("Share song COMMAND received\r\n");
+		share_song();
 	}
     return 0;
 }

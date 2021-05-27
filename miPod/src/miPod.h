@@ -1,10 +1,3 @@
-/*
- * miPod.h
- *
- *  Created on: Jan 9, 2020
- *      Author: ectf
- */
-
 #ifndef SRC_MIPOD_H_
 #define SRC_MIPOD_H_
 
@@ -69,6 +62,8 @@ typedef struct __attribute__((__packed__)) {
     char drm_state;             // from states enum
     char login_status;          // 0 = logged off, 1 = logged on
     char padding;               // not used
+    char username[USERNAME_SZ]; // stores logged in or attempted username
+	char pin[MAX_PIN_SZ];       // stores logged in or attempted pin
     // shared buffer is either a drm song or a query
     union {
         song song;

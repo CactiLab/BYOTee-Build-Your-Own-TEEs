@@ -11,7 +11,6 @@
 #include <string.h>
 
 volatile cmd_channel *c;
-//volatile drm_audio_channel *drm_chnl = (drm_audio_channel*)SHARED_DDR_BASE;
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 
 // sends a command to the microblaze using the shared command channel and interrupt
@@ -134,19 +133,20 @@ void share_song(char *song_name, char *username) {
     unsigned int length;
     ssize_t wrote, written = 0;
 
+    strcpy((void*)c->input, "share");
+
     if (!username) {
         mp_printf("Need song name and username\r\n");
         print_help();
     }
 
     // load the song into the shared buffer
-    strcpy((char *)c->input, username);
-    if (!load_file(song_name, (void*)&c->input + 10)) {
+    if (!load_file(song_name, (void*)&c->drm_chnl.song)) {
         mp_printf("Failed to load song!\r\n");
         return;
     }
 
-   // strcpy((char *)c->input, username);
+    strcpy((char *)c->drm_chnl.username, username);
 
     // drive DRM
     send_command(SSC_COMMAND);
@@ -154,7 +154,7 @@ void share_song(char *song_name, char *username) {
     while (c->drm_state == WORKING) continue; // wait for DRM to share song
 
     // request was rejected if WAV length is 0
-   /* length = c->song.wav_size;
+   length = c->drm_chnl.song.wav_size;
     if (length == 0) {
         mp_printf("Share rejected\r\n");
         return;
@@ -170,7 +170,7 @@ void share_song(char *song_name, char *username) {
     // write song dump to file
     mp_printf("Writing song to file '%s' (%dB)\r\n", song_name, length);
     while (written < length) {
-        wrote = write(fd, (char *)&c->song + written, length - written);
+        wrote = write(fd, (char *)&c->drm_chnl.song + written, length - written);
         if (wrote == -1) {
             mp_printf("Error in writing file! Error = %d\r\n", errno);
             return;
@@ -178,7 +178,7 @@ void share_song(char *song_name, char *username) {
         written += wrote;
     }
     close(fd);
-    mp_printf("Finished writing file\r\n");*/
+    mp_printf("Finished writing file\r\n");
 }
 
 
