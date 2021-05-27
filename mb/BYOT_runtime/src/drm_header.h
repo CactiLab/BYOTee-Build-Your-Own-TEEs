@@ -7,6 +7,16 @@
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
 #define MAX_SONG_SZ (1<<25)
+#define CHUNK_SZ 16000
+#define FIFO_CAP 4096*4
+
+#define PREVIEW_TIME_SEC 30
+
+// ADC/DAC sampling rate in Hz
+#define AUDIO_SAMPLING_RATE 48000
+#define BYTES_PER_SAMP 2
+#define PREVIEW_SZ (PREVIEW_TIME_SEC * AUDIO_SAMPLING_RATE * BYTES_PER_SAMP)
+
 
 #define get_drm_rids(d) (d.md.buf)
 #define get_drm_uids(d) (d.md.buf + d.md.num_regions)
@@ -15,7 +25,7 @@
 #define q_region_lookup(q, i) (q.regions + (i * REGION_NAME_SZ))
 #define q_user_lookup(q, i) (q.users + (i * USERNAME_SZ))
 
-enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE };
+enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE, PLAY, PAUSE, STOP, RESTART };
 
 
 // struct to interpret shared buffer as a query
@@ -63,7 +73,6 @@ typedef struct __attribute__((__packed__)) {
     union {
         song song;
         query query;
-       // char buf[MAX_SONG_SZ]; // sets correct size of cmd_channel for allocation
     };
 } drm_audio_channel;
 

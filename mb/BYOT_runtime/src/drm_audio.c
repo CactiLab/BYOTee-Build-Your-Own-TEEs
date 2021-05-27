@@ -13,7 +13,11 @@
 #include "drm_header.h" /*remove this when decouple from runtime*/
 //#include "BYOT_header.h"
 //////////////////////// GLOBALS ////////////////////////
-
+/*
+#define set_stopped() change_state(STOPPED, RED)
+#define set_working() change_state(WORKING, YELLOW)
+#define set_playing() change_state(PLAYING, GREEN)
+#define set_paused()  change_state(PAUSED, BLUE)*/
 // audio DMA access
 static XAxiDma sAxiDma;
 
@@ -21,6 +25,8 @@ volatile drm_channel *drm_chnl = (drm_channel*)SHARED_DDR_BASE;
 volatile char *input = (char *)0x189f8;
 // internal state store
 drm_internal_state s;
+volatile static int InterruptProcessed = FALSE;
+static XIntc InterruptController;
 
 int init = 0;
 //////////////////////// INTERRUPT HANDLING ////////////////////////
@@ -276,6 +282,135 @@ void query_song() {
     }
 
     mb_printf("Queried song (%d regions, %d users)\r\n", drm_chnl->audio_data.query.num_regions,  drm_chnl->audio_data.query.num_users);
+}
+
+
+int is_locked() {
+    int locked = TRUE;
+
+    // check for authorized user
+    if (!s.logged_in) {
+        mb_printf("No user logged in");
+    } else {
+        load_song_md();
+
+        // check if user is authorized to play song
+        if (s.uid == s.song_md.owner_id) {
+            locked = FALSE;
+        } else {
+            for (int i = 0; i < NUM_PROVISIONED_USERS && locked; i++) {
+                if (s.uid == s.song_md.uids[i]) {
+                    locked = FALSE;
+                }
+            }
+        }
+
+        if (locked) {
+            mb_printf("User '%s' does not have access to this song", s.username);
+            return locked;
+        }
+        mb_printf("User '%s' has access to this song", s.username);
+        locked = TRUE; // reset lock for region check
+
+        // search for region match
+        for (int i = 0; i < s.song_md.num_regions; i++) {
+            for (int j = 0; j < (u8)NUM_PROVISIONED_REGIONS; j++) {
+                if (PROVISIONED_RIDS[j] == s.song_md.rids[i]) {
+                    locked = FALSE;
+                }
+            }
+        }
+
+        if (!locked) {
+            mb_printf("Region Match. Full Song can be played. Unlocking...");
+        } else {
+            mb_printf("Invalid region");
+        }
+    }
+    return locked;
+}
+
+void play_song() {
+    u32 counter = 0, rem, cp_num, cp_xfil_cnt, offset, dma_cnt, length, *fifo_fill;
+
+    mb_printf("Reading Audio File...");
+    load_song_md();
+
+    // get WAV length
+    length = drm_chnl->audio_data.song.wav_size;
+    mb_printf("Song length = %dB", length);
+
+    // truncate song if locked
+    if (length > PREVIEW_SZ && is_locked()) {
+        length = PREVIEW_SZ;
+        mb_printf("Song is locked.  Playing only %ds = %dB\r\n",
+                   PREVIEW_TIME_SEC, PREVIEW_SZ);
+    } else {
+        mb_printf("Song is unlocked. Playing full song\r\n");
+    }
+
+    rem = length;
+    fifo_fill = (u32 *)XPAR_FIFO_COUNT_AXI_GPIO_0_BASEADDR;
+
+    // write entire file to two-block codec fifo
+    // writes to one block while the other is being played
+   // set_playing();
+    while(rem > 0) {
+        // check for interrupt to stop playback
+        while (InterruptProcessed) {
+            InterruptProcessed = FALSE;
+
+            switch (drm_chnl->audio_data.ssc_cmd) {
+            case PAUSE:
+                mb_printf("Pausing... \r\n");
+               // set_paused();
+                while (!InterruptProcessed) continue; // wait for interrupt
+                break;
+            case PLAY:
+                mb_printf("Resuming... \r\n");
+              //  set_playing();
+                break;
+            case STOP:
+                mb_printf("Stopping playback...");
+                return;
+            case RESTART:
+                mb_printf("Restarting song... \r\n");
+                rem = length; // reset song counter
+               // set_playing();
+            default:
+                break;
+            }
+        }
+
+        // calculate write size and offset
+        cp_num = (rem > CHUNK_SZ) ? CHUNK_SZ : rem;
+        offset = (counter++ % 2 == 0) ? 0 : CHUNK_SZ;
+
+        // do first mem cpy here into DMA BRAM
+        Xil_MemCpy((void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset),
+                   (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem),
+                   (u32)(cp_num));
+
+        cp_xfil_cnt = cp_num;
+
+        while (cp_xfil_cnt > 0) {
+
+            // polling while loop to wait for DMA to be ready
+            // DMA must run first for this to yield the proper state
+            // rem != length checks for first run
+            while (XAxiDma_Busy(&sAxiDma, XAXIDMA_DMA_TO_DEVICE)
+                   && rem != length && *fifo_fill < (FIFO_CAP - 32));
+
+            // do DMA
+            dma_cnt = (FIFO_CAP - *fifo_fill > cp_xfil_cnt)
+                      ? FIFO_CAP - *fifo_fill
+                      : cp_xfil_cnt;
+            fnAudioPlay(sAxiDma, offset, dma_cnt);
+            cp_xfil_cnt -= dma_cnt;
+        }
+
+        rem -= cp_num;
+    }
 }
 
 //////////////////////// MAIN ////////////////////////

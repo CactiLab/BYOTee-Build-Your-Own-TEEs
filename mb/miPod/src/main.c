@@ -145,6 +145,7 @@ void share_song(char *song_name, char *username) {
     if (!username) {
         mp_printf("Need song name and username\r\n");
         print_help();
+        return;
     }
 
     // load the song into the shared buffer
@@ -228,6 +229,82 @@ void query_song(char *song_file_name) {
 	printf("\r\n");
     
 }
+
+int play_song(char *song_name) {
+
+    char usr_cmd[USR_CMD_SZ + 1], *cmd = NULL, *arg1 = NULL, *arg2 = NULL;
+
+    // load song into shared buffer
+    if (!load_file(song_name, (void*)&c->drm_chnl.song)) {
+        mp_printf("Failed to load song!\r\n");
+        return 0;
+    }
+
+    // drive the DRM
+    specify_ssc_command(PLAY);
+    send_command(SSC_COMMAND);
+    while (c->drm_state == STOPPED) continue; // wait for DRM to start playing
+
+    // play loop
+    while(1) {
+        // get a valid command
+        do {
+            print_prompt_msg(song_name);
+            fgets(usr_cmd, USR_CMD_SZ, stdin);
+
+            // exit playback loop if DRM has finished song
+            if (c->drm_state == STOPPED) {
+                mp_printf("Song finished\r\n");
+                return 0;
+            }
+        } while (strlen(usr_cmd) < 2);
+
+        // parse and handle command
+        parse_input(usr_cmd, &cmd, &arg1, &arg2);
+        if (!cmd) {
+            continue;
+        } else if (!strcmp(cmd, "help")) {
+           // print_playback_help();
+        } else if (!strcmp(cmd, "resume")) {
+            send_command(PLAY);
+            send_command(SSC_COMMAND);
+            usleep(200000); // wait for DRM to print
+        } else if (!strcmp(cmd, "pause")) {
+            send_command(PAUSE);
+            send_command(SSC_COMMAND);
+            usleep(200000); // wait for DRM to print
+        } else if (!strcmp(cmd, "stop")) {
+            send_command(STOP);
+            send_command(SSC_COMMAND);
+            usleep(200000); // wait for DRM to print
+            break;
+        } else if (!strcmp(cmd, "restart")) {
+            send_command(RESTART);
+            send_command(SSC_COMMAND);
+        } else if (!strcmp(cmd, "exit")) {
+            mp_printf("Exiting...\r\n");
+            send_command(STOP);
+            send_command(SSC_COMMAND);
+            return -1;
+        } else if (!strcmp(cmd, "rw")) {
+            mp_printf("Unsupported feature.\r\n\r\n");
+          //  print_playback_help();
+        } else if (!strcmp(cmd, "ff")) {
+            mp_printf("Unsupported feature.\r\n\r\n");
+           // print_playback_help();
+        } else if (!strcmp(cmd, "lyrics")) {
+            mp_printf("Unsupported feature.\r\n\r\n");
+          //  print_playback_help();
+        } else {
+            mp_printf("Unrecognized command.\r\n\r\n");
+           // print_playback_help();
+        }
+    }
+
+    return 0;
+}
+
+
 int main(int argc, char **argv)
 {
     int mem;
@@ -285,6 +362,12 @@ int main(int argc, char **argv)
 	    {
         	share_song(arg1, arg2);
 	    }
+        else if (!strcmp(cmd, "play")) {
+			// break if exit was commanded in play loop
+			if (play_song(arg1) < 0) {
+				break;
+			}
+		}
         else
         {
             mp_printf("Unrecognized command.\r\n\r\n");

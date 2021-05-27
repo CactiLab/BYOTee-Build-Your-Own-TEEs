@@ -28,7 +28,7 @@
 //enum commands { QUERY_PLAYER, QUERY_SONG, LOGIN, LOGOUT, SHARE, PLAY, STOP, DIGITAL_OUT, PAUSE, RESTART, FF, RW };
 enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
-enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE };
+enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE, PLAY, PAUSE, STOP, RESTART };
 
 #define q_region_lookup(q, i) (q.regions + (i * REGION_NAME_SZ))
 #define q_user_lookup(q, i) (q.users + (i * USERNAME_SZ))
@@ -68,7 +68,7 @@ typedef struct __attribute__((__packed__)) {
     union {
         song song;
         query query;
-       // char buf[MAX_SONG_SZ]; // sets correct size of cmd_channel for allocation
+        char buf[MAX_SONG_SZ]; // sets correct size of cmd_channel for allocation
     };
 } drm_audio_channel;
 // struct to interpret shared command channel
