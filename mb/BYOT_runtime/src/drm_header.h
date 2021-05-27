@@ -15,12 +15,8 @@
 #define q_region_lookup(q, i) (q.regions + (i * REGION_NAME_SZ))
 #define q_user_lookup(q, i) (q.users + (i * USERNAME_SZ))
 
-typedef volatile struct __attribute__((__packed__))
-{
-    char cmd[COMMAND_SIZE];
-    char username[USERNAME_SZ];
-    char pin[MAX_PIN_SZ];
-} player_input;
+enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE };
+
 
 // struct to interpret shared buffer as a query
 typedef struct {
@@ -57,7 +53,7 @@ typedef struct {
 } song_md;
 
 typedef struct __attribute__((__packed__)) {
-    char cmd;                   // from commands enum
+    char ssc_cmd;                   // from commands enum
     char drm_state;             // from states enum
     char login_status;          // 0 = logged off, 1 = logged on
     char padding;               // not used

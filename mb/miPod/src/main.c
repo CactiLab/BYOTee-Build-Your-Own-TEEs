@@ -23,6 +23,11 @@ void send_command(int cmd)
     system("devmem 0x41200000 32 1");
 }
 
+void specify_ssc_command(int cmd)
+{
+	memcpy((void *)&c->drm_chnl.ssc_cmd, &cmd, 1);
+}
+
 void parse_input(char *input, char **cmd, char **arg1, char **arg2)
 {
     *cmd = strtok(input, " \r\n");
@@ -96,9 +101,11 @@ void login(char *username, char *pin) {
         print_help();
         return;
     }
-    strcpy((void*)c->input, "login");
-    strcpy((void*)c->input + COMMAND_SIZE, username);
-    strcpy((void*)c->input + COMMAND_SIZE + USERNAME_SZ , pin);
+
+   // strcpy((void*)c->input, "login");
+    specify_ssc_command(LOGIN);
+    strcpy((void*)c->drm_chnl.username, username);
+    strcpy((void*)c->drm_chnl.pin , pin);
     send_command(SSC_COMMAND);
     while (c->drm_state == STOPPED)
         continue; // wait for DRM to start working
@@ -107,7 +114,7 @@ void login(char *username, char *pin) {
     mp_printf("Finished Query file\r\n");
 }
 void logout() {
-	strcpy((void*)c->input, "logout");
+	specify_ssc_command(LOGOUT);
 	send_command(SSC_COMMAND);
 }
 //////////////////////// MAIN ////////////////////////
@@ -134,7 +141,7 @@ void share_song(char *song_name, char *username) {
     ssize_t wrote, written = 0;
 
     strcpy((void*)c->input, "share");
-
+    specify_ssc_command(SHARE);
     if (!username) {
         mp_printf("Need song name and username\r\n");
         print_help();
@@ -190,7 +197,7 @@ void query_song(char *song_file_name) {
 		print_help();
 		return;
 	}
-	strcpy((void*)c->input, "query");
+	specify_ssc_command(QUERY);
     if (!load_file(song_file_name, (void *)&c->drm_chnl.song))
     {
         mp_printf("Failed to load song file!\r\n");

@@ -17,9 +17,6 @@
 // audio DMA access
 static XAxiDma sAxiDma;
 
-
-// shared command channel -- read/write for both PS and PL
-player_input received_input;
 volatile drm_channel *drm_chnl = (drm_channel*)SHARED_DDR_BASE;
 volatile char *input = (char *)0x189f8;
 // internal state store
@@ -198,34 +195,33 @@ void login()
     if (s.logged_in)
     {
         mb_printf("User %s Already logged in. Please log out first.\r\n", s.username);
-       // memcpy((void *)c->username, s.username, USERNAME_SZ);
-        //memcpy((void *)c->pin, s.pin, MAX_PIN_SZ);
+        memcpy((void *)drm_chnl->audio_data.username, s.username, USERNAME_SZ);
+        memcpy((void *)drm_chnl->audio_data.pin, s.pin, MAX_PIN_SZ);
     }
     else
     {
         for (int i = 0; i < NUM_PROVISIONED_USERS; i++)
         {
             // search for matching username
-            if (!strcmp(received_input.username, USERNAMES[PROVISIONED_UIDS[i]]))
+            if (!strcmp((void*)drm_chnl->audio_data.username, USERNAMES[PROVISIONED_UIDS[i]]))
             {
                 // check if pin matches
-                if (!strcmp(received_input.pin, PROVISIONED_PINS[i]))
+                if (!strcmp((void*)drm_chnl->audio_data.pin, PROVISIONED_PINS[i]))
                 {
                     //update states
                     s.logged_in = 1;
-                    //c->login_status = 1;
-                    memcpy(s.username, received_input.username, USERNAME_SZ);
-                    memcpy(s.pin, received_input.pin, MAX_PIN_SZ);
+                    memcpy(s.username, (void*)drm_chnl->audio_data.username, USERNAME_SZ);
+                    memcpy(s.pin, (void*)drm_chnl->audio_data.pin, MAX_PIN_SZ);
                     s.uid = PROVISIONED_UIDS[i];
-                    mb_printf("Logged in for user '%s'\r\n", received_input.username);
+                    mb_printf("Logged in for user '%s'\r\n", drm_chnl->audio_data.username);
                     return;
                 }
                 else
                 {
                     // reject login attempt
-                    mb_printf("Incorrect pin for user '%s'\r\n", received_input.username);
-                    memset(received_input.username, 0, USERNAME_SZ);
-                    memset(received_input.pin, 0, MAX_PIN_SZ);
+                    mb_printf("Incorrect pin for user '%s'\r\n", drm_chnl->audio_data.username);
+                    memset((void*)drm_chnl->audio_data.username, 0, USERNAME_SZ);
+                    memset((void*)drm_chnl->audio_data.pin, 0, MAX_PIN_SZ);
                     return;
                 }
             }
@@ -233,8 +229,8 @@ void login()
 
         // reject login attempt
         mb_printf("User not found\r\n");
-        memset(received_input.username, 0, USERNAME_SZ);
-        memset(received_input.pin, 0, MAX_PIN_SZ);
+        memset((void*)drm_chnl->audio_data.username, 0, USERNAME_SZ);
+        memset((void*)drm_chnl->audio_data.pin, 0, MAX_PIN_SZ);
     }
 }
 
@@ -286,22 +282,25 @@ void query_song() {
 
 int ssc()
 {
-	memcpy(&received_input, (void *)input, sizeof(player_input));
-	if (!strcmp(received_input.cmd, "login")) {
-		xil_printf("LOGIN COMMAND received\r\n");
-		login();
-	}
-	else if (!strcmp(received_input.cmd, "logout")) {
-		xil_printf("LOGOUT COMMAND received\r\n");
-		logout();
-	}
-	else if (!strcmp(received_input.cmd, "query"))  {
-		xil_printf("Query song COMMAND received\r\n");
-		query_song();
-	}
-	else if (!strcmp(received_input.cmd, "share"))  {
-		xil_printf("Share song COMMAND received\r\n");
-		share_song();
+	switch (drm_chnl->audio_data.ssc_cmd) {
+		case LOGIN:
+			xil_printf("LOGIN COMMAND received\r\n");
+			login();
+			break;
+		case LOGOUT:
+			xil_printf("LOGOUT COMMAND received\r\n");
+			logout();
+			break;
+		case QUERY:
+			xil_printf("Query song COMMAND received\r\n");
+			query_song();
+			break;
+		case SHARE:
+			xil_printf("Share song COMMAND received\r\n");
+			share_song();
+			break;
+		default:
+			break;
 	}
     return 0;
 }
