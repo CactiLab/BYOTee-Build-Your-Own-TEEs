@@ -115,7 +115,7 @@ def create_TEE_local_memory_cell(number, shared_bram_list):
     connect_bd_intf_net -intf_net microblaze_{str(number)}_ilmb_cntlr [get_bd_intf_pins ilmb_bram_if_cntlr/BRAM_PORT] [get_bd_intf_pins lmb_bram/BRAM_PORTB]
     # Create port connections	
     connect_bd_net -net SYS_Rst_1 [get_bd_pins SYS_Rst] [get_bd_pins dlmb_bram_if_cntlr/LMB_Rst] [get_bd_pins dlmb_v10/SYS_Rst] [get_bd_pins ilmb_bram_if_cntlr/LMB_Rst] [get_bd_pins ilmb_v10/SYS_Rst]	
-    connect_bd_net -net microblaze_{str(number)}_Clk [get_bd_pins LMB_Clk] {" ".join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aclk]' for i in range(len(shared_bram_list))])} [get_bd_pins dlmb_bram_if_cntlr/LMB_Clk] [get_bd_pins dlmb_v10/LMB_Clk] [get_bd_pins ilmb_bram_if_cntlr/LMB_Clk] [get_bd_pins ilmb_v10/LMB_Clk]	
+    connect_bd_net -net microblaze_{str(number)}_Clk [get_bd_pins LMB_Clk] {' '.join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aclk]' for i in range(len(shared_bram_list))])} [get_bd_pins dlmb_bram_if_cntlr/LMB_Clk] [get_bd_pins dlmb_v10/LMB_Clk] [get_bd_pins ilmb_bram_if_cntlr/LMB_Clk] [get_bd_pins ilmb_v10/LMB_Clk]	
     # Restore current instance	
     current_bd_instance $oldCurInst	
     }}
@@ -212,13 +212,16 @@ def set_clock_for_all(size, uart_size, shared_bram_list, interrupt_info_size):
     global tcl_file, axi_port_count, peripheral_info
 
     clk_wizard_list = search_peripheral_by_type(peripheral_info, 'Clocking_Wizard')
-    system_ila_list = search_peripheral_by_type(peripheral_info, "System_ILA")
+    system_ila_list = search_peripheral_by_type(peripheral_info, 'System_ILA')
+    xadc_wizard_list = search_peripheral_by_type(peripheral_info, 'XADC_Wizard')
+    pwm_list = search_peripheral_by_type(peripheral_info, 'PWM')
+    axi_dma_list = search_peripheral_by_type(peripheral_info, 'AXI_Direct_Memory_Access')
 
     tcl_file.write(textwrap.dedent(f'''
-    connect_bd_net -net microblaze_{str(size)}_Clk {" ".join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aclk]' for i in range(len(shared_bram_list))])} [get_bd_pins axi_gpio_0/s_axi_aclk] {" ".join(['[get_bd_pins axi_intc_' + str(i) + '/s_axi_aclk]' for i in range(interrupt_info_size)])} {" ".join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aclk]' for i in range(uart_size)])} [get_bd_pins mdm_0/S_AXI_ACLK] {" ".join(['[get_bd_pins microblaze_' + str(r) + '/Clk] [get_bd_pins microblaze_' + str(r) + '_local_memory/LMB_Clk]' for r in range(size + 1)])} [get_bd_pins mb_axi_mem_interconnect_0/ACLK] {" ".join(['[get_bd_pins mb_axi_mem_interconnect_0/M0' + str(i) + '_ACLK]' for i in range(axi_master_count)])} {" ".join(['[get_bd_pins mb_axi_mem_interconnect_0/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axi_port_count)])} [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] {" ".join(['[get_bd_pins ps7_0_axi_periph/M0' + str(i) + '_ACLK]' for i in range(axi_master_count)])} {" ".join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axi_port_count)])} [get_bd_pins rst_ps7_0_50M/slowest_sync_clk] {" ".join(['[get_bd_pins clk_wiz_' + str(i) + '/clk_in1]' for i in range(len(clk_wizard_list))])} {" ".join(['[get_bd_pins system_ila_' + str(i) + '/clk]' for i in range(len(system_ila_list))])}
-    connect_bd_net -net rst_ps7_0_50M_bus_struct_reset {" ".join(['[get_bd_pins microblaze_' + str(r) + '_local_memory/SYS_Rst]' for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/bus_struct_reset]
-    connect_bd_net -net rst_ps7_0_50M_mb_reset {" ".join(['[get_bd_pins microblaze_' + str(r) + '/Reset]' for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/mb_reset]
-    connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn {" ".join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aresetn]' for i in range(len(shared_bram_list))])} [get_bd_pins axi_gpio_0/s_axi_aresetn] {" ".join(['[get_bd_pins axi_intc_' + str(i) + '/s_axi_aresetn]' for i in range(interrupt_info_size)])} {" ".join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aresetn]' for i in range(uart_size)])} [get_bd_pins mdm_0/S_AXI_ARESETN] [get_bd_pins mb_axi_mem_interconnect_0/ARESETN] {" ".join(['[get_bd_pins mb_axi_mem_interconnect_0/M0' + str(i) + '_ARESETN]' for i in range(axi_master_count)])} {" ".join(['[get_bd_pins mb_axi_mem_interconnect_0/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axi_port_count)])} [get_bd_pins ps7_0_axi_periph/ARESETN] {" ".join(['[get_bd_pins ps7_0_axi_periph/M0' + str(i) + '_ARESETN]' for i in range(axi_master_count)])} {" ".join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axi_port_count)])} [get_bd_pins rst_ps7_0_50M/peripheral_aresetn]
+    connect_bd_net -net microblaze_{str(size)}_Clk [get_bd_pins processing_system7_0/FCLK_CLK0] {' '.join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aclk]' for i in range(len(shared_bram_list))])} [get_bd_pins axi_gpio_0/s_axi_aclk] {' '.join(['[get_bd_pins axi_intc_' + str(i) + '/s_axi_aclk]' for i in range(interrupt_info_size)])} {' '.join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aclk]' for i in range(uart_size)])} [get_bd_pins mdm_0/S_AXI_ACLK] {' '.join(['[get_bd_pins microblaze_' + str(r) + '/Clk] [get_bd_pins microblaze_' + str(r) + '_local_memory/LMB_Clk]' for r in range(size + 1)])} [get_bd_pins mb_axi_mem_interconnect_0/ACLK] {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/M' + str(i).zfill(2) + '_ACLK]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axi_port_count)])} [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] {' '.join(['[get_bd_pins ps7_0_axi_periph/M' + str(i).zfill(2) + '_ACLK]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axi_port_count)])} [get_bd_pins rst_ps7_0_50M/slowest_sync_clk] {' '.join(['[get_bd_pins clk_wiz_' + str(i) + '/clk_in1]' for i in range(len(clk_wizard_list))])} {' '.join(['[get_bd_pins system_ila_' + str(i) + '/clk]' for i in range(len(system_ila_list))])} {' '.join(['[get_bd_pins xadc_wiz_' + str(i) + '/s_axi_aclk]' for i in range(len(xadc_wizard_list))])} {' '.join(['[get_bd_pins pwm_' + str(i) + '/pwm_axi_aclk]' for i in range(len(pwm_list))])} {'[get_bd_pins axi_dma_0/m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aclk] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aclk]' if len(axi_dma_list) >= 1 else ''}
+    connect_bd_net -net rst_ps7_0_50M_bus_struct_reset {' '.join(['[get_bd_pins microblaze_' + str(r) + '_local_memory/SYS_Rst]' for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/bus_struct_reset]
+    connect_bd_net -net rst_ps7_0_50M_mb_reset {' '.join(['[get_bd_pins microblaze_' + str(r) + '/Reset]' for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/mb_reset]
+    connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn [get_bd_pins rst_ps7_0_50M/peripheral_aresetn] {' '.join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aresetn]' for i in range(len(shared_bram_list))])} [get_bd_pins axi_gpio_0/s_axi_aresetn] {' '.join(['[get_bd_pins axi_intc_' + str(i) + '/s_axi_aresetn]' for i in range(interrupt_info_size)])} {' '.join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aresetn]' for i in range(uart_size)])} [get_bd_pins mdm_0/S_AXI_ARESETN] [get_bd_pins mb_axi_mem_interconnect_0/ARESETN] {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/M' + str(i).zfill(2) + '_ARESETN]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axi_port_count)])} [get_bd_pins ps7_0_axi_periph/ARESETN] {' '.join(['[get_bd_pins ps7_0_axi_periph/M' + str(i).zfill(2) + '_ARESETN]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axi_port_count)])} {' '.join(['[get_bd_pins xadc_wiz_' + str(i) + '/s_axi_aresetn]' for i in range(len(xadc_wizard_list))])} {' '.join(['[get_bd_pins pwm_' + str(i) + '/pwm_axi_aresetn]' for i in range(len(pwm_list))])} {'[get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aresetn] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aresetn]' if len(axi_dma_list) >= 1 else ''}
     '''))
 
 
@@ -233,27 +236,57 @@ def create_MB_address_segment(number, uart_list, BRAM_size, shared_bram_list, in
         '''))
         offset = str(hex(int(offset, 16) + 65536))
     if len(shared_bram_list) == 1:
-        sharedMemorySize = shared_bram_list[0]['Size'].replace('KB', '')
-        sharedMemorySize = hex(int(sharedMemorySize) * 1024)
+        shared_memory_size = shared_bram_list[0]['Size'].replace('KB', '')
+        shared_memory_size = hex(int(shared_memory_size) * 1024)
         tcl_file.write(textwrap.dedent(f'''
-        create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_list[0]['Base_Address']} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
-        create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_list[0]['Base_Address']} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
+        create_bd_addr_seg -range {shared_memory_size} -offset {shared_bram_list[0]['Base_Address']} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
+        create_bd_addr_seg -range {shared_memory_size} -offset {shared_bram_list[0]['Base_Address']} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
         '''))
+
+    axi_dma_list = search_peripheral_by_type(peripheral_info, 'AXI_Direct_Memory_Access')
+    if len(axi_dma_list) >= 1:
+        tcl_file.write(textwrap.dedent(f'''
+        create_bd_addr_seg -range 0x00010000 -offset 0x40400000 [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_dma_0/S_AXI_LITE/Reg] SEG_axi_dma_0_Reg
+        create_bd_addr_seg -range 0x00010000 -offset 0x40400000 [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_dma_0/S_AXI_LITE/Reg] SEG_axi_dma_0_Reg
+        '''))
+        if number == 0:
+            tcl_file.write(textwrap.dedent(f'''
+            create_bd_addr_seg -range 0x00008000 -offset 0x40008000 [get_bd_addr_spaces axi_dma_0/Data_MM2S] [get_bd_addr_segs dma_axi_bram_ctrl_1/S_AXI/Mem0] SEG_dma_axi_bram_ctrl_1_Mem0
+            '''))
 
     tcl_file.write(textwrap.dedent(f'''
     create_bd_addr_seg -range 0x00010000 -offset 0x41200000 [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
     create_bd_addr_seg -range 0x00010000 -offset 0x41200000 [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
     '''))
 
-    interrupt_memory_base = 0x41800000
-    interrupt_memory_step = 0x10000
+    memory_base = 0x41800000
+    memory_step = 0x10000
 
     for i in range(len(interrupt_info)):
-        interrupt_memory_offset = interrupt_memory_base + i * interrupt_memory_step
+        memory_offset = memory_base + i * memory_step
         tcl_file.write(textwrap.dedent(f'''
-        create_bd_addr_seg -range 0x00010000 -offset {interrupt_memory_offset : #0{10}X} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_intc_{i}/S_AXI/Reg] SEG_axi_intc_{i}_Reg
-        create_bd_addr_seg -range 0x00010000 -offset {interrupt_memory_offset : #0{10}X} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_intc_{i}/S_AXI/Reg] SEG_axi_intc_{i}_Reg
+        create_bd_addr_seg -range 0x00010000 -offset {memory_offset : #0{10}X} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs axi_intc_{i}/S_AXI/Reg] SEG_axi_intc_{i}_Reg
+        create_bd_addr_seg -range 0x00010000 -offset {memory_offset : #0{10}X} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs axi_intc_{i}/S_AXI/Reg] SEG_axi_intc_{i}_Reg
         '''))
+    memory_base += len(interrupt_info) * memory_step
+
+    xadc_wizard_list = search_peripheral_by_type(peripheral_info, 'XADC_Wizard')
+    for i in range(len(xadc_wizard_list)):
+        memory_offset = memory_base + i * memory_step
+        tcl_file.write(textwrap.dedent(f'''
+        create_bd_addr_seg -range 0x00010000 -offset {memory_offset : #0{10}X} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs xadc_wiz_{i}/s_axi_lite/Reg] SEG_xadc_wiz_{i}_Reg
+        create_bd_addr_seg -range 0x00010000 -offset {memory_offset : #0{10}X} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs xadc_wiz_{i}/s_axi_lite/Reg] SEG_xadc_wiz_{i}_Reg
+        '''))
+    memory_base += len(xadc_wizard_list) * memory_step
+
+    pwm_list = search_peripheral_by_type(peripheral_info, 'PWM')
+    for i in range(len(pwm_list)):
+        memory_offset = memory_base + i * memory_step
+        tcl_file.write(textwrap.dedent(f'''
+        create_bd_addr_seg -range 0x00010000 -offset {memory_offset : #0{10}X} [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs pwm_{i}/PWM_AXI/PWM_AXI_reg] SEG_pwm_{i}_PWM_AXI_reg
+        create_bd_addr_seg -range 0x00010000 -offset {memory_offset : #0{10}X} [get_bd_addr_spaces microblaze_{str(number)}/Instruction] [get_bd_addr_segs pwm_{i}/PWM_AXI/PWM_AXI_reg] SEG_pwm_{i}_PWM_AXI_reg
+        '''))
+    memory_base += len(pwm_list) * memory_step
 
     tcl_file.write(textwrap.dedent(f'''
     create_bd_addr_seg -range {BRAM_size} -offset 0x00000000 [get_bd_addr_spaces microblaze_{str(number)}/Data] [get_bd_addr_segs microblaze_{str(number)}_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] SEG_dlmb_bram_if_cntlr_Mem
@@ -415,10 +448,10 @@ def create_block_memory_generator(shared_bram_list):
     set_property -dict [ list \\
       CONFIG.Enable_B {{Always_Enabled}} \\
       CONFIG.Memory_Type {{{shared_bram_list[0]["Memory_type"]}}} \\
-      CONFIG.Port_B_Clock {{0}} \\
-      CONFIG.Port_B_Enable_Rate {{0}} \\
-      CONFIG.Port_B_Write_Rate {{0}} \\
-      CONFIG.Use_RSTB_Pin {{false}} \\
+      CONFIG.Port_B_Clock {{100}} \\
+      CONFIG.Port_B_Enable_Rate {{100}} \\
+      CONFIG.Port_B_Write_Rate {{50}} \\
+      CONFIG.Use_RSTB_Pin {{true}} \\
     ] $blk_mem_gen_0
     '''))
 
@@ -432,6 +465,32 @@ def create_axi_bram_controller_instance():
     set_property -dict [ list \\
       CONFIG.SINGLE_PORT_BRAM {{1}} \\
     ] $axi_bram_ctrl_0
+    '''))
+
+
+def create_axi_dma_instance(axi_dma_list):
+    global tcl_file
+
+    tcl_file.write(textwrap.dedent(f'''
+    # Create instance: axi_dma_0, and set properties
+    set axi_dma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma:7.1 axi_dma_0 ]
+    set_property -dict [ list \\
+      CONFIG.c_include_mm2s {{1}} \\
+      CONFIG.c_include_s2mm {{0}} \\
+      CONFIG.c_include_sg {{0}} \\
+      CONFIG.c_m_axi_mm2s_data_width {{{axi_dma_list[0]['M_AXI_MM2S_Data_Width']}}} \\
+      CONFIG.c_m_axis_mm2s_tdata_width {{16}} \\
+      CONFIG.c_mm2s_burst_size {{{axi_dma_list[0]['MM2S_Burst_Size']}}} \\
+      CONFIG.c_sg_include_stscntrl_strm {{0}} \\
+    ] $axi_dma_0
+    
+    # Create instance: dma_axi_bram_ctrl_1, and set properties
+    set dma_axi_bram_ctrl_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 dma_axi_bram_ctrl_1 ]
+    set_property -dict [ list \\
+      CONFIG.DATA_WIDTH {{32}} \\
+      CONFIG.ECC_TYPE {{Hamming}} \\
+      CONFIG.SINGLE_PORT_BRAM {{1}} \\
+    ] $dma_axi_bram_ctrl_1
     '''))
 
 
@@ -564,6 +623,55 @@ def create_concat_instance(concat_list):
         '''))
 
 
+def create_xadc_wizard_instance(xadc_wizard_list):
+    global tcl_file
+
+    for i in range(len(xadc_wizard_list)):
+        tcl_file.write(textwrap.dedent(f'''
+        # Create instance: xadc_wiz_{i} and set properties
+        set xadc_wiz_{i} [ create_bd_cell -type ip -vlnv xilinx.com:ip:xadc_wiz:3.3 xadc_wiz_{i} ]
+        set_property -dict [ list \\
+          CONFIG.CHANNEL_ENABLE_CALIBRATION {{true}} \\
+          CONFIG.CHANNEL_ENABLE_TEMPERATURE {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VAUXP0_VAUXN0 {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VAUXP12_VAUXN12 {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VAUXP13_VAUXN13 {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VAUXP15_VAUXN15 {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VAUXP1_VAUXN1 {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VAUXP5_VAUXN5 {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VAUXP6_VAUXN6 {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VAUXP8_VAUXN8 {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VAUXP9_VAUXN9 {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VBRAM {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VCCAUX {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VCCDDRO {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VCCINT {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VCCPAUX {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VCCPINT {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VP_VN {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VREFN {{true}} \\
+          CONFIG.CHANNEL_ENABLE_VREFP {{true}} \\
+          CONFIG.EXTERNAL_MUX_CHANNEL {{VP_VN}} \\
+          CONFIG.SEQUENCER_MODE {{Continuous}} \\
+          CONFIG.SINGLE_CHANNEL_SELECTION {{TEMPERATURE}} \\
+          CONFIG.XADC_STARUP_SELECTION {{channel_sequencer}} \\
+        ] $xadc_wiz_{i}
+        '''))
+
+
+def create_pwm_instance(pwm_list):
+    global tcl_file
+
+    for i in range(len(pwm_list)):
+        tcl_file.write(textwrap.dedent(f'''
+        # Create instance: pwm_{i}, and set properties
+        set pwm_{i} [ create_bd_cell -type ip -vlnv digilentinc.com:IP:PWM:2.0 pwm_{i} ]
+        set_property -dict [ list \\
+          CONFIG.NUM_PWM {{{pwm_list[i]['Number_of_PWM']}}} \\
+        ] $pwm_{i}
+        '''))
+
+
 def write_root_design():
     global tcl_file
 
@@ -606,6 +714,21 @@ def write_root_design():
     set FIXED_IO [ create_bd_intf_port -mode Master -vlnv xilinx.com:display_processing_system7:fixedio_rtl:1.0 FIXED_IO ]
     '''))
 
+    xadc_wizard_list = search_peripheral_by_type(peripheral_info, 'XADC_Wizard')
+    for i in range(len(xadc_wizard_list)):
+        tcl_file.write(textwrap.dedent(f'''
+        set vaux0_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux0_{i} ]
+        set vaux1_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux1_{i} ]
+        set vaux5_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux5_{i} ]
+        set vaux6_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux6_{i} ]
+        set vaux8_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux8_{i} ]
+        set vaux9_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux9_{i} ]
+        set vaux12_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux12_{i} ]
+        set vaux13_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux13_{i} ]
+        set vaux15_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux15_{i} ]
+        set vp_vn_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vp_vn_{i} ]
+        '''))
+
     gpio_list = search_peripheral_by_type(peripheral_info, 'AXI_GPIO')
     if len(gpio_list) == 1:
         gpio_instance = gpio_list[0]
@@ -618,7 +741,7 @@ def write_root_design():
 def ps_config_helper():
     global uart_list
 
-    if (len(uart_list) > 0):
+    if len(uart_list) > 0:
         return 1
 
     return 0
@@ -1158,29 +1281,56 @@ def write_peripheral_interface_connection(uart_list, shared_bram_list):
             '''))
 
 
-def write_ps_interface_connections(uart_list, shared_bram_list, interrupt_info):
+def write_ps_interface_connections(axi_dma_list, uart_list, shared_bram_list, interrupt_info):
     global tcl_file
 
     tcl_file.write(textwrap.dedent(f'''
-    connect_bd_intf_net -intf_net processing_system7_0_DDR [get_bd_intf_ports DDR] [get_bd_intf_pins processing_system7_0/DDR]
-    connect_bd_intf_net -intf_net processing_system7_0_FIXED_IO [get_bd_intf_ports FIXED_IO] [get_bd_intf_pins processing_system7_0/FIXED_IO]
+    connect_bd_intf_net -intf_net processing_system7_0_DDR [get_bd_intf_pins processing_system7_0/DDR] [get_bd_intf_ports DDR]
+    connect_bd_intf_net -intf_net processing_system7_0_FIXED_IO [get_bd_intf_pins processing_system7_0/FIXED_IO] [get_bd_intf_ports FIXED_IO]
     connect_bd_intf_net -intf_net processing_system7_0_M_AXI_GP0 [get_bd_intf_pins processing_system7_0/M_AXI_GP0] [get_bd_intf_pins ps7_0_axi_periph/S00_AXI]
-    connect_bd_intf_net -intf_net ps7_0_axi_periph_M00_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M00_AXI]
-    connect_bd_intf_net -intf_net ps7_0_axi_periph_M01_AXI [get_bd_intf_pins mdm_0/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M01_AXI]
+    connect_bd_intf_net -intf_net ps7_0_axi_periph_M00_AXI [get_bd_intf_pins ps7_0_axi_periph/M00_AXI] [get_bd_intf_pins axi_gpio_0/S_AXI]
+    connect_bd_intf_net -intf_net ps7_0_axi_periph_M01_AXI [get_bd_intf_pins ps7_0_axi_periph/M01_AXI] [get_bd_intf_pins mdm_0/S_AXI]
     '''))
+
+    m_value = 2
+
+    if len(axi_dma_list) >= 1:
+        tcl_file.write(textwrap.dedent(f'''
+        connect_bd_intf_net -intf_net ps7_0_axi_periph_M{m_value:02}_AXI [get_bd_intf_pins ps7_0_axi_periph/M{m_value:02}_AXI] [get_bd_intf_pins axi_dma_0/S_AXI_LITE]
+        '''))
+        m_value += 1
 
     for i in range(len(uart_list)):
         tcl_file.write(textwrap.dedent(f'''
-        connect_bd_intf_net -intf_net ps7_0_axi_periph_M0{i + 2}_AXI [get_bd_intf_pins axi_uartlite_{i}/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M0{i + 2}_AXI]
+        connect_bd_intf_net -intf_net ps7_0_axi_periph_M{i + m_value:02}_AXI [get_bd_intf_pins ps7_0_axi_periph/M{i + m_value:02}_AXI] [get_bd_intf_pins axi_uartlite_{i}/S_AXI]
         '''))
+    m_value += len(uart_list)
+
     for i in range(len(shared_bram_list)):
         tcl_file.write(textwrap.dedent(f'''
-        connect_bd_intf_net -intf_net ps7_0_axi_periph_M0{i + 2 + len(uart_list)}_AXI [get_bd_intf_pins axi_bram_ctrl_0/S_AXI] [get_bd_intf_pins ps7_0_axi_periph/M0{i + 2 + len(uart_list)}_AXI]
+        connect_bd_intf_net -intf_net ps7_0_axi_periph_M{i + m_value:02}_AXI [get_bd_intf_pins ps7_0_axi_periph/M{i + m_value:02}_AXI] [get_bd_intf_pins axi_bram_ctrl_0/S_AXI]
         '''))
+    m_value += len(shared_bram_list)
+
     for i in range(len(interrupt_info)):
         tcl_file.write(textwrap.dedent(f'''
-        connect_bd_intf_net -intf_net ps7_0_axi_periph_M0{i + 2 + len(uart_list) + len(shared_bram_list)}_AXI [get_bd_intf_pins axi_intc_{i}/s_axi] [get_bd_intf_pins ps7_0_axi_periph/M0{i + 2 + len(uart_list) + len(shared_bram_list)}_AXI]
+        connect_bd_intf_net -intf_net ps7_0_axi_periph_M{i + m_value:02}_AXI [get_bd_intf_pins ps7_0_axi_periph/M{i + m_value:02}_AXI] [get_bd_intf_pins axi_intc_{i}/s_axi]
         '''))
+    m_value += len(interrupt_info)
+
+    xadc_wizard_list = search_peripheral_by_type(peripheral_info, 'XADC_Wizard')
+    for i in range(len(xadc_wizard_list)):
+        tcl_file.write(textwrap.dedent(f'''
+        connect_bd_intf_net -intf_net ps7_0_axi_periph_M{i + m_value:02}_AXI [get_bd_intf_pins ps7_0_axi_periph/M{i + m_value:02}_AXI] [get_bd_intf_pins xadc_wiz_{i}/s_axi_lite]
+        '''))
+    m_value += len(xadc_wizard_list)
+
+    pwm_list = search_peripheral_by_type(peripheral_info, 'PWM')
+    for i in range(len(pwm_list)):
+        tcl_file.write(textwrap.dedent(f'''
+        connect_bd_intf_net -intf_net ps7_0_axi_periph_M{i + m_value:02}_AXI [get_bd_intf_pins ps7_0_axi_periph/M{i + m_value:02}_AXI] [get_bd_intf_pins pwm_{i}/PWM_AXI]
+        '''))
+    m_value += len(pwm_list)
 
     for interrupt in interrupt_info:
         interruptData = interrupt_info[interrupt]
@@ -1197,9 +1347,22 @@ def write_port_connections():
     # connect_bd_net -net axi_uartlite_0_interrupt [get_bd_pins axi_uartlite_0/interrupt] [get_bd_pins processing_system7_0/IRQ_F2P]
     # '''))
 
+    axi_dma_list = search_peripheral_by_type(peripheral_info, 'AXI_Direct_Memory_Access')
     clk_wizard_list = search_peripheral_by_type(peripheral_info, 'Clocking_Wizard')
     constant_list = search_peripheral_by_type(peripheral_info, 'Constant')
-    concat_list = search_peripheral_by_type(peripheral_info, "Concat")
+    concat_list = search_peripheral_by_type(peripheral_info, 'Concat')
+    xadc_wizard_list = search_peripheral_by_type(peripheral_info, 'XADC_Wizard')
+
+    if len(axi_dma_list) >= 1:
+        tcl_file.write(textwrap.dedent(f'''
+        connect_bd_intf_net -intf_net axi_dma_0_M_AXI_MM2S [get_bd_intf_pins axi_dma_0/M_AXI_MM2S] [get_bd_intf_pins dma_axi_bram_ctrl_1/S_AXI]
+        connect_bd_intf_net -intf_net dma_axi_bram_ctrl_1_BRAM_PORTA [get_bd_intf_pins dma_axi_bram_ctrl_1/BRAM_PORTA] [get_bd_intf_pins blk_mem_gen_0/BRAM_PORTB]
+        '''))
+        axi_dma_data = axi_dma_list[0]
+        if 'M_AXIS_MM2S' in axi_dma_data:
+            tcl_file.write(textwrap.dedent(f'''
+            connect_bd_net -net axi_dma_0_M_AXIS_MM2S [get_bd_pins axi_dma_0/M_AXIS_MM2S] [get_bd_pins {axi_dma_data['M_AXIS_MM2S']}]
+            '''))
 
     for i in range(len(uart_list)):
         uart_node = uart_list[i]
@@ -1224,13 +1387,6 @@ def write_port_connections():
                 connect_bd_net -net clk_wiz_{i}_clk_out{j} [get_bd_pins clk_wiz_{i}/clk_out{j}] [get_bd_pins {clk_wizard_data['clk_out' + str(j)]}]
                 '''))
 
-    for i in range(len(concat_list)):
-        concat_data = concat_list[i]
-        if 'dout' in concat_data:
-            tcl_file.write(textwrap.dedent(f'''
-            connect_bd_net -net xlconcat_{i}_dout [get_bd_pins xlconcat_{i}/dout] [get_bd_pins {concat_data['dout']}]
-            '''))
-
     for i in range(len(constant_list)):
         constant_data = constant_list[i]
         if 'dout' in constant_data:
@@ -1238,8 +1394,34 @@ def write_port_connections():
             connect_bd_net -net xlconstant_{i}_dout [get_bd_pins xlconstant_{i}/dout] [get_bd_pins {constant_data['dout']}]
             '''))
 
+    for i in range(len(concat_list)):
+        concat_data = concat_list[i]
+        if 'dout' in concat_data:
+            tcl_file.write(textwrap.dedent(f'''
+            connect_bd_net -net xlconcat_{i}_dout [get_bd_pins xlconcat_{i}/dout] [get_bd_pins {concat_data['dout']}]
+            '''))
+
+    for i in range(len(xadc_wizard_list)):
+        xadc_wizard_data = xadc_wizard_list[i]
+        tcl_file.write(textwrap.dedent(f'''
+        connect_bd_intf_net -intf_net xadc_wiz_{i}_Vaux0 [get_bd_intf_pins xadc_wiz_{i}/Vaux0] [get_bd_intf_ports vaux0_{i}]
+        connect_bd_intf_net -intf_net xadc_wiz_{i}_Vaux1 [get_bd_intf_pins xadc_wiz_{i}/Vaux1] [get_bd_intf_ports vaux1_{i}]
+        connect_bd_intf_net -intf_net xadc_wiz_{i}_Vaux5 [get_bd_intf_pins xadc_wiz_{i}/Vaux5] [get_bd_intf_ports vaux5_{i}]
+        connect_bd_intf_net -intf_net xadc_wiz_{i}_Vaux6 [get_bd_intf_pins xadc_wiz_{i}/Vaux6] [get_bd_intf_ports vaux6_{i}]
+        connect_bd_intf_net -intf_net xadc_wiz_{i}_Vaux8 [get_bd_intf_pins xadc_wiz_{i}/Vaux8] [get_bd_intf_ports vaux8_{i}]
+        connect_bd_intf_net -intf_net xadc_wiz_{i}_Vaux9 [get_bd_intf_pins xadc_wiz_{i}/Vaux9] [get_bd_intf_ports vaux9_{i}]
+        connect_bd_intf_net -intf_net xadc_wiz_{i}_Vaux12 [get_bd_intf_pins xadc_wiz_{i}/Vaux12] [get_bd_intf_ports vaux12_{i}]
+        connect_bd_intf_net -intf_net xadc_wiz_{i}_Vaux13 [get_bd_intf_pins xadc_wiz_{i}/Vaux13] [get_bd_intf_ports vaux13_{i}]
+        connect_bd_intf_net -intf_net xadc_wiz_{i}_Vaux15 [get_bd_intf_pins xadc_wiz_{i}/Vaux15] [get_bd_intf_ports vaux15_{i}]
+        connect_bd_intf_net -intf_net xadc_wiz_{i}_Vp_Vn [get_bd_intf_pins xadc_wiz_{i}/Vp_Vn] [get_bd_intf_ports vp_vn_{i}]
+        '''))
+        if 'ip2intc_irpt' in xadc_wizard_data:
+            tcl_file.write(textwrap.dedent(f'''
+            connect_bd_net -net xadc_wiz_{i}_ip2intc_irpt [get_bd_pins xadc_wiz_{i}/ip2intc_irpt] [get_bd_pins {xadc_wizard_data['ip2intc_irpt']}]
+            '''))
+
     tcl_file.write(textwrap.dedent(f'''
-    connect_bd_net -net mdm_0_debug_sys_rst [get_bd_pins mdm_0/Debug_SYS_Rst] [get_bd_pins rst_ps7_0_50M/mb_debug_sys_rst] {" ".join(['[get_bd_pins clk_wiz_' + str(i) + '/reset]' for i in range(len(clk_wizard_list))])}
+    connect_bd_net -net mdm_0_debug_sys_rst [get_bd_pins mdm_0/Debug_SYS_Rst] [get_bd_pins rst_ps7_0_50M/mb_debug_sys_rst] {' '.join(['[get_bd_pins clk_wiz_' + str(i) + '/reset]' for i in range(len(clk_wizard_list))])}
     connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_ps7_0_50M/ext_reset_in]
     '''))
 
@@ -1254,18 +1436,34 @@ def write_ps_address_segment(uart_size, shared_bram_list, interrupt_info):
         create_bd_addr_seg -range {sharedMemorySize} -offset {shared_bram_list[0]['Base_Address']} [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_bram_ctrl_0/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
         '''))
 
+    axi_dma_list = search_peripheral_by_type(peripheral_info, 'AXI_Direct_Memory_Access')
+    if len(axi_dma_list) >= 1:
+        tcl_file.write(textwrap.dedent(f'''
+        create_bd_addr_seg -range 0x00010000 -offset 0x40400000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_dma_0/S_AXI_LITE/Reg] SEG_axi_dma_0_Reg
+        '''))
+
     tcl_file.write(textwrap.dedent(f'''
     create_bd_addr_seg -range 0x00010000 -offset 0x41200000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
     create_bd_addr_seg -range 0x00001000 -offset 0x43400000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs mdm_0/S_AXI/Reg] SEG_mdm_0_Reg
     '''))
 
-    interrupt_memory_base = 0x41800000
-    interrupt_memory_step = 0x10000
+    memory_base = 0x41800000
+    memory_step = 0x10000
 
     for i in range(len(interrupt_info)):
-        interrupt_memory_offset = interrupt_memory_base + i * interrupt_memory_step
+        memory_offset = memory_base + i * memory_step
         tcl_file.write(textwrap.dedent(f'''
-        create_bd_addr_seg -range 0x00010000 -offset {interrupt_memory_offset : #0{10}X} [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_intc_{i}/S_AXI/Reg] SEG_axi_intc_{i}_Reg
+        create_bd_addr_seg -range 0x00010000 -offset {memory_offset : #0{10}X} [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs axi_intc_{i}/S_AXI/Reg] SEG_axi_intc_{i}_Reg
+        '''))
+
+    memory_base = memory_base + len(interrupt_info) * memory_step
+
+    xadc_wizard_list = search_peripheral_by_type(peripheral_info, 'XADC_Wizard')
+
+    for i in range(len(xadc_wizard_list)):
+        memory_offset = memory_base + i * memory_step
+        tcl_file.write(textwrap.dedent(f'''
+        create_bd_addr_seg -range 0x00010000 -offset {memory_offset : #0{10}X} [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs xadc_wiz_{i}/s_axi_lite/Reg] SEG_xadc_wiz_{i}_Reg
         '''))
 
     offset = '0x42C00000'
@@ -1710,12 +1908,15 @@ def main():
     open_TCL_file_to_write()
     write_board_and_project_configurations(board_info, project_info)
 
-    shared_bram_list = search_peripheral_by_type(peripheral_info, "block RAM generator")
+    shared_bram_list = search_peripheral_by_type(peripheral_info, 'Block_RAM_Generator')
+    axi_dma_list = search_peripheral_by_type(peripheral_info, 'AXI_Direct_Memory_Access')
     uart_list = search_peripheral_by_type(peripheral_info, 'UART_Lite')
-    clk_wizard_list = search_peripheral_by_type(peripheral_info, "Clocking_Wizard")
-    system_ila_list = search_peripheral_by_type(peripheral_info, "System_ILA")
-    constant_list = search_peripheral_by_type(peripheral_info, "Constant")
-    concat_list = search_peripheral_by_type(peripheral_info, "Concat")
+    clk_wizard_list = search_peripheral_by_type(peripheral_info, 'Clocking_Wizard')
+    system_ila_list = search_peripheral_by_type(peripheral_info, 'System_ILA')
+    constant_list = search_peripheral_by_type(peripheral_info, 'Constant')
+    concat_list = search_peripheral_by_type(peripheral_info, 'Concat')
+    xadc_wizard_list = search_peripheral_by_type(peripheral_info, 'XADC_Wizard')
+    pwm_list = search_peripheral_by_type(peripheral_info, 'PWM')
 
     if len(shared_bram_list) >= 1:
         create_block_memory_generator(shared_bram_list)
@@ -1723,6 +1924,12 @@ def main():
 
     for i in range(len(TEE_config_list)):
         create_TEE_local_memory_cell(i, shared_bram_list)
+
+    axi_master_count = 2
+
+    if len(axi_dma_list) >= 1:
+        create_axi_dma_instance(axi_dma_list)
+        axi_master_count += 2
 
     write_root_design()
 
@@ -1734,11 +1941,14 @@ def main():
     create_system_ila_instance(system_ila_list)
     create_constant_instance(constant_list)
     create_concat_instance(concat_list)
+    create_xadc_wizard_instance(xadc_wizard_list)
+    create_pwm_instance(pwm_list)
 
     create_MDM_block(len(TEE_config_list))
 
     axi_port_count = 4 * len(TEE_config_list) + 1
-    axi_master_count = 2 + len(uart_list) + len(shared_bram_list) + len(interrupt_info)
+    axi_master_count += len(uart_list) + len(shared_bram_list) + len(interrupt_info) + len(xadc_wizard_list) + len(
+        pwm_list)
 
     for i in range(len(TEE_config_list)):
         temp = {}
@@ -1769,7 +1979,7 @@ def main():
     for i in range(len(TEE_config_list)):
         connecting_interface(i)
 
-    write_ps_interface_connections(uart_list, shared_bram_list, interrupt_info)
+    write_ps_interface_connections(axi_dma_list, uart_list, shared_bram_list, interrupt_info)
     set_clock_for_all(len(TEE_config_list) - 1, len(uart_list), shared_bram_list, len(interrupt_info))
     write_port_connections()
 
