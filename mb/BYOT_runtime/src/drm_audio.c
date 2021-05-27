@@ -196,52 +196,46 @@ void logout()
 }
 
 void load_song_md() {
-	//s.song_md.md_size = song_data.md.md_size;
-	s.song_md.md_size = drm_chnl->drm_chnl.song.md.md_size;
-	s.song_md.owner_id = drm_chnl->drm_chnl.song.md.owner_id;
-	s.song_md.num_regions = drm_chnl->drm_chnl.song.md.num_regions;
-	s.song_md.num_users = drm_chnl->drm_chnl.song.md.num_users;
-	memcpy(s.song_md.rids, (void *)get_drm_rids(drm_chnl->drm_chnl.song), s.song_md.num_regions);
-	memcpy(s.song_md.uids, (void *)get_drm_uids(drm_chnl->drm_chnl.song), s.song_md.num_users);
+	s.song_md.md_size = drm_chnl->audio_data.song.md.md_size;
+	s.song_md.owner_id = drm_chnl->audio_data.song.md.owner_id;
+	s.song_md.num_regions = drm_chnl->audio_data.song.md.num_regions;
+	s.song_md.num_users = drm_chnl->audio_data.song.md.num_users;
+
+	memcpy(s.song_md.rids, (void *)get_drm_rids(drm_chnl->audio_data.song), s.song_md.num_regions);
+	memcpy(s.song_md.uids, (void *)get_drm_uids(drm_chnl->audio_data.song), s.song_md.num_users);
 }
 
 void query_song() {
+
     char *name;
-    // copy owner name
 
     load_song_md();
+    memset((void *)&drm_chnl->audio_data.query, 0, sizeof(query));
+
+    drm_chnl->audio_data.query.num_regions = s.song_md.num_regions;
+    drm_chnl->audio_data.query.num_users = s.song_md.num_users;
+
     uid_to_username(s.song_md.owner_id, &name, FALSE);
 
-    mb_printf("Owner: %s \r\n", name);
-    // copy region names
-    mb_printf("Regions: ");
-	   for (int i = 0; i < s.song_md.num_regions; i++) {
-			rid_to_region_name(s.song_md.rids[i], &name, FALSE);
-			//strcpy((char *)q_region_lookup(c->query, i), name);
-			mb_printf("%s ", name);
-		}
-	   mb_printf("\r\n");
-    // copy authorized uid names
-	mb_printf("Users: ");
+    strcpy((char *)drm_chnl->audio_data.query.owner, name);
+
+    for (int i = 0; i < s.song_md.num_regions; i++) {
+		rid_to_region_name(s.song_md.rids[i], &name, FALSE);
+		strcpy((char *)q_region_lookup(drm_chnl->audio_data.query, i), name);
+	}
+
     for (int i = 0; i < s.song_md.num_users; i++) {
         uid_to_username(s.song_md.uids[i], &name, FALSE);
-       // strcpy((char *)q_user_lookup(c->query, i), name);
-        mb_printf("%s ", name);
+        strcpy((char *)q_user_lookup(drm_chnl->audio_data.query, i), name);
     }
-    mb_printf("\r\n");
 
-   // mb_printf("Queried song (%d regions, %d users)\r\n", song_data.md.num_regions, song_data.md.num_users);
+    mb_printf("Queried song (%d regions, %d users)\r\n", drm_chnl->audio_data.query.num_regions,  drm_chnl->audio_data.query.num_users);
 }
 
 //////////////////////// MAIN ////////////////////////
 
 int ssc()
 {
-	if (init == 0) {
-		init++;
-		xil_printf("DRM AUDIO SSC LOADED\r\n");
-		return 0;
-	}
 	memcpy(&received_input, (void *)input, sizeof(player_input));
 	if (!strcmp(received_input.cmd, "login")) {
 		xil_printf("LOGIN COMMAND received\r\n");

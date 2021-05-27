@@ -36,6 +36,7 @@ enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
+   char padding[2];
    char code [CODE_SIZE];
    char input[INPUT_SIZE];
    //char input[INPUT_SIZE];

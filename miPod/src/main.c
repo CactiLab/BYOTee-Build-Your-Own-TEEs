@@ -71,11 +71,11 @@ size_t load_file(char *fname, char *file_buf) {
     	mp_printf("Code size if bigger than buffer space can not execute SSC code\r\n");
     	return 0;
     }*/
-
-    while (total_read_bytes < sb.st_size)
+    read(fd, file_buf, sb.st_size);
+   /* while (total_read_bytes < sb.st_size)
     {
     	total_read_bytes += read(fd, file_buf, sb.st_size);
-    }
+    }*/
     close(fd);
 
     mp_printf("Loaded file into shared buffer (%dB)\r\n", sb.st_size);
@@ -201,7 +201,24 @@ void query_song(char *song_file_name) {
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
-    mp_printf("Finished Query file\r\n");
+
+    mp_printf("Regions: %s", q_region_lookup(c->drm_chnl.query, 0));
+	for (int i = 1; i < c->drm_chnl.query.num_regions; i++) {
+		printf(", %s", q_region_lookup(c->drm_chnl.query, i));
+	}
+	printf("\r\n");
+
+	mp_printf("Owner: %s", c->drm_chnl.query.owner);
+	printf("\r\n");
+
+	mp_printf("Authorized users: ");
+	if (c->drm_chnl.query.num_users) {
+		printf("%s", q_user_lookup(c->drm_chnl.query, 0));
+		for (int i = 1; i < c->drm_chnl.query.num_users; i++) {
+			printf(", %s", q_user_lookup(c->drm_chnl.query, i));
+		}
+	}
+	printf("\r\n");
     
 }
 int main(int argc, char **argv)
