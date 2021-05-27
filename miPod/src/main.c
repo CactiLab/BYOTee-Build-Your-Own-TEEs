@@ -11,7 +11,7 @@
 #include <string.h>
 
 volatile cmd_channel *c;
-volatile drm_audio_channel *drm_chnl;
+//volatile drm_audio_channel *drm_chnl = (drm_audio_channel*)SHARED_DDR_BASE;
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 
 // sends a command to the microblaze using the shared command channel and interrupt
@@ -191,7 +191,7 @@ void query_song(char *song_file_name) {
 		return;
 	}
 	strcpy((void*)c->input, "query");
-    if (!load_file(song_file_name, (void *)&drm_chnl->song + COMMAND_SIZE))
+    if (!load_file(song_file_name, (void *)&c->drm_chnl.song))
     {
         mp_printf("Failed to load song file!\r\n");
         return -1;

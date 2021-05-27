@@ -1,6 +1,12 @@
 // struct to interpret shared command channel
 #define COMMAND_SIZE 10
-#define SHARED_DDR_BASE (0x20000000 + 0x1CC00000 + 0xcf08)
+#define SHARED_DDR_BASE (0x20000000 + 0x1CC00000)
+
+
+#define get_drm_rids(d) (d.md.buf)
+#define get_drm_uids(d) (d.md.buf + d.md.num_regions)
+#define get_drm_song(d) ((char *)(&d.md) + d.md.md_size)
+
 typedef volatile struct __attribute__((__packed__))
 {
     char cmd[COMMAND_SIZE];
@@ -47,10 +53,13 @@ typedef volatile struct __attribute__((__packed__)) {
     };
 } drm_audio_channel;
 
-#define get_drm_rids(d) (d.md.buf)
-#define get_drm_uids(d) (d.md.buf + d.md.num_regions)
-#define get_drm_song(d) ((char *)(&d.md) + d.md.md_size)
-
+typedef volatile struct __attribute__((__packed__)) {
+   char cmd;
+   char drm_state;
+   char code [CODE_SIZE];
+   char input[INPUT_SIZE];
+   drm_audio_channel drm_chnl;
+} drm_channel;
 
 typedef struct
 {

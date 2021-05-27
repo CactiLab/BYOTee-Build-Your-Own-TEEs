@@ -20,7 +20,7 @@ static XAxiDma sAxiDma;
 
 // shared command channel -- read/write for both PS and PL
 player_input received_input;
-volatile drm_audio_channel *drm_chnl = (drm_audio_channel*)SHARED_DDR_BASE;
+volatile drm_channel *drm_chnl = (drm_channel*)SHARED_DDR_BASE;
 volatile char *input = (char *)0x189f8;
 // internal state store
 drm_internal_state s;
@@ -195,28 +195,24 @@ void logout()
     }
 }
 
-void load_song_md(song song_data) {
+void load_song_md() {
 	//s.song_md.md_size = song_data.md.md_size;
-	s.song_md.md_size = drm_chnl->song.md.md_size;
-	s.song_md.owner_id = drm_chnl->song.md.owner_id;
-	s.song_md.num_regions = drm_chnl->song.md.num_regions;
-	s.song_md.num_users = drm_chnl->song.md.num_users;
-	memcpy(s.song_md.rids, (void *)get_drm_rids(drm_chnl->song), s.song_md.num_regions);
-	memcpy(s.song_md.uids, (void *)get_drm_uids(drm_chnl->song), s.song_md.num_users);
+	s.song_md.md_size = drm_chnl->drm_chnl.song.md.md_size;
+	s.song_md.owner_id = drm_chnl->drm_chnl.song.md.owner_id;
+	s.song_md.num_regions = drm_chnl->drm_chnl.song.md.num_regions;
+	s.song_md.num_users = drm_chnl->drm_chnl.song.md.num_users;
+	memcpy(s.song_md.rids, (void *)get_drm_rids(drm_chnl->drm_chnl.song), s.song_md.num_regions);
+	memcpy(s.song_md.uids, (void *)get_drm_uids(drm_chnl->drm_chnl.song), s.song_md.num_users);
 }
 
 void query_song() {
     char *name;
-
-    song song_data;
-    memcpy(&song_data, (void *)input + COMMAND_SIZE, sizeof(song));
-
-
     // copy owner name
-    uid_to_username(song_data.md.owner_id, &name, FALSE);
+
+    load_song_md();
+    uid_to_username(s.song_md.owner_id, &name, FALSE);
 
     mb_printf("Owner: %s \r\n", name);
-    load_song_md(song_data);
     // copy region names
     mb_printf("Regions: ");
 	   for (int i = 0; i < s.song_md.num_regions; i++) {
@@ -234,7 +230,7 @@ void query_song() {
     }
     mb_printf("\r\n");
 
-    mb_printf("Queried song (%d regions, %d users)\r\n", song_data.md.num_regions, song_data.md.num_users);
+   // mb_printf("Queried song (%d regions, %d users)\r\n", song_data.md.num_regions, song_data.md.num_users);
 }
 
 //////////////////////// MAIN ////////////////////////

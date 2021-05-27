@@ -13,7 +13,7 @@
 #define USR_CMD_SZ 64
 
 #define CODE_SIZE 50000
-#define INPUT_SIZE 1200000
+#define INPUT_SIZE 2000
 #define OUTPUT_SIZE 2000
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
@@ -21,7 +21,7 @@
 // printing utility
 #define MP_PROMPT "mP> "
 #define mp_printf(...) printf(MP_PROMPT __VA_ARGS__)
-
+#define SHARED_DDR_BASE (0x20000000 + 0x1CC00000 + 0xcf08)
 #define USER_PROMPT "miPod %s# "
 #define print_prompt() printf(USER_PROMPT, "")
 #define print_prompt_msg(...) printf(USER_PROMPT, __VA_ARGS__)
@@ -46,16 +46,6 @@ typedef struct __attribute__((__packed__)) {
     int wav_size;
     drm_md md;
 } song;
-
-// struct to interpret shared command channel
-typedef volatile struct __attribute__((__packed__)) {
-   char cmd;
-   char drm_state;
-   char code [CODE_SIZE];
-   char input[INPUT_SIZE];
-   //char output[OUTPUT_SIZE];
-} cmd_channel;
-
 typedef volatile struct __attribute__((__packed__)) {
     char cmd;                   // from commands enum
     char drm_state;             // from states enum
@@ -68,4 +58,14 @@ typedef volatile struct __attribute__((__packed__)) {
        // char buf[MAX_SONG_SZ]; // sets correct size of cmd_channel for allocation
     };
 } drm_audio_channel;
+// struct to interpret shared command channel
+typedef volatile struct __attribute__((__packed__)) {
+   char cmd;
+   char drm_state;
+   char code [CODE_SIZE];
+   char input[INPUT_SIZE];
+   drm_audio_channel drm_chnl;
+} cmd_channel;
+
+
 #endif /* SRC_MIPOD_H_ */
