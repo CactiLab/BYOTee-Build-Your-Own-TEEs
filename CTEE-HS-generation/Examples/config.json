@@ -64,6 +64,21 @@
     "system_ila_0" : {
       "Type" : "System_ILA",
       "Number_of_Probes" : "1"
+    },
+    "xlconstant_0" : {
+      "Type" : "Constant",
+      "Constant_Value" : "0",
+      "dout" : "xlconcat_0/In1"
+    },
+    "xlconstant_1" : {
+      "Type" : "Constant",
+      "Constant_Value" : "0",
+      "dout" : "xlconcat_0/In2"
+    },
+    "xlconcat_0" : {
+      "Type" : "Concat",
+      "Number_of_Ports" : "3",
+      "dout" : "processing_system7_0/IRQ_F2P"
     }
   },
   "Interrupts" : {
