@@ -434,6 +434,10 @@ int ssc()
 			xil_printf("Share song COMMAND received\r\n");
 			share_song();
 			break;
+		case PLAY:
+			xil_printf("Share song COMMAND received\r\n");
+			play_song();
+			break;
 		default:
 			break;
 	}
