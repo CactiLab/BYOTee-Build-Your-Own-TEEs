@@ -47,8 +47,7 @@
       "Mode": "Slave",
       "Data_Transfer" : {
         "REE" : "True",
-        "MicroBlaze_0" : "True",
-        "MicroBlaze_1" : "True"
+        "MicroBlaze_0" : "True"
       }
     },
     "shared_bram" : {
@@ -60,15 +59,40 @@
     "axi_dma_0" : {
       "Type" : "AXI_Direct_Memory_Access",
       "M_AXI_MM2S_Data_Width" : "32",
-      "MM2S_Burst_Size" : "16"
+      "MM2S_Burst_Size" : "16",
+      "M_AXIS_MM2S" : "axis_data_fifo_0/S_AXIS"
+    },
+    "axis_data_fifo_0" : {
+      "Type" : "AXI4_Stream_Data_FIFO",
+      "FIFO_Depth" : "4096",
+      "m_axis_tdata" : [
+        "system_ila_1/probe0"
+      ]
+    },
+    "i2s_output_0" : {
+      "Type" : "I2S_Output___Not_working_because_v2019_does_not_have_it_installed",
+      "data_accepted" : [
+        "axis_data_fifo_0/m_axis_tready",
+        "system_ila_1/probe1"
+      ],
+      "i2s_sd" : "system_ila_1/probe4",
+      "i2s_lrclk" : "system_ila_1/probe2",
+      "i2s_sclk" : "system_ila_1/probe3"
     },
     "clk_wiz_0" : {
       "Type" : "Clocking_Wizard",
-      "clk_out1" : "system_ila_0/probe0"
+      "clk_out1" : [
+        "system_ila_0/probe0",
+        "axis_data_fifo_0/m_axis_aclk"
+      ]
     },
     "system_ila_0" : {
       "Type" : "System_ILA",
       "Number_of_Probes" : "1"
+    },
+    "system_ila_1" : {
+      "Type" : "System_ILA",
+      "Number_of_Probes" : "5"
     },
     "xlconstant_0" : {
       "Type" : "Constant",
@@ -90,7 +114,7 @@
       "ip2intc_irpt" : "xlconcat_0/In0"
     },
     "pwm_0" : {
-      "Type" : "Not_working_because_v2019_does_not_have_PWM",
+      "Type" : "PWM___Not_working_because_v2019_does_not_have_it_installed",
       "Number_of_PWM" : "6"
     }
   },

@@ -211,17 +211,19 @@ def connecting_interface(number):
 def set_clock_for_all(size, uart_size, shared_bram_list, interrupt_info_size):
     global tcl_file, axi_port_count, peripheral_info
 
+    axi_dma_list = search_peripheral_by_type(peripheral_info, 'AXI_Direct_Memory_Access')
     clk_wizard_list = search_peripheral_by_type(peripheral_info, 'Clocking_Wizard')
     system_ila_list = search_peripheral_by_type(peripheral_info, 'System_ILA')
     xadc_wizard_list = search_peripheral_by_type(peripheral_info, 'XADC_Wizard')
     pwm_list = search_peripheral_by_type(peripheral_info, 'PWM')
-    axi_dma_list = search_peripheral_by_type(peripheral_info, 'AXI_Direct_Memory_Access')
+    axis_data_fifo_list = search_peripheral_by_type(peripheral_info, 'AXI4_Stream_Data_FIFO')
 
     tcl_file.write(textwrap.dedent(f'''
-    connect_bd_net -net microblaze_{str(size)}_Clk [get_bd_pins processing_system7_0/FCLK_CLK0] {' '.join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aclk]' for i in range(len(shared_bram_list))])} [get_bd_pins axi_gpio_0/s_axi_aclk] {' '.join(['[get_bd_pins axi_intc_' + str(i) + '/s_axi_aclk]' for i in range(interrupt_info_size)])} {' '.join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aclk]' for i in range(uart_size)])} [get_bd_pins mdm_0/S_AXI_ACLK] {' '.join(['[get_bd_pins microblaze_' + str(r) + '/Clk] [get_bd_pins microblaze_' + str(r) + '_local_memory/LMB_Clk]' for r in range(size + 1)])} [get_bd_pins mb_axi_mem_interconnect_0/ACLK] {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/M' + str(i).zfill(2) + '_ACLK]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axi_port_count)])} [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] {' '.join(['[get_bd_pins ps7_0_axi_periph/M' + str(i).zfill(2) + '_ACLK]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axi_port_count)])} [get_bd_pins rst_ps7_0_50M/slowest_sync_clk] {' '.join(['[get_bd_pins clk_wiz_' + str(i) + '/clk_in1]' for i in range(len(clk_wizard_list))])} {' '.join(['[get_bd_pins system_ila_' + str(i) + '/clk]' for i in range(len(system_ila_list))])} {' '.join(['[get_bd_pins xadc_wiz_' + str(i) + '/s_axi_aclk]' for i in range(len(xadc_wizard_list))])} {' '.join(['[get_bd_pins pwm_' + str(i) + '/pwm_axi_aclk]' for i in range(len(pwm_list))])} {'[get_bd_pins axi_dma_0/m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aclk] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aclk]' if len(axi_dma_list) >= 1 else ''}
-    connect_bd_net -net rst_ps7_0_50M_bus_struct_reset {' '.join(['[get_bd_pins microblaze_' + str(r) + '_local_memory/SYS_Rst]' for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/bus_struct_reset]
-    connect_bd_net -net rst_ps7_0_50M_mb_reset {' '.join(['[get_bd_pins microblaze_' + str(r) + '/Reset]' for r in range(size + 1)])} [get_bd_pins rst_ps7_0_50M/mb_reset]
-    connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn [get_bd_pins rst_ps7_0_50M/peripheral_aresetn] {' '.join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aresetn]' for i in range(len(shared_bram_list))])} [get_bd_pins axi_gpio_0/s_axi_aresetn] {' '.join(['[get_bd_pins axi_intc_' + str(i) + '/s_axi_aresetn]' for i in range(interrupt_info_size)])} {' '.join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aresetn]' for i in range(uart_size)])} [get_bd_pins mdm_0/S_AXI_ARESETN] [get_bd_pins mb_axi_mem_interconnect_0/ARESETN] {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/M' + str(i).zfill(2) + '_ARESETN]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axi_port_count)])} [get_bd_pins ps7_0_axi_periph/ARESETN] {' '.join(['[get_bd_pins ps7_0_axi_periph/M' + str(i).zfill(2) + '_ARESETN]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axi_port_count)])} {' '.join(['[get_bd_pins xadc_wiz_' + str(i) + '/s_axi_aresetn]' for i in range(len(xadc_wizard_list))])} {' '.join(['[get_bd_pins pwm_' + str(i) + '/pwm_axi_aresetn]' for i in range(len(pwm_list))])} {'[get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aresetn] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aresetn]' if len(axi_dma_list) >= 1 else ''}
+    connect_bd_net -net microblaze_{str(size)}_Clk [get_bd_pins processing_system7_0/FCLK_CLK0] {' '.join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aclk]' for i in range(len(shared_bram_list))])} [get_bd_pins axi_gpio_0/s_axi_aclk] {' '.join(['[get_bd_pins axi_intc_' + str(i) + '/s_axi_aclk]' for i in range(interrupt_info_size)])} {' '.join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aclk]' for i in range(uart_size)])} [get_bd_pins mdm_0/S_AXI_ACLK] {' '.join(['[get_bd_pins microblaze_' + str(r) + '/Clk] [get_bd_pins microblaze_' + str(r) + '_local_memory/LMB_Clk]' for r in range(size + 1)])} [get_bd_pins mb_axi_mem_interconnect_0/ACLK] {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/M' + str(i).zfill(2) + '_ACLK]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axi_port_count)])} [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] {' '.join(['[get_bd_pins ps7_0_axi_periph/M' + str(i).zfill(2) + '_ACLK]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ACLK]' for r in range(axi_port_count)])} [get_bd_pins rst_ps7_0_50M/slowest_sync_clk] {' '.join(['[get_bd_pins clk_wiz_' + str(i) + '/clk_in1]' for i in range(len(clk_wizard_list))])} {' '.join(['[get_bd_pins system_ila_' + str(i) + '/clk]' for i in range(len(system_ila_list))])} {' '.join(['[get_bd_pins xadc_wiz_' + str(i) + '/s_axi_aclk]' for i in range(len(xadc_wizard_list))])} {' '.join(['[get_bd_pins pwm_' + str(i) + '/pwm_axi_aclk]' for i in range(len(pwm_list))])} {' '.join(['[get_bd_pins axis_data_fifo_' + str(i) + '/s_axis_aclk]' for i in range(len(axis_data_fifo_list))])} {'[get_bd_pins axi_dma_0/m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aclk] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aclk]' if len(axi_dma_list) >= 1 else ''}
+    connect_bd_net -net rst_ps7_0_50M_bus_struct_reset [get_bd_pins rst_ps7_0_50M/bus_struct_reset] {' '.join(['[get_bd_pins microblaze_' + str(r) + '_local_memory/SYS_Rst]' for r in range(size + 1)])}
+    connect_bd_net -net rst_ps7_0_50M_mb_reset [get_bd_pins rst_ps7_0_50M/mb_reset] {' '.join(['[get_bd_pins microblaze_' + str(r) + '/Reset]' for r in range(size + 1)])}
+    connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn [get_bd_pins rst_ps7_0_50M/peripheral_aresetn] {' '.join(['[get_bd_pins axi_bram_ctrl_' + str(i) + '/s_axi_aresetn]' for i in range(len(shared_bram_list))])} [get_bd_pins axi_gpio_0/s_axi_aresetn] {' '.join(['[get_bd_pins axi_intc_' + str(i) + '/s_axi_aresetn]' for i in range(interrupt_info_size)])} {' '.join(['[get_bd_pins axi_uartlite_' + str(i) + '/s_axi_aresetn]' for i in range(uart_size)])} [get_bd_pins mdm_0/S_AXI_ARESETN] [get_bd_pins mb_axi_mem_interconnect_0/ARESETN] {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/M' + str(i).zfill(2) + '_ARESETN]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins mb_axi_mem_interconnect_0/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axi_port_count)])} [get_bd_pins ps7_0_axi_periph/ARESETN] {' '.join(['[get_bd_pins ps7_0_axi_periph/M' + str(i).zfill(2) + '_ARESETN]' for i in range(axi_master_count)])} {' '.join(['[get_bd_pins ps7_0_axi_periph/S' + axi_connector_helper(r) + '_ARESETN]' for r in range(axi_port_count)])} {' '.join(['[get_bd_pins xadc_wiz_' + str(i) + '/s_axi_aresetn]' for i in range(len(xadc_wizard_list))])} {' '.join(['[get_bd_pins pwm_' + str(i) + '/pwm_axi_aresetn]' for i in range(len(pwm_list))])} {' '.join(['[get_bd_pins axis_data_fifo_' + str(i) + '/m_axis_aresetn]' for i in range(len(axis_data_fifo_list))])} {'[get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aresetn] [get_bd_pins dma_axi_bram_ctrl_1/s_axi_aresetn]' if len(axi_dma_list) >= 1 else ''}
+    connect_bd_net -net rst_ps7_0_50M_interconnect_aresetn [get_bd_pins rst_ps7_0_50M/interconnect_aresetn] {' '.join(['[get_bd_pins axis_data_fifo_' + str(i) + '/s_axis_aresetn]' for i in range(len(axis_data_fifo_list))])}
     '''))
 
 
@@ -672,6 +674,40 @@ def create_pwm_instance(pwm_list):
         '''))
 
 
+def create_axis_data_fifo_instance(axis_data_fifo_list):
+    global tcl_file
+
+    for i in range(len(axis_data_fifo_list)):
+        tcl_file.write(textwrap.dedent(f'''
+        # Create instance: axis_data_fifo_{i}, and set properties
+        set axis_data_fifo_{i} [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_{i} ]
+        set_property -dict [ list \\
+          CONFIG.ACLKEN_CONV_MODE {{0}} \\
+          CONFIG.FIFO_DEPTH {{{axis_data_fifo_list[i]['FIFO_Depth']}}} \\
+          CONFIG.IS_ACLK_ASYNC {{1}} \\
+          CONFIG.TDATA_NUM_BYTES {{2}} \\
+        ] $axis_data_fifo_{i}
+        '''))
+
+
+def create_i2s_output_instance(i2s_output_list):
+    global tcl_file
+
+    for i in range(len(i2s_output_list)):
+        tcl_file.write(textwrap.dedent(f'''
+        # Create instance: i2s_output_{i}, and set properties
+        set block_name i2s_output
+        set block_cell_name i2s_output_{i}
+        if {{ [catch {{set i2s_output_{i} [create_bd_cell -type module -reference $block_name $block_cell_name] }} errmsg] }} {{
+          catch {{common::send_msg_id "BD_TCL-105" "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${{block_name}}'s definition into the project."}}
+          return 1
+        }} elseif {{ $i2s_output_{i} eq "" }} {{
+          catch {{common::send_msg_id "BD_TCL-106" "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${{block_name}}'s definition into the project."}}
+          return 1
+        }}
+        '''))
+
+
 def write_root_design():
     global tcl_file
 
@@ -727,6 +763,15 @@ def write_root_design():
         set vaux13_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux13_{i} ]
         set vaux15_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux15_{i} ]
         set vp_vn_{i} [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vp_vn_{i} ]
+        '''))
+
+    i2s_output_list = search_peripheral_by_type(peripheral_info, 'I2S_Output')
+    for i in range(len(i2s_output_list)):
+        tcl_file.write(textwrap.dedent(f'''
+        set ja0_{i} [ create_bd_port -dir O ja0_{i} ]
+        set ja1_{i} [ create_bd_port -dir O ja1_{i} ]
+        set ja2_{i} [ create_bd_port -dir O ja2_{i} ]
+        set ja3_{i} [ create_bd_port -dir O ja3_{i} ]
         '''))
 
     gpio_list = search_peripheral_by_type(peripheral_info, 'AXI_GPIO')
@@ -1352,6 +1397,8 @@ def write_port_connections():
     constant_list = search_peripheral_by_type(peripheral_info, 'Constant')
     concat_list = search_peripheral_by_type(peripheral_info, 'Concat')
     xadc_wizard_list = search_peripheral_by_type(peripheral_info, 'XADC_Wizard')
+    axis_data_fifo_list = search_peripheral_by_type(peripheral_info, 'AXI4_Stream_Data_FIFO')
+    i2s_output_list = search_peripheral_by_type(peripheral_info, 'I2S_Output')
 
     if len(axi_dma_list) >= 1:
         tcl_file.write(textwrap.dedent(f'''
@@ -1361,7 +1408,7 @@ def write_port_connections():
         axi_dma_data = axi_dma_list[0]
         if 'M_AXIS_MM2S' in axi_dma_data:
             tcl_file.write(textwrap.dedent(f'''
-            connect_bd_net -net axi_dma_0_M_AXIS_MM2S [get_bd_pins axi_dma_0/M_AXIS_MM2S] [get_bd_pins {axi_dma_data['M_AXIS_MM2S']}]
+            connect_bd_intf_net -intf_net axi_dma_0_M_AXIS_MM2S [get_bd_intf_pins axi_dma_0/M_AXIS_MM2S] [get_bd_intf_pins {axi_dma_data['M_AXIS_MM2S']}]
             '''))
 
     for i in range(len(uart_list)):
@@ -1383,8 +1430,9 @@ def write_port_connections():
         clk_wizard_data = clk_wizard_list[i]
         for j in range(1, 4):
             if 'clk_out' + str(j) in clk_wizard_data:
+                clk_out_list = get_list_from_obj_or_list(clk_wizard_data['clk_out' + str(j)])
                 tcl_file.write(textwrap.dedent(f'''
-                connect_bd_net -net clk_wiz_{i}_clk_out{j} [get_bd_pins clk_wiz_{i}/clk_out{j}] [get_bd_pins {clk_wizard_data['clk_out' + str(j)]}]
+                connect_bd_net -net clk_wiz_{i}_clk_out{j} [get_bd_pins clk_wiz_{i}/clk_out{j}] {' '.join(['[get_bd_pins ' + ele + ']' for ele in clk_out_list])}
                 '''))
 
     for i in range(len(constant_list)):
@@ -1419,6 +1467,46 @@ def write_port_connections():
             tcl_file.write(textwrap.dedent(f'''
             connect_bd_net -net xadc_wiz_{i}_ip2intc_irpt [get_bd_pins xadc_wiz_{i}/ip2intc_irpt] [get_bd_pins {xadc_wizard_data['ip2intc_irpt']}]
             '''))
+
+    for i in range(len(axis_data_fifo_list)):
+        axis_data_fifo_data = axis_data_fifo_list[i]
+        if 'm_axis_tdata' in axis_data_fifo_data:
+            m_axis_tdata_list = get_list_from_obj_or_list(axis_data_fifo_data['m_axis_tdata'])
+            tcl_file.write(textwrap.dedent(f'''
+            connect_bd_net -net axis_data_fifo_{i}_m_axis_tdata [get_bd_pins axis_data_fifo_{i}/m_axis_tdata] {' '.join(['[get_bd_pins ' + ele + ']' for ele in m_axis_tdata_list])}
+            '''))
+
+    for i in range(len(i2s_output_list)):
+        i2s_output_data = i2s_output_list[i]
+        if 'data_accepted' in i2s_output_data:
+            data_accepted_list = get_list_from_obj_or_list(i2s_output_data['data_accepted'])
+            tcl_file.write(textwrap.dedent(f'''
+            connect_bd_net -net i2s_output_{i}_data_accepted [get_bd_pins i2s_output_{i}/data_accepted] {' '.join(['[get_bd_pins ' + ele + ']' for ele in data_accepted_list])}
+            '''))
+        i2s_sd_list = []
+        if 'i2s_sd' in i2s_output_data:
+            i2s_sd_list = get_list_from_obj_or_list(i2s_output_data['i2s_sd'])
+        tcl_file.write(textwrap.dedent(f'''
+        connect_bd_net -net i2s_output_{i}_i2s_sd [get_bd_pins i2s_output_{i}/i2s_sd] [get_bd_ports ja0_{i}] {' '.join(['[get_bd_pins ' + ele + ']' for ele in i2s_sd_list])}
+        '''))
+        i2s_lrclk_list = []
+        if 'i2s_lrclk' in i2s_output_data:
+            i2s_lrclk_list = get_list_from_obj_or_list(i2s_output_data['i2s_lrclk'])
+        tcl_file.write(textwrap.dedent(f'''
+        connect_bd_net -net i2s_output_{i}_i2s_sd [get_bd_pins i2s_output_{i}/i2s_lrclk] [get_bd_ports ja1_{i}] {' '.join(['[get_bd_pins ' + ele + ']' for ele in i2s_lrclk_list])}
+        '''))
+        i2s_sclk_list = []
+        if 'i2s_sclk' in i2s_output_data:
+            i2s_sclk_list = get_list_from_obj_or_list(i2s_output_data['i2s_sclk'])
+        tcl_file.write(textwrap.dedent(f'''
+        connect_bd_net -net i2s_output_{i}_i2s_sd [get_bd_pins i2s_output_{i}/i2s_sclk] [get_bd_ports ja2_{i}] {' '.join(['[get_bd_pins ' + ele + ']' for ele in i2s_sclk_list])}
+        '''))
+        i2s_mclk_list = []
+        if 'i2s_mclk' in i2s_output_data:
+            i2s_mclk_list = get_list_from_obj_or_list(i2s_output_data['i2s_mclk'])
+        tcl_file.write(textwrap.dedent(f'''
+        connect_bd_net -net i2s_output_{i}_i2s_sd [get_bd_pins i2s_output_{i}/i2s_mclk] [get_bd_ports ja3_{i}] {' '.join(['[get_bd_pins ' + ele + ']' for ele in i2s_mclk_list])}
+        '''))
 
     tcl_file.write(textwrap.dedent(f'''
     connect_bd_net -net mdm_0_debug_sys_rst [get_bd_pins mdm_0/Debug_SYS_Rst] [get_bd_pins rst_ps7_0_50M/mb_debug_sys_rst] {' '.join(['[get_bd_pins clk_wiz_' + str(i) + '/reset]' for i in range(len(clk_wizard_list))])}
@@ -1891,6 +1979,12 @@ def print_uart_config(peripheral_info):
                     print("\t" + processorsName)
 
 
+def get_list_from_obj_or_list(obj_or_list):
+    if type(obj_or_list) is not list:
+        return [obj_or_list]
+    return obj_or_list
+
+
 def main():
     parser = argparse.ArgumentParser(description="""
     Parse config requires the following:
@@ -1917,6 +2011,8 @@ def main():
     concat_list = search_peripheral_by_type(peripheral_info, 'Concat')
     xadc_wizard_list = search_peripheral_by_type(peripheral_info, 'XADC_Wizard')
     pwm_list = search_peripheral_by_type(peripheral_info, 'PWM')
+    axis_data_fifo_list = search_peripheral_by_type(peripheral_info, 'AXI4_Stream_Data_FIFO')
+    i2s_output_list = search_peripheral_by_type(peripheral_info, 'I2S_Output')
 
     if len(shared_bram_list) >= 1:
         create_block_memory_generator(shared_bram_list)
@@ -1943,6 +2039,8 @@ def main():
     create_concat_instance(concat_list)
     create_xadc_wizard_instance(xadc_wizard_list)
     create_pwm_instance(pwm_list)
+    create_axis_data_fifo_instance(axis_data_fifo_list)
+    create_i2s_output_instance(i2s_output_list)
 
     create_MDM_block(len(TEE_config_list))
 
