@@ -81,7 +81,6 @@ typedef volatile struct __attribute__((__packed__)) {
    char drm_state;
    char padding[2];
    char code [CODE_SIZE];
-   char input[INPUT_SIZE];
    drm_audio_channel audio_data;
 } drm_channel;
 

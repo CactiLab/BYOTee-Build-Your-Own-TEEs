@@ -27,7 +27,7 @@ struct color {
 };
 
 
-enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND};
+enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
 
@@ -38,9 +38,6 @@ typedef volatile struct __attribute__((__packed__)) {
    char drm_state;
    char padding[2];
    char code [CODE_SIZE];
-   char input[INPUT_SIZE];
-   //char input[INPUT_SIZE];
-   //char output[OUTPUT_SIZE];
 } cmd_channel;
 
 // store of internal state

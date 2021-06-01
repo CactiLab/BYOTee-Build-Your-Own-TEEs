@@ -38,7 +38,6 @@ volatile cmd_channel *c = (cmd_channel*)SHARED_DDR_BASE;
 internal_state __attribute__((section (".ssc.code.buffer"))) local_state;
 data_content __attribute__((section (".ssc.data.buffer"))) ssc_data;
 ro_data_content __attribute__((section (".ssc.ro.data.buffer"))) ssc_ro_data;
-char  __attribute__((section (".ssc.input.buffer"))) ssc_input_buffer[INPUT_SIZE];
 
 
 //////////////////////// INTERRUPT HANDLING ////////////////////////
@@ -79,8 +78,6 @@ void load_code(){
 	mb_printf("Inside Load Code Funciton\r\n");
 	int i;
 	format_SSC_code();
-	//load_from_shared_to_local();
-    //copy_input_from_shared_to_local();
 	mb_printf("-----Read code data-----\r\n");
     i = ((int (*) (void))local_state.code)();
 	mb_printf("Code to be executed value returned: '%d'\r\n",  i);
@@ -91,11 +88,13 @@ int fw_add() {
 }
 void forward_to_ssc()
 {
-	memcpy(ssc_input_buffer,(void*)c->input, INPUT_SIZE);
 	mb_printf("------------------Give execution to SSC----------------");
-	//((int (*) (void))local_state.code)();
-	ssc();
-
+	((int (*) (void))local_state.code)();
+}
+void remove_ssc_module(){
+	memset(&local_state.code, 0, sizeof(local_state.code));
+	memset(&ssc_data, 0, sizeof(data_content));
+	memset(&ssc_ro_data, 0, sizeof(ro_data_content));
 }
 int main() {
     u32 status;
@@ -149,6 +148,9 @@ int main() {
             	break;
             case SSC_COMMAND:
             	forward_to_ssc();
+            	break;
+            case EXIT:
+            	remove_ssc_module();
             	break;
             default:
                 break;

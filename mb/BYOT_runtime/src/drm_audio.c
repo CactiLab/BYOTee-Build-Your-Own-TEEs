@@ -22,7 +22,7 @@
 static XAxiDma sAxiDma;
 
 volatile drm_channel *drm_chnl = (drm_channel*)SHARED_DDR_BASE;
-volatile char *input = (char *)0x189f8;
+
 // internal state store
 drm_internal_state s;
 volatile static int InterruptProcessed = FALSE;
