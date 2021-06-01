@@ -76,13 +76,18 @@ void format_SSC_code() {
 }
 void load_code(){
 	mb_printf("Inside Load Code Funciton\r\n");
-	int i;
 	format_SSC_code();
 	mb_printf("-----Read code data-----\r\n");
-    i = ((int (*) (void))local_state.code)();
-	mb_printf("Code to be executed value returned: '%d'\r\n",  i);
+	mb_printf("SSC Code loaded to BRAM\r\n");
 }
+void execute_SSC() {
+	int i;
+	mb_printf("Triggering execution\r\n");
 
+	i = ((int (*) (void))local_state.code)();
+
+	mb_printf("Finished SSC code executed from BRAM: '%d'\r\n",  i);
+}
 int fw_add() {
 	return 5 + 3;
 }
@@ -151,6 +156,9 @@ int main() {
             	break;
             case EXIT:
             	remove_ssc_module();
+            	break;
+            case EXECUTE:
+            	execute_SSC();
             	break;
             default:
                 break;

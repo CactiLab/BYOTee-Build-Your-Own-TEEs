@@ -27,7 +27,7 @@ struct color {
 };
 
 
-enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT};
+enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
 

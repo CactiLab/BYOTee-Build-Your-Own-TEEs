@@ -12,7 +12,7 @@
 
 volatile cmd_channel *c;
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
-
+int load_SSC = 0;
 // sends a command to the microblaze using the shared command channel and interrupt
 void send_command(int cmd)
 {
@@ -86,15 +86,6 @@ size_t load_file(char *fname, char *file_buf) {
     return sb.st_size;
 }
 
-/*
-bool copy_to_shared(char *fileName) {
-    if (!load_file(fileName, (void *)&c->code))
-    {
-        mp_printf("Failed to load code!\r\n");
-        return false;
-    }
-    return true;
-}*/
 void login(char *username, char *pin) {
     if (!username || !pin) {
         mp_printf("Invalid user name/PIN\r\n");
@@ -132,7 +123,26 @@ void load_code(char *fileName)
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
-    mp_printf("Finished executing file\r\n");
+    mp_printf("Finished loading file\r\n");
+}
+void execute_SSC()
+{
+	send_command(EXECUTE);
+	while (c->drm_state == STOPPED)
+		continue; // wait for DRM to start working
+	while (c->drm_state == WORKING)
+		continue; // wait for DRM to dump file
+	mp_printf("Finished Executing SSC file\r\n");
+
+}
+void exit_SSC()
+{
+	send_command(EXIT);
+	while (c->drm_state == STOPPED)
+		continue; // wait for DRM to start working
+	while (c->drm_state == WORKING)
+		continue; // wait for DRM to dump file
+	mp_printf("Cleaned UP SSC\r\n");
 }
 // attempts to share a song with a user
 void share_song(char *song_name, char *username) {
@@ -342,9 +352,20 @@ int main(int argc, char **argv)
         {
             print_help();
         }
-        else if (!strcmp(cmd, "load_code"))
+        else if (!strcmp(cmd, "load"))
         {
             load_code(arg1);
+        }
+        else if (!strcmp(cmd, "exe"))
+        {
+        	if (load_SSC != 0)
+        		execute_SSC();
+        	else
+        		printf("Load SSC first");
+        }
+        else if (!strcmp(cmd, "exit"))
+        {
+
         }
         else if (!strcmp(cmd, "login"))
         {
