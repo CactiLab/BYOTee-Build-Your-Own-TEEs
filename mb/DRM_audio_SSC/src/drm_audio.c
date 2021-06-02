@@ -27,13 +27,22 @@ drm_internal_state s;
 volatile static int InterruptProcessed = FALSE;
 static XIntc InterruptController;
 
-int init = 0;
+int dummy_preventer = 0;
 //////////////////////// INTERRUPT HANDLING ////////////////////////
 int dummy()
 {
-    usleep(500);
+	u32 t, s;
+    //usleep(500);
     init_platform();
     cleanup_platform();
+    microblaze_enable_icache();
+    microblaze_enable_interrupts();
+    microblaze_disable_interrupts();
+    microblaze_invalidate_cache_ext_range(t, s);
+    microblaze_invalidate_dcache_range(t, s);
+    //microblaze_flush_cache_ext_range();
+    //microblaze_invalidate_dcache_range();
+
 }
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 
@@ -416,6 +425,8 @@ void play_song() {
 
 int main()
 {
+	if (dummy_preventer != 0)
+		dummy();
 	switch (drm_chnl->audio_data.ssc_cmd) {
 		case LOGIN:
 			xil_printf("LOGIN COMMAND received\r\n");
