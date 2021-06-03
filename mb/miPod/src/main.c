@@ -102,7 +102,7 @@ void login(char *username, char *pin) {
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
-    mp_printf("Finished Query file\r\n");
+   // mp_printf("Finished Query file\r\n");
 }
 void logout() {
 	specify_ssc_command(LOGOUT);

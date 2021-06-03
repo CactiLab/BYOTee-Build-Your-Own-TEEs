@@ -58,8 +58,14 @@ void query_drm(){
 void load_from_shared_to_local() {
     memcpy(local_state.code, (void*)c->code, CODE_SIZE);
 }
-void format_SSC_input() {
-
+void dummy() {
+	char *str1 = NULL, *str2;
+	memmove(str1, str2, 10);
+	strcpy(str1, str2);
+	if (!strcmp(str1, NULL))
+	{
+		format_SSC_code();
+	}
 }
 void format_SSC_code() {
 	ssc_meta_data recived_meta_data;
