@@ -66,6 +66,7 @@ void dummy() {
 	{
 		format_SSC_code();
 	}
+	Xil_MemCpy(str1, str2, 10);
 }
 void format_SSC_code() {
 	ssc_meta_data recived_meta_data;
