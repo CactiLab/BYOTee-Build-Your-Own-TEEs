@@ -65,7 +65,7 @@ SECTIONS
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.ssc.data.buffer 0x19998:
+.ssc.data.buffer 0x143e8:
 {
 	KEEP(*(.ssc.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
@@ -109,7 +109,7 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.ssc.ro.data.buffer 0x1af34:
+.ssc.ro.data.buffer 0x15984:
 {
 	KEEP(*(.ssc.ro.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
@@ -237,10 +237,6 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    __stack = _stack;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.ssc.input.buffer 0x189f8:
-{
-	KEEP(*(.ssc.input.buffer))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 _end = .;
 }

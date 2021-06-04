@@ -12,8 +12,8 @@
 
 // protocol constants
 #define CODE_SIZE 50000
-#define DATA_SIZE 2000
-#define RO_DATA_SIZE 2000
+#define DATA_SIZE 3000
+#define RO_DATA_SIZE 3000
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
 #define INPUT_SIZE 2000

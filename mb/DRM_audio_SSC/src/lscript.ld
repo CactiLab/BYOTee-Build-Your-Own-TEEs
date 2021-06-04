@@ -63,7 +63,7 @@ SECTIONS
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.data 0x19998: {
+.data 0x143e8: {
    . = ALIGN(4);
    __data_start = .;
    *(.data)
@@ -102,7 +102,7 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.rodata 0x1af34: {
+.rodata 0x15984: {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)

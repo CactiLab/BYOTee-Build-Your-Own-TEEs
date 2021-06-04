@@ -95,6 +95,7 @@ void execute_SSC() {
 
 	mb_printf("Finished SSC code executed from BRAM: '%d'\r\n",  i);
 }
+
 int fw_add() {
 	return 5 + 3;
 }

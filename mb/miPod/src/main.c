@@ -150,7 +150,6 @@ void share_song(char *song_name, char *username) {
     unsigned int length;
     ssize_t wrote, written = 0;
 
-    strcpy((void*)c->input, "share");
     specify_ssc_command(SHARE);
     if (!username) {
         mp_printf("Need song name and username\r\n");
@@ -355,6 +354,7 @@ int main(int argc, char **argv)
         else if (!strcmp(cmd, "load"))
         {
             load_code(arg1);
+            load_SSC++;
         }
         else if (!strcmp(cmd, "exe"))
         {
