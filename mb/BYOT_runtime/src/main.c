@@ -110,7 +110,8 @@ void forward_to_ssc()
 		return;
 	}
 	mb_printf("------------------Give execution to SSC----------------");
-	((int (*) (void))local_state.code)();
+	//((int (*) (void))local_state.code)();
+	ssc();
 }
 void remove_ssc_module(){
 	memset(&local_state.code, 0, sizeof(local_state.code));

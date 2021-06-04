@@ -47,7 +47,16 @@ void print_help()
     mp_printf("  Share <fileName> <userName> : Secure_DRM-> Share <fileName> with <userName>\r\n");
     mp_printf("  Play <fileName> : Secure_DRM-> Play the <fileName> media file\r\n");
 }
-
+void print_playback_help() {
+    mp_printf("miPod playback options:\r\n");
+    mp_printf("  stop: stop playing the song\r\n");
+    mp_printf("  pause: pause the song\r\n");
+    mp_printf("  resume: resume the paused song\r\n");
+    mp_printf("  restart: restart the song\r\n");
+    mp_printf("  ff: fast forwards 5 seconds(unsupported)\r\n");
+    mp_printf("  rw: rewind 5 seconds (unsupported)\r\n");
+    mp_printf("  help: display this message\r\n");
+}
 void query_drm()
 {
     send_command(QUERY_DRM);
@@ -76,16 +85,9 @@ size_t load_file(char *fname, char *file_buf) {
         mp_printf("Failed to stat file! Error = %d\r\n", errno);
         return 0;
     }
-  /*  if ( sb.st_size > CODE_SIZE)
-    {
-    	mp_printf("Code size if bigger than buffer space can not execute SSC code\r\n");
-    	return 0;
-    }*/
+
     read(fd, file_buf, sb.st_size);
-   /* while (total_read_bytes < sb.st_size)
-    {
-    	total_read_bytes += read(fd, file_buf, sb.st_size);
-    }*/
+
     close(fd);
 
     mp_printf("Loaded file into shared buffer (%dB)\r\n", sb.st_size);
@@ -279,7 +281,7 @@ int play_song(char *song_name) {
         if (!cmd) {
             continue;
         } else if (!strcmp(cmd, "help")) {
-           // print_playback_help();
+           print_playback_help();
         } else if (!strcmp(cmd, "resume")) {
             send_command(PLAY);
             send_command(SSC_COMMAND);
@@ -303,16 +305,16 @@ int play_song(char *song_name) {
             return -1;
         } else if (!strcmp(cmd, "rw")) {
             mp_printf("Unsupported feature.\r\n\r\n");
-          //  print_playback_help();
+            print_playback_help();
         } else if (!strcmp(cmd, "ff")) {
             mp_printf("Unsupported feature.\r\n\r\n");
-           // print_playback_help();
+            print_playback_help();
         } else if (!strcmp(cmd, "lyrics")) {
             mp_printf("Unsupported feature.\r\n\r\n");
-          //  print_playback_help();
+            print_playback_help();
         } else {
             mp_printf("Unrecognized command.\r\n\r\n");
-           // print_playback_help();
+            print_playback_help();
         }
     }
 
