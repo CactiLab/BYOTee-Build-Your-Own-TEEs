@@ -7,7 +7,7 @@
 #define SHARED_DDR_BASE (0x20000000 + 0x1CC00000)
 
 // printing utility
-#define MB_PROMPT "\r\nMB> "
+#define MB_PROMPT "\r\nBYOT_Runtime> "
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 
 // protocol constants

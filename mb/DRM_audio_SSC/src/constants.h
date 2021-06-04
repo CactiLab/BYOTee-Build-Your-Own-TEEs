@@ -14,7 +14,7 @@
 #define CODE_SIZE 50000
 #define INPUT_SIZE 2000
 #define PREVIEW_TIME_SEC 30
-#define MB_PROMPT "\r\nMB> "
+#define MB_PROMPT "\r\nDRM_SSC> "
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 // ADC/DAC sampling rate in Hz
 #define AUDIO_SAMPLING_RATE 48000

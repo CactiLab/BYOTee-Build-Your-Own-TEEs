@@ -39,7 +39,7 @@ internal_state __attribute__((section (".ssc.code.buffer"))) local_state;
 data_content __attribute__((section (".ssc.data.buffer"))) ssc_data;
 ro_data_content __attribute__((section (".ssc.ro.data.buffer"))) ssc_ro_data;
 
-
+char ssc_module_loaded = 0;
 //////////////////////// INTERRUPT HANDLING ////////////////////////
 
 
@@ -88,6 +88,10 @@ void load_code(){
 	mb_printf("SSC Code loaded to BRAM\r\n");
 }
 void execute_SSC() {
+	if (check_ssc_module_load() == 0)
+	{
+		return;
+	}
 	int i;
 	mb_printf("Triggering execution\r\n");
 
@@ -101,6 +105,10 @@ int fw_add() {
 }
 void forward_to_ssc()
 {
+	if (check_ssc_module_load() == 0)
+	{
+		return;
+	}
 	mb_printf("------------------Give execution to SSC----------------");
 	((int (*) (void))local_state.code)();
 }
@@ -108,6 +116,14 @@ void remove_ssc_module(){
 	memset(&local_state.code, 0, sizeof(local_state.code));
 	memset(&ssc_data, 0, sizeof(data_content));
 	memset(&ssc_ro_data, 0, sizeof(ro_data_content));
+}
+int check_ssc_module_load()
+{
+	if (ssc_module_loaded == 1) {
+		return 1;
+	}
+	mb_printf("No SSC module present in BRAM\r\n");
+	return 0;
 }
 int main() {
     u32 status;
@@ -155,6 +171,7 @@ int main() {
             switch (c->cmd) {
             case LOAD_CODE:
             	load_code();
+            	ssc_module_loaded = 1;
                 break;
             case QUERY_DRM:
             	query_drm();
@@ -164,6 +181,7 @@ int main() {
             	break;
             case EXIT:
             	remove_ssc_module();
+            	ssc_module_loaded = 0;
             	break;
             case EXECUTE:
             	execute_SSC();

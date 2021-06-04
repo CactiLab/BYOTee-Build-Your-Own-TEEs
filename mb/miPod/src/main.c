@@ -365,7 +365,7 @@ int main(int argc, char **argv)
         }
         else if (!strcmp(cmd, "exit"))
         {
-
+        	exit_SSC();
         }
         else if (!strcmp(cmd, "login"))
         {

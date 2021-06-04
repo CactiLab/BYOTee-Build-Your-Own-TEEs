@@ -419,8 +419,6 @@ void play_song() {
 
 int main()
 {
-	//if (dummy_preventer != 0)
-		//dummy();
 	switch (drm_chnl->audio_data.ssc_cmd) {
 		case LOGIN:
 			xil_printf("LOGIN COMMAND received\r\n");

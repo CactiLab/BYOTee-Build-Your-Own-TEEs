@@ -21,9 +21,17 @@ const struct color BLUE = {0x0000, 0x0000, 0x01ff};
 
 int dummy()
 {
+    char *str1 = NULL, *str2;
     usleep(500);
     init_platform();
     cleanup_platform();
+	memmove(str1, str2, 10);
+	strcpy(str1, str2);
+	if (!strcmp(str1, NULL))
+	{
+		*str1 = NULL;
+	}
+	Xil_MemCpy(str1, str2, 10);
 }
 
 int temp = 0xf1; /* attribute golbal variables*/
