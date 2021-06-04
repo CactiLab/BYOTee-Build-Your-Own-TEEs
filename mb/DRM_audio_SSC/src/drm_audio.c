@@ -23,11 +23,10 @@ static XAxiDma sAxiDma;
 volatile drm_channel *drm_chnl = (drm_channel*)SHARED_DDR_BASE;
 
 // internal state store
-drm_internal_state s;
+drm_internal_state s = {0};
 volatile static int InterruptProcessed = FALSE;
 static XIntc InterruptController;
 
-//int dummy_preventer = 1;
 //////////////////////// INTERRUPT HANDLING ////////////////////////
 int dummy()
 {

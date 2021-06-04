@@ -18,9 +18,9 @@
 #define MAX_PIN_SZ 64
 #define MAX_SONG_SZ (1<<25)
 // printing utility
-#define MP_PROMPT "mP> "
+#define MP_PROMPT "UA> "
 #define mp_printf(...) printf(MP_PROMPT __VA_ARGS__)
-#define USER_PROMPT "miPod %s# "
+#define USER_PROMPT "U_app %s# "
 #define print_prompt() printf(USER_PROMPT, "")
 #define print_prompt_msg(...) printf(USER_PROMPT, __VA_ARGS__)
 

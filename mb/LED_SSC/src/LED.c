@@ -12,7 +12,8 @@
 #include "xintc.h"
 #include "constants.h"
 #include "sleep.h"
-#include "LedHeader.h"
+
+#include "BYOT_header.h"
 
 const struct color RED = {0x01ff, 0x0000, 0x0000};
 const struct color YELLOW = {0x01ff, 0x01ff, 0x0000};
@@ -44,11 +45,11 @@ int fw_add()
 {
     return 5 + 3;
 }
-int main() /* NO main function should be there is SSC. Example : ssc_main */
+int main()
 {
     //init_platform();
     u32 *led = (u32 *)XPAR_RGB_PWM_0_PWM_AXI_BASEADDR;
-    xil_printf("Setting LED color blue from SSC \n\r");
+    xil_printf("LED_SSC> Setting LED color blue from SSC \r\n");
     setLED(led, BLUE);
     temp = temp + 1;
    // cleanup_platform();

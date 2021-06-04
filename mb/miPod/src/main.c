@@ -12,7 +12,7 @@
 
 volatile cmd_channel *c;
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
-int load_SSC = 0;
+
 // sends a command to the microblaze using the shared command channel and interrupt
 void send_command(int cmd)
 {
@@ -39,7 +39,13 @@ void parse_input(char *input, char **cmd, char **arg1, char **arg2)
 void print_help()
 {
     mp_printf("miPod options:\r\n");
-    mp_printf("  load_code <fileName> : load code to be executed in Microblaze\r\n");
+    mp_printf("  load <fileName> : load code to be executed in Microblaze\r\n");
+    mp_printf("  exe : Execute the previous loaded SSC\r\n");
+    mp_printf("  login <userName> <pin>: Secure_DRM-> Loging with <userName> and <pin>\r\n");
+    mp_printf("  logout : Secure_DRM-> Logout current logged in user\r\n");
+    mp_printf("  Query <fileName> : Secure_DRM-> Query Song information\r\n");
+    mp_printf("  Share <fileName> <userName> : Secure_DRM-> Share <fileName> with <userName>\r\n");
+    mp_printf("  Play <fileName> : Secure_DRM-> Play the <fileName> media file\r\n");
 }
 
 void query_drm()
@@ -354,14 +360,10 @@ int main(int argc, char **argv)
         else if (!strcmp(cmd, "load"))
         {
             load_code(arg1);
-            load_SSC++;
         }
         else if (!strcmp(cmd, "exe"))
         {
-        	if (load_SSC != 0)
-        		execute_SSC();
-        	else
-        		printf("Load SSC first");
+        	execute_SSC();
         }
         else if (!strcmp(cmd, "exit"))
         {
