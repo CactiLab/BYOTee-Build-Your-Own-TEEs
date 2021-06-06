@@ -8,27 +8,26 @@
 #include "util.h"
 #include "secrets.h"
 #include "xintc.h"
-#include "constants.h"
 #include "sleep.h"
+#include "constants.h"
 #include "BYOT_header.h"
 //////////////////////// GLOBALS ////////////////////////
-/*
-#define set_stopped() change_state(STOPPED, RED)
-#define set_working() change_state(WORKING, YELLOW)
-#define set_playing() change_state(PLAYING, GREEN)
-#define set_paused()  change_state(PAUSED, BLUE)*/
-// audio DMA access
-static XAxiDma sAxiDma;
 
+
+// audio DMA access
+//static XAxiDma sAxiDma;
+void *sAxiDma_pointer = (void *)0x00017640;
 volatile drm_channel *drm_chnl = (drm_channel*)SHARED_DDR_BASE;
 
 // internal state store
-drm_internal_state s = {0};
-volatile static int InterruptProcessed = FALSE;
-static XIntc InterruptController;
+drm_internal_state s;
 
+void *point_to_runtime_interrrupt = (void *)0x00017d94;
+//void *point_to_runtime_interrrupt = (void *)0x19798;
+//
+int first_invoke = 0;
 //////////////////////// INTERRUPT HANDLING ////////////////////////
-int dummy()
+int dummy_drm()
 {
 	u32 t, s;
     usleep(500);
@@ -355,21 +354,21 @@ void play_song() {
 
     // write entire file to two-block codec fifo
     // writes to one block while the other is being played
-   // set_playing();
+    //set_playing();
     while(rem > 0) {
         // check for interrupt to stop playback
-        while (InterruptProcessed) {
-            InterruptProcessed = FALSE;
+        while (*(int *)point_to_runtime_interrrupt) {
+        	*(int *)point_to_runtime_interrrupt = FALSE;
 
             switch (drm_chnl->audio_data.ssc_cmd) {
             case PAUSE:
                 mb_printf("Pausing... \r\n");
                // set_paused();
-                while (!InterruptProcessed) continue; // wait for interrupt
+                while (!(*(int *)point_to_runtime_interrrupt)) continue; // wait for interrupt
                 break;
             case PLAY:
                 mb_printf("Resuming... \r\n");
-              //  set_playing();
+                //set_playing();
                 break;
             case STOP:
                 mb_printf("Stopping playback...");
@@ -377,7 +376,7 @@ void play_song() {
             case RESTART:
                 mb_printf("Restarting song... \r\n");
                 rem = length; // reset song counter
-               // set_playing();
+                //set_playing();
             default:
                 break;
             }
@@ -399,14 +398,14 @@ void play_song() {
             // polling while loop to wait for DMA to be ready
             // DMA must run first for this to yield the proper state
             // rem != length checks for first run
-            while (XAxiDma_Busy(&sAxiDma, XAXIDMA_DMA_TO_DEVICE)
+            while (XAxiDma_Busy(sAxiDma_pointer, XAXIDMA_DMA_TO_DEVICE)
                    && rem != length && *fifo_fill < (FIFO_CAP - 32));
 
             // do DMA
             dma_cnt = (FIFO_CAP - *fifo_fill > cp_xfil_cnt)
                       ? FIFO_CAP - *fifo_fill
                       : cp_xfil_cnt;
-            fnAudioPlay(sAxiDma, offset, dma_cnt);
+            fnAudioPlay(*(XAxiDma *)sAxiDma_pointer, offset, dma_cnt);
             cp_xfil_cnt -= dma_cnt;
         }
 
@@ -418,26 +417,28 @@ void play_song() {
 
 int main()
 {
+
 	switch (drm_chnl->audio_data.ssc_cmd) {
 		case LOGIN:
-			xil_printf("LOGIN COMMAND received\r\n");
+			mb_printf("LOGIN COMMAND received\r\n");
 			login();
 			break;
 		case LOGOUT:
-			xil_printf("LOGOUT COMMAND received\r\n");
+			mb_printf("LOGOUT COMMAND received\r\n");
 			logout();
 			break;
 		case QUERY:
-			xil_printf("Query song COMMAND received\r\n");
+			mb_printf("Query song COMMAND received\r\n");
 			query_song();
 			break;
 		case SHARE:
-			xil_printf("Share song COMMAND received\r\n");
+			mb_printf("Share song COMMAND received\r\n");
 			share_song();
 			break;
 		case PLAY:
-			xil_printf("Share song COMMAND received\r\n");
+			mb_printf("Play song COMMAND received\r\n");
 			play_song();
+			mb_printf("Done playing Song\r\n");
 			break;
 		default:
 			break;

@@ -12,9 +12,6 @@
 
 
 //////////////////////// GLOBALS ////////////////////////
-
-
-// audio DMA access
 static XAxiDma sAxiDma;
 
 // LED colors and controller
@@ -88,8 +85,9 @@ void load_code(){
 	mb_printf("SSC Code loaded to BRAM\r\n");
 }
 void execute_SSC() {
-	if (check_ssc_module_load() == 0)
+	if (ssc_module_loaded == 0)
 	{
+		mb_printf("No SSC module present in BRAM\r\n");
 		return;
 	}
 	int i;
@@ -105,27 +103,20 @@ int fw_add() {
 }
 void forward_to_ssc()
 {
-	if (check_ssc_module_load() == 0)
+	/*if (ssc_module_loaded == 0)
 	{
+		mb_printf("No SSC module present in BRAM\r\n");
 		return;
-	}
-	mb_printf("------------------Give execution to SSC----------------");
-	//((int (*) (void))local_state.code)();
-	ssc();
+	}*/
+	mb_printf("------------------Give execution to SSC----------------\r\n");
+	((int (*) (void))local_state.code)();
 }
 void remove_ssc_module(){
 	memset(&local_state.code, 0, sizeof(local_state.code));
 	memset(&ssc_data, 0, sizeof(data_content));
 	memset(&ssc_ro_data, 0, sizeof(ro_data_content));
 }
-int check_ssc_module_load()
-{
-	if (ssc_module_loaded == 1) {
-		return 1;
-	}
-	mb_printf("No SSC module present in BRAM\r\n");
-	return 0;
-}
+
 int main() {
     u32 status;
 
@@ -145,13 +136,11 @@ int main() {
         return XST_FAILURE;
     }
 
-    // Congigure the DMA
     status = fnConfigDma(&sAxiDma);
-    if(status != XST_SUCCESS) {
-        mb_printf("DMA configuration ERROR\r\n");
-        return XST_FAILURE;
-    }
-
+	if(status != XST_SUCCESS) {
+		mb_printf("DMA configuration ERROR\r\n");
+		return XST_FAILURE;
+	}
     // Start the LED
     enableLED(led);
     set_stopped();

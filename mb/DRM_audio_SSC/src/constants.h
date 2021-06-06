@@ -30,7 +30,7 @@
 #define q_user_lookup(q, i) (q.users + (i * USERNAME_SZ))
 
 enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE, PLAY, PAUSE, STOP, RESTART };
-
+enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 struct color {
     u32 r;
     u32 g;

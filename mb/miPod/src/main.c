@@ -283,24 +283,24 @@ int play_song(char *song_name) {
         } else if (!strcmp(cmd, "help")) {
            print_playback_help();
         } else if (!strcmp(cmd, "resume")) {
-            send_command(PLAY);
+            specify_ssc_command(PLAY);
             send_command(SSC_COMMAND);
             usleep(200000); // wait for DRM to print
         } else if (!strcmp(cmd, "pause")) {
-            send_command(PAUSE);
+        	specify_ssc_command(PAUSE);
             send_command(SSC_COMMAND);
             usleep(200000); // wait for DRM to print
         } else if (!strcmp(cmd, "stop")) {
-            send_command(STOP);
+        	specify_ssc_command(STOP);
             send_command(SSC_COMMAND);
             usleep(200000); // wait for DRM to print
             break;
         } else if (!strcmp(cmd, "restart")) {
-            send_command(RESTART);
+        	specify_ssc_command(RESTART);
             send_command(SSC_COMMAND);
         } else if (!strcmp(cmd, "exit")) {
             mp_printf("Exiting...\r\n");
-            send_command(STOP);
+            specify_ssc_command(STOP);
             send_command(SSC_COMMAND);
             return -1;
         } else if (!strcmp(cmd, "rw")) {
