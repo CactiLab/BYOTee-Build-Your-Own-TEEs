@@ -14,8 +14,7 @@
 //////////////////////// GLOBALS ////////////////////////
 
 
-// audio DMA access
-//static XAxiDma sAxiDma;
+// audio DMR pointer
 void *sAxiDma_pointer = (void *)0x00017640;
 volatile drm_channel *drm_chnl = (drm_channel*)SHARED_DDR_BASE;
 
@@ -417,7 +416,6 @@ void play_song() {
 
 int main()
 {
-
 	switch (drm_chnl->audio_data.ssc_cmd) {
 		case LOGIN:
 			mb_printf("LOGIN COMMAND received\r\n");

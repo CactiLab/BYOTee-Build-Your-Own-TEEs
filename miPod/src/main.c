@@ -53,8 +53,6 @@ void print_playback_help() {
     mp_printf("  pause: pause the song\r\n");
     mp_printf("  resume: resume the paused song\r\n");
     mp_printf("  restart: restart the song\r\n");
-    mp_printf("  ff: fast forwards 5 seconds(unsupported)\r\n");
-    mp_printf("  rw: rewind 5 seconds (unsupported)\r\n");
     mp_printf("  help: display this message\r\n");
 }
 void query_drm()
