@@ -46,7 +46,7 @@ int main()
     u32 *led = (u32 *)XPAR_RGB_PWM_0_PWM_AXI_BASEADDR;
     xil_printf("LED_SSC> Setting LED color blue from SSC \r\n");
     setLED(led, BLUE);
-    usleep(10);
+    usleep(1000);
     temp = temp + 1;
     return fw_add() + temp;
 }

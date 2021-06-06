@@ -15,6 +15,6 @@ const u8 USER_IDS[] = { 0, 1, 2 };
 
 #define NUM_PROVISIONED_USERS 3
 const u8 PROVISIONED_UIDS[] = { 0, 1, 2 };
-const char *PROVISIONED_PINS[] = { "123", "222", "333" };
+const char *PROVISIONED_PINS[] = { "123", "abc", "xyz" };
 
 #endif // SECRETS_H
