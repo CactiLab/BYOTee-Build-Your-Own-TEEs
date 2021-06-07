@@ -46,6 +46,8 @@ void print_help()
     mp_printf("  Query <fileName> : Secure_DRM-> Query Song information\r\n");
     mp_printf("  Share <fileName> <userName> : Secure_DRM-> Share <fileName> with <userName>\r\n");
     mp_printf("  Play <fileName> : Secure_DRM-> Play the <fileName> media file\r\n");
+    mp_printf("  digital_out <song.drm>: play the song to digital out\r\n");
+    mp_printf("  quit : To quit the untrusted application\r\n");
 }
 void print_playback_help() {
     mp_printf("miPod playback options:\r\n");
@@ -319,6 +321,43 @@ int play_song(char *song_name) {
     return 0;
 }
 
+void digital_out(char *song_name) {
+    char fname[64];
+
+    // load file into shared buffer
+    if (!load_file(song_name, (void*)&c->drm_chnl.song)) {
+        mp_printf("Failed to load song!\r\n");
+        return;
+    }
+
+    // drive DRM
+    specify_ssc_command(DIGITAL_OUT);
+    send_command(SSC_COMMAND);
+    while (c->drm_state == STOPPED) continue; // wait for DRM to start working
+    while (c->drm_state == WORKING) continue; // wait for DRM to dump file
+
+    // open digital output file
+    int written = 0, wrote, length = c->drm_chnl.song.file_size + 8;
+    sprintf(fname, "%s.dout", song_name);
+    int fd = open(fname, O_WRONLY | O_CREAT | O_TRUNC);
+    if (fd == -1){
+        mp_printf("Failed to open file! Error = %d\r\n", errno);
+        return;
+    }
+
+    // write song dump to file
+    mp_printf("Writing song to file '%s' (%dB)\r\n", fname, length);
+    while (written < length) {
+        wrote = write(fd, (char *)&c->drm_chnl.song + written, length - written);
+        if (wrote == -1) {
+            mp_printf("Error in writing file! Error = %d \r\n", errno);
+            return;
+        }
+        written += wrote;
+    }
+    close(fd);
+    mp_printf("Finished writing file\r\n");
+}
 
 int main(int argc, char **argv)
 {
@@ -391,6 +430,15 @@ int main(int argc, char **argv)
 				break;
 			}
 		}
+        else if (!strcmp(cmd, "digital_out"))
+        {
+		     digital_out(arg1);
+	    }
+        else if (!strcmp(cmd, "quit"))
+        {
+        	mp_printf("Exiting untrusted application.....\r\n");
+        	break;
+        }
         else
         {
             mp_printf("Unrecognized command.\r\n\r\n");

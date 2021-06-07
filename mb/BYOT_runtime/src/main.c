@@ -79,6 +79,7 @@ void format_SSC_code() {
 	memcpy(ssc_ro_data.ro_data, ((void*)c->code + 24 + recived_meta_data.sss_code_size + recived_meta_data.data_sec_size), recived_meta_data.ro_data_size);
 }
 void load_code(){
+	remove_ssc_module();
 	mb_printf("Inside Load Code Funciton\r\n");
 	format_SSC_code();
 	mb_printf("-----Read code data-----\r\n");
@@ -112,9 +113,9 @@ void forward_to_ssc()
 	((int (*) (void))local_state.code)();
 }
 void remove_ssc_module(){
-	memset(&local_state.code, 0, sizeof(local_state.code));
-	memset(&ssc_data, 0, sizeof(data_content));
-	memset(&ssc_ro_data, 0, sizeof(ro_data_content));
+	memset(&local_state.code, 0, CODE_SIZE);
+	memset(&ssc_data, 0, DATA_SIZE);
+	memset(&ssc_ro_data, 0, RO_DATA_SIZE);
 }
 
 int main() {
@@ -179,7 +180,7 @@ int main() {
             default:
                 break;
             }
-            usleep(500);
+            usleep(1000);
             set_stopped();
         }
     }

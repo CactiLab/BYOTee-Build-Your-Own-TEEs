@@ -23,8 +23,7 @@ drm_internal_state s;
 
 void *point_to_runtime_interrrupt = (void *)0x00017d94;
 //void *point_to_runtime_interrrupt = (void *)0x19798;
-//
-int first_invoke = 0;
+
 //////////////////////// INTERRUPT HANDLING ////////////////////////
 int dummy_drm()
 {
@@ -193,7 +192,6 @@ void share_song() {
 
     mb_printf("Shared song with '%s'\r\n", drm_chnl->audio_data.username);
 }
-
 
 void login()
 {
@@ -412,6 +410,25 @@ void play_song() {
     }
 }
 
+// removes DRM data from song for digital out
+void digital_out() {
+    // remove metadata size from file and chunk sizes
+	drm_chnl->audio_data.song.file_size -= drm_chnl->audio_data.song.md.md_size;
+	drm_chnl->audio_data.song.wav_size -= drm_chnl->audio_data.song.md.md_size;
+
+    if (is_locked() && PREVIEW_SZ < drm_chnl->audio_data.song.wav_size) {
+        mb_printf("Only playing 30 seconds");
+        drm_chnl->audio_data.song.file_size -= drm_chnl->audio_data.song.wav_size - PREVIEW_SZ;
+        drm_chnl->audio_data.song.wav_size = PREVIEW_SZ;
+    }
+
+    // move WAV file up in buffer, skipping metadata
+    mb_printf(MB_PROMPT "Dumping song (%dB)...", drm_chnl->audio_data.song.wav_size);
+    memmove((void *)&drm_chnl->audio_data.song.md, (void *)get_drm_song(drm_chnl->audio_data.song), drm_chnl->audio_data.song.wav_size);
+
+    mb_printf("Song dump finished\r\n");
+}
+
 //////////////////////// MAIN ////////////////////////
 
 int main()
@@ -438,8 +455,14 @@ int main()
 			play_song();
 			mb_printf("Done playing Song\r\n");
 			break;
+		case DIGITAL_OUT:
+			digital_out();
+			break;
 		default:
 			break;
 	}
+	strcpy((char *)drm_chnl->audio_data.username, s.username);
+	drm_chnl->audio_data.login_status = s.logged_in;
+	usleep(500);
     return 0;
 }
