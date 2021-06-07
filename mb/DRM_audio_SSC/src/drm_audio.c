@@ -195,11 +195,12 @@ void share_song() {
 
 void login()
 {
-    if (s.logged_in)
+    if (s.logged_in && (!strcmp(s.username, USERNAMES[PROVISIONED_UIDS[s.uid]])))
     {
-        mb_printf("User %s Already logged in. Please log out first.\r\n", s.username);
-        memcpy((void *)drm_chnl->audio_data.username, s.username, USERNAME_SZ);
-        memcpy((void *)drm_chnl->audio_data.pin, s.pin, MAX_PIN_SZ);
+		mb_printf("User %s Already logged in. Please log out first.\r\n", s.username);
+		memcpy((void *)drm_chnl->audio_data.username, s.username, USERNAME_SZ);
+		memcpy((void *)drm_chnl->audio_data.pin, s.pin, MAX_PIN_SZ);
+
     }
     else
     {
@@ -240,7 +241,7 @@ void login()
 // attempt to log out
 void logout()
 {
-    if (s.logged_in)
+    if (s.logged_in && (!strcmp(s.username, USERNAMES[PROVISIONED_UIDS[s.uid]])))
     {
         mb_printf("Logging out...\r\n");
         s.logged_in = 0;

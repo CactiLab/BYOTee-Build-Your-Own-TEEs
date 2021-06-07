@@ -80,7 +80,7 @@ void format_SSC_code() {
 }
 void load_code(){
 	remove_ssc_module();
-	mb_printf("Inside Load Code Funciton\r\n");
+	mb_printf("Inside Load Code Function\r\n");
 	format_SSC_code();
 	mb_printf("-----Read code data-----\r\n");
 	mb_printf("SSC Code loaded to BRAM\r\n");
