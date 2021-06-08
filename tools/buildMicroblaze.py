@@ -5,43 +5,43 @@ buildMicroblaze.py
 Automate building of microblaze
 
 This calls on the build_microblaze.tcl script in the /tools,
-and will add in the /mb and /miPod directories to the workspace to be built.
+and will add in the /mb and /Untrusted_app directories to the workspace to be built.
 
-The output for miPod will show up under /miPod/debug
+The output for Untrusted_app will show up under /Untrusted_app/debug
 """
 import os
 from shutil import copy2
 
 def output_helper(dev_path, device_dir):
-    """ A helper that handles mb build output, including saving old mipod copies """
+    """ A helper that handles mb build output, including saving old Untrusted_app copies """
 
-    mi_path = dev_path + "/miPod/Debug/"
-    inter_path = dev_path + "/mb/miPod/Debug/miPod.elf"
-    mipod_elf = mi_path + "miPod.elf"
-    mipod = device_dir + "/miPod"
-    #mipod_old = device_dir + "/miPod_old"
+    UA_path = dev_path + "/Untrusted_app/Debug/"
+    inter_path = dev_path + "/mb/Untrusted_app/Debug/Untrusted_app.elf"
+    Untrusted_app_elf = UA_path + "Untrusted_app.elf"
+    Untrusted_app = device_dir + "/Untrusted_app"
+    #Untrusted_app_old = device_dir + "/Untrusted_app_old"
 
     banner = "#######"
-    stmt = ("Copying generated miPod.elf to %s as miPod" % device_dir)
+    stmt = ("Copying generated Untrusted_app.elf to %s as Untrusted_app" % device_dir)
     print("\n %s %s %s \n" % (banner, stmt, banner))
 
     try:
         """
-        if os.path.exists(mipod):
-            print("Saving %s as %s\n" % (mipod, mipod_old))
-            os.rename(mipod, mipod_old)
+        if os.path.exists(Untrusted_app):
+            print("Saving %s as %s\n" % (Untrusted_app, Untrusted_app_old))
+            os.rename(Untrusted_app, Untrusted_app_old)
 
-            print("Please delete or save your old miPod copy\n")
+            print("Please delete or save your old Untrusted_app copy\n")
 
-        os.rename(mipod_elf, mipod)
-        print("Output produced: %s\n" % mipod)
+        os.rename(Untrusted_app_elf, Untrusted_app)
+        print("Output produced: %s\n" % Untrusted_app)
         """
 
-        copy2(inter_path, mipod)
-        print("Copied miPod.elf to \n %s" % (mipod))
+        copy2(inter_path, Untrusted_app)
+        print("Copied Untrusted_app.elf to \n %s" % (Untrusted_app))
 
     except Exception as err:
-        print("Error copying miPod to %s:\n {%s}\n" % (mipod, err))
+        print("Error copying Untrusted_app to %s:\n {%s}\n" % (Untrusted_app, err))
 
 def build_microblaze(xsct, proj_name, dev_path_tools, dev_path, device_dir):
     """ Automate calling a tcl script that builds microblaze"""

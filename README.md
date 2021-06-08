@@ -11,7 +11,7 @@ The example code is structured as follows
 
  * `boot-image/` - Contains a stock FSBL, `image.ub`, and `u-boot.elf` for booting the project on the board. The stock FSBL is only provided for the purposes of making the `miPod.bin`, since `bootgen` requires you provide a bootloader when creating a `.bin` image.
  * `mb/` - Contains BYOT runtime and example SSC running on the soft-core MicroBlaze. See [BYOT README](mb/README.md)
- * `miPod/` - Contains example miPod project for running the Linux-side miPod driver. See [miPod README](miPod/README.md)
+ * `Untrusted_app/` - Contains example miPod project for running the Linux-side miPod driver. See [Untrusted_app README](miPod/README.md)
  * `pl/` - Contains example PL implementation with soft-core MicroBlaze and audio codec. See [PL README](pl/README.md)
  * `tools/` - Contains example provisioning tools. See [tools README](tools/README.md)
  * `vivado-boards/` - Contains Vivado libraries for the board

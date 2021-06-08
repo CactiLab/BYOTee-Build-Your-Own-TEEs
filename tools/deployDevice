@@ -10,7 +10,7 @@ SSC_MNT = '/media/vagrant/root'
 
 # the names to copy the boot and mes files to on the sd card
 BOOT_FILE = 'BOOT.bin'
-MIPOD_BIN_FILE = "miPod.bin"
+UA_BIN_FILE = "miPod.bin"
 
 
 def copy_file(src, dst):
@@ -83,7 +83,7 @@ def copy_SSC(device, SSC_Dir):
     print("Done copying SSC to SD Card")
 
 
-def copy_boot(device, boot_path, mipod_bin_path=None):
+def copy_boot(device, boot_path, Untrusted_app_bin_path=None):
     """
     This function copies the boot file from the specified file paths
     to the device specified. The device is the overall device and it will copy
@@ -104,9 +104,9 @@ def copy_boot(device, boot_path, mipod_bin_path=None):
     try:
         print("    %s-> %s" % (boot_path, os.path.join(device + "1", BOOT_FILE)))
         copy_file(boot_path, os.path.join(BOOT_MNT, BOOT_FILE))
-        if mipod_bin_path is not None:
-                print("    %s-> %s" % (boot_path, os.path.join(device + "1", MIPOD_BIN_FILE)))
-                copy_file(mipod_bin_path, os.path.join(BOOT_MNT, MIPOD_BIN_FILE))
+        if Untrusted_app_bin_path is not None:
+                print("    %s-> %s" % (boot_path, os.path.join(device + "1", UA_BIN_FILE)))
+                copy_file(Untrusted_app_bin_path, os.path.join(BOOT_MNT, UA_BIN_FILE))
     except IOError as e:
         print(e)
         subprocess.check_call("sudo umount %s" % (BOOT_MNT), shell=True)
@@ -116,15 +116,15 @@ def copy_boot(device, boot_path, mipod_bin_path=None):
     subprocess.check_call("sudo umount %s" % (BOOT_MNT), shell=True)
 
 
-def copy_mipod(device, path):
-    """This function copies the mipod application to the SD card"""
-    print("Copying mipod application...")
+def copy_Untrusted_app(device, path):
+    """This function copies the Untrusted_app application to the SD card"""
+    print("Copying Untrusted_app application...")
     # mount sd card
     subprocess.check_call("sudo mount %s2 %s" % (device, SSC_MNT), shell=True)
 
     try:
         print("    %s-> %s2/" % (path, device))
-        copy_file(path, "%s/miPod" % (SSC_MNT,))
+        copy_file(path, "%s/Untrusted_app" % (SSC_MNT,))
     except IOError as e:
         print(e)
         subprocess.check_call("sudo umount %s" % (SSC_MNT), shell=True)
@@ -133,11 +133,11 @@ def copy_mipod(device, path):
     # cleanup
     subprocess.check_call("sudo umount %s" % (SSC_MNT), shell=True)
 
-    print("Done copying mipod application to SD Card")
+    print("Done copying Untrusted_app application to SD Card")
 
 
 def copy_imageub(device, path):
-    """This function copies the mipod application to the SD card"""
+    """This function copies the Untrusted_app application to the SD card"""
     print("Copying image.ub...")
     # mount sd card
     subprocess.check_call("sudo mount %s1 %s" % (device, BOOT_MNT), shell=True)
@@ -167,13 +167,13 @@ def main():
     parser.add_argument('SSC',
                         help=("This is the directory where SSC "
                               "files are stored."))
-    parser.add_argument("mipod",
-                        help=("This is the path to the mipod application"))
+    parser.add_argument("Untrusted_app",
+                        help=("This is the path to the Untrusted_app application"))
     parser.add_argument("imageub",
                         help=("The path to image.ub, the petalinux filesystem"))
 
-    parser.add_argument('--mipod-bin-path',
-                        help=("This is the path to the miPod.BIN file to boot the "
+    parser.add_argument('--Untrusted_app-bin-path',
+                        help=("This is the path to the Untrusted_app.BIN file to boot the "
                               "system. This will contain your bitstream."),
                         required=False,
                         default=None)
@@ -185,7 +185,7 @@ def main():
                               "not already formatted correctly, this "
                               "script will fail."))
     args = parser.parse_args()
-    print("Secucirty Sensitive code directory" + str(args.SSC))
+    print("Secucirty Sensitive code directory: " + str(args.SSC))
     #while True:
      #   try:
     # verify boot bin
@@ -195,9 +195,9 @@ def main():
               "that location in order to run this script" % (boot_file))
         exit(2)
 
-    if args.mipod_bin_path is not None:
-        if not os.path.isfile(args.mipod_bin_path):
-            print("Unable to open %s. You must copy your miPod.bin to "
+    if args.Untrusted_app_bin_path is not None:
+        if not os.path.isfile(args.Untrusted_app_bin_path):
+            print("Unable to open %s. You must copy your Untrusted_app.bin to "
                   "that location in order to run this script" % (boot_file))
             exit(2)
 
@@ -217,9 +217,9 @@ def main():
     if not args.noformat:
         setup_sdcard(args.device)
 
-    copy_boot(args.device, boot_file, args.mipod_bin_path)
+    copy_boot(args.device, boot_file, args.Untrusted_app_bin_path)
     copy_SSC(args.device, args.SSC)
-    copy_mipod(args.device, args.mipod)
+    copy_Untrusted_app(args.device, args.Untrusted_app)
     copy_imageub(args.device, args.imageub)
 
     exit(0)

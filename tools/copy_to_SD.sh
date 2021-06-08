@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./deployDevice /dev/sdb ../BOOT.bin SSC/ device1/miPod ../boot-image/image.ub --mipod-bin-path device1/miPod.bin
+./deployDevice /dev/sdb ../BOOT.bin SSC/ device1/Untrusted_app ../boot-image/image.ub --Untrusted_app-bin-path device1/Untrusted_app.bin

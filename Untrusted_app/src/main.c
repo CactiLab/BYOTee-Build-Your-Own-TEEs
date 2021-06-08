@@ -1,4 +1,4 @@
-#include "miPod.h"
+#include "untrusted_app.h"
 
 #include <stdio.h>
 #include <sys/mman.h>
@@ -12,8 +12,8 @@
 
 volatile cmd_channel *c;
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
-
-// sends a command to the microblaze using the shared command channel and interrupt
+int secure_drm_load = 0;
+// sends a command to the CTEE using the shared command channel and interrupt
 void send_command(int cmd)
 {
     memcpy((void *)&c->cmd, &cmd, 1);
@@ -38,39 +38,44 @@ void parse_input(char *input, char **cmd, char **arg1, char **arg2)
 // prints the help message while not in playback
 void print_help()
 {
-    mp_printf("miPod options:\r\n");
-    mp_printf("  load <fileName> : load code to be executed in Microblaze\r\n");
-    mp_printf("  exe : Execute the previous loaded SSC\r\n");
+    mp_printf("Untrusted Application options:\r\n");
+    mp_printf("  load <fileName> : load SSC module to be executed in CTEE\r\n");
+    mp_printf("  exe: Execute the loaded SSC module\r\n");
+    mp_printf("  exit: Clean the loaded SSC module from CTEE\r\n");
+    mp_printf("  quit: To quit the untrusted application\r\n");
+}
+void secure_drm_print_help()
+{
+	mp_printf("Secure_DRM SSC options:\r\n");
     mp_printf("  login <userName> <pin>: Secure_DRM-> Loging with <userName> and <pin>\r\n");
-    mp_printf("  logout : Secure_DRM-> Logout current logged in user\r\n");
-    mp_printf("  Query <fileName> : Secure_DRM-> Query Song information\r\n");
-    mp_printf("  Share <fileName> <userName> : Secure_DRM-> Share <fileName> with <userName>\r\n");
-    mp_printf("  Play <fileName> : Secure_DRM-> Play the <fileName> media file\r\n");
+    mp_printf("  logout: Secure_DRM-> Logout current logged in user\r\n");
+    mp_printf("  Query <fileName>: Secure_DRM-> Query Song information\r\n");
+    mp_printf("  Share <fileName> <userName>: Secure_DRM-> Share <fileName> with <userName>\r\n");
+    mp_printf("  Play <fileName>: Secure_DRM-> Play the <fileName> media file\r\n");
     mp_printf("  digital_out <song.drm>: play the song to digital out\r\n");
-    mp_printf("  quit : To quit the untrusted application\r\n");
 }
 void print_playback_help() {
-    mp_printf("miPod playback options:\r\n");
+    mp_printf("Secure DRM Player play back options:\r\n");
     mp_printf("  stop: stop playing the song\r\n");
     mp_printf("  pause: pause the song\r\n");
     mp_printf("  resume: resume the paused song\r\n");
     mp_printf("  restart: restart the song\r\n");
     mp_printf("  help: display this message\r\n");
 }
-void query_drm()
+void query_BYOT_runtime()
 {
     send_command(QUERY_DRM);
     while (c->drm_state == STOPPED)
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
-    mp_printf("Dummy query\r\n");
+    mp_printf("Initialization Done!!\r\n");
 }
 
 // loads a file into the song buffer with the associate
 // returns the size of the file or 0 on error
 size_t load_file(char *fname, char *file_buf) {
-    int fd, total_read_bytes = 0;
+    int fd;
     struct stat sb;
     mp_printf("Inside load file function \r\n");
     fd = open(fname, O_RDONLY);
@@ -95,22 +100,22 @@ size_t load_file(char *fname, char *file_buf) {
 }
 
 void login(char *username, char *pin) {
+
     if (!username || !pin) {
         mp_printf("Invalid user name/PIN\r\n");
         print_help();
         return;
     }
 
-   // strcpy((void*)c->input, "login");
     specify_ssc_command(LOGIN);
     strcpy((void*)c->drm_chnl.username, username);
     strcpy((void*)c->drm_chnl.pin , pin);
     send_command(SSC_COMMAND);
+
     while (c->drm_state == STOPPED)
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
-   // mp_printf("Finished Query file\r\n");
 }
 void logout() {
 	specify_ssc_command(LOGOUT);
@@ -127,29 +132,41 @@ void load_code(char *fileName)
     }
 
     send_command(LOAD_CODE);
+
     while (c->drm_state == STOPPED)
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
+
     mp_printf("Finished loading file\r\n");
+
+    if (!strcmp(fileName, "DRM_audio_SSC"))
+    {
+    	secure_drm_load = 1;
+    	secure_drm_print_help();
+    }
 }
 void execute_SSC()
 {
 	send_command(EXECUTE);
+
 	while (c->drm_state == STOPPED)
 		continue; // wait for DRM to start working
 	while (c->drm_state == WORKING)
 		continue; // wait for DRM to dump file
+
 	mp_printf("Finished Executing SSC file\r\n");
 
 }
 void exit_SSC()
 {
 	send_command(EXIT);
+
 	while (c->drm_state == STOPPED)
 		continue; // wait for DRM to start working
 	while (c->drm_state == WORKING)
 		continue; // wait for DRM to dump file
+	secure_drm_load = 0;
 	mp_printf("Cleaned UP SSC\r\n");
 }
 // attempts to share a song with a user
@@ -164,7 +181,6 @@ void share_song(char *song_name, char *username) {
         print_help();
         return;
     }
-
     // load the song into the shared buffer
     if (!load_file(song_name, (void*)&c->drm_chnl.song)) {
         mp_printf("Failed to load song!\r\n");
@@ -175,6 +191,7 @@ void share_song(char *song_name, char *username) {
 
     // drive DRM
     send_command(SSC_COMMAND);
+
     while (c->drm_state == STOPPED) continue; // wait for DRM to start working
     while (c->drm_state == WORKING) continue; // wait for DRM to share song
 
@@ -187,13 +204,14 @@ void share_song(char *song_name, char *username) {
 
     // open output file
     fd = open(song_name, O_WRONLY);
+
     if (fd == -1){
         mp_printf("Failed to open file! Error = %d\r\n", errno);
         return;
     }
-
     // write song dump to file
     mp_printf("Writing song to file '%s' (%dB)\r\n", song_name, length);
+
     while (written < length) {
         wrote = write(fd, (char *)&c->drm_chnl.song + written, length - written);
         if (wrote == -1) {
@@ -228,9 +246,11 @@ void query_song(char *song_file_name) {
         continue; // wait for DRM to dump file
 
     mp_printf("Regions: %s", q_region_lookup(c->drm_chnl.query, 0));
+
 	for (int i = 1; i < c->drm_chnl.query.num_regions; i++) {
 		printf(", %s", q_region_lookup(c->drm_chnl.query, i));
 	}
+
 	printf("\r\n");
 
 	mp_printf("Owner: %s", c->drm_chnl.query.owner);
@@ -244,11 +264,9 @@ void query_song(char *song_file_name) {
 		}
 	}
 	printf("\r\n");
-    
 }
 
 int play_song(char *song_name) {
-
     char usr_cmd[USR_CMD_SZ + 1], *cmd = NULL, *arg1 = NULL, *arg2 = NULL;
 
     // load song into shared buffer
@@ -280,39 +298,44 @@ int play_song(char *song_name) {
         parse_input(usr_cmd, &cmd, &arg1, &arg2);
         if (!cmd) {
             continue;
-        } else if (!strcmp(cmd, "help")) {
-           print_playback_help();
-        } else if (!strcmp(cmd, "resume")) {
-            specify_ssc_command(PLAY);
+        }
+        else if (!strcmp(cmd, "help"))
+        {
+        	print_playback_help();
+        }
+        else if (!strcmp(cmd, "resume"))
+        {
+        	specify_ssc_command(PLAY);
             send_command(SSC_COMMAND);
             usleep(200000); // wait for DRM to print
-        } else if (!strcmp(cmd, "pause")) {
+        }
+        else if (!strcmp(cmd, "pause"))
+        {
         	specify_ssc_command(PAUSE);
             send_command(SSC_COMMAND);
             usleep(200000); // wait for DRM to print
-        } else if (!strcmp(cmd, "stop")) {
+        }
+        else if (!strcmp(cmd, "stop"))
+        {
         	specify_ssc_command(STOP);
             send_command(SSC_COMMAND);
             usleep(200000); // wait for DRM to print
             break;
-        } else if (!strcmp(cmd, "restart")) {
+        }
+        else if (!strcmp(cmd, "restart"))
+        {
         	specify_ssc_command(RESTART);
             send_command(SSC_COMMAND);
-        } else if (!strcmp(cmd, "exit")) {
-            mp_printf("Exiting...\r\n");
+        }
+        else if (!strcmp(cmd, "quit"))
+        {
+            mp_printf("Quitting...\r\n");
             specify_ssc_command(STOP);
             send_command(SSC_COMMAND);
             return -1;
-        } else if (!strcmp(cmd, "rw")) {
-            mp_printf("Unsupported feature.\r\n\r\n");
-            print_playback_help();
-        } else if (!strcmp(cmd, "ff")) {
-            mp_printf("Unsupported feature.\r\n\r\n");
-            print_playback_help();
-        } else if (!strcmp(cmd, "lyrics")) {
-            mp_printf("Unsupported feature.\r\n\r\n");
-            print_playback_help();
-        } else {
+        }
+        else
+        {
             mp_printf("Unrecognized command.\r\n\r\n");
             print_playback_help();
         }
@@ -347,6 +370,7 @@ void digital_out(char *song_name) {
 
     // write song dump to file
     mp_printf("Writing song to file '%s' (%dB)\r\n", fname, length);
+
     while (written < length) {
         wrote = write(fd, (char *)&c->drm_chnl.song + written, length - written);
         if (wrote == -1) {
@@ -362,13 +386,13 @@ void digital_out(char *song_name) {
 int main(int argc, char **argv)
 {
     int mem;
-    char usr_cmd[USR_CMD_SZ + 1], *cmd = NULL, *arg1 = NULL, *arg2 = NULL, *arg3 = NULL, *arg4 = NULL;
-    memset(usr_cmd, 0, USR_CMD_SZ + 1);
+    char usr_cmd[USR_CMD_SZ + 1], *cmd = NULL, *arg1 = NULL, *arg2 = NULL;
 
+    memset(usr_cmd, 0, USR_CMD_SZ + 1);
     // open command channel
     mem = open("/dev/uio0", O_RDWR);
-    c = mmap(NULL, sizeof(cmd_channel), PROT_READ | PROT_WRITE,
-             MAP_SHARED, mem, 0);
+    c = mmap(NULL, sizeof(cmd_channel), PROT_READ | PROT_WRITE, MAP_SHARED, mem, 0);
+
     if (c == MAP_FAILED)
     {
         mp_printf("MMAP Failed! Error = %d\r\n", errno);
@@ -377,9 +401,9 @@ int main(int argc, char **argv)
     mp_printf("Command channel open at %p (%dB)\r\n", c, sizeof(cmd_channel));
 
     // dump player information before command loop
-    query_drm();
+    query_BYOT_runtime();
 
-    // go into command loop until exit is requested
+    // go into command loop until quit is requested
     while (1)
     {
         // get command
@@ -395,6 +419,9 @@ int main(int argc, char **argv)
         else if (!strcmp(cmd, "help"))
         {
             print_help();
+
+            if (secure_drm_load)
+            	secure_drm_print_help();
         }
         else if (!strcmp(cmd, "load"))
         {

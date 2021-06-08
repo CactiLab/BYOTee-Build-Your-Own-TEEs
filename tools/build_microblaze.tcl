@@ -25,7 +25,7 @@ set worksp "$dev_path/mb"
 set pl_sdk "$dev_path/pl/proj/$project_name/$project_name.sdk"
 set pl_sysdef "$dev_path/pl/proj/$project_name/$project_name.runs/impl_1/system_wrapper.sysdef"
 set mb_hdf "$worksp/system_wrapper.hdf"
-set mipod "$dev_path/miPod"
+set Untrusted_app "$dev_path/Untrusted_app"
 
 puts "####### Script variables set ########\n"
 
@@ -45,16 +45,16 @@ if {[catch {importprojects $worksp} errmsg]} {
     puts "Already imported $worksp"
 }
 
-if {[catch {deleteprojects -name "miPod"} errmsg]} {
-    puts "$mipod not yet added"
+if {[catch {deleteprojects -name "Untrusted_app"} errmsg]} {
+    puts "$Untrusted_app not yet added"
 }
 
-if {[catch {importprojects $mipod} errmsg]} {
-    puts "Already imported $mipod"
+if {[catch {importprojects $Untrusted_app} errmsg]} {
+    puts "Already imported $Untrusted_app"
 }
 
-#file delete -force "$worksp/miPod"
-#exec ln -sv $miPod "$worksp/miPod"
+#file delete -force "$worksp/Untrusted_app"
+#exec ln -sv $Untrusted_app "$worksp/Untrusted_app"
 
 puts "\n####### Creating Project hw ########\n"
 

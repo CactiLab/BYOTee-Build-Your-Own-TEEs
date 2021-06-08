@@ -12,7 +12,7 @@ Args:
 - <PROJ_NAME> : name of the project to be created and referenced;
               it will be possible to open a `.xpr` (from create_project) in the Vivado gui
 - <BUILD_FLAG> : one of the modes defined above; the default will be to run [all] options
-- <STORAGE_DIR> : is a path to the directory containing bitstream and miPod exetable
+- <STORAGE_DIR> : is a path to the directory containing bitstream and Untrusted_app exetable
 
 Please note:
 * buildDevice (the bash script) passes args directly to the buildDevice.py script.
@@ -29,8 +29,8 @@ Syntax:
 > ./packageDevice <SYSTEM.bif> <OUTPATH> <BITSTREAM_PATH>
 
 Args:
-- <SYSTEM.bif> : A path to the BIF to provide to bootgen to create a miPod.bin
-- <OUTPATH> : The path to the output file (miPod.bin)
+- <SYSTEM.bif> : A path to the BIF to provide to bootgen to create a Untrusted_app.bin
+- <OUTPATH> : The path to the output file (Untrusted_app.bin)
 - <BITSTREAM_PATH> : The path to the bitstream file that will be used in the BIF.
 
 * Similar to `buildDevice`, `packageDevice` was created to handle the
@@ -41,13 +41,13 @@ creation of a BOOT.bin (which is deployed via deployDevice)
 
 ### deployDevice
 Syntax:
-> ./deployDevice <SD_DEVICE> <BOOT.bin>  <SSC_FOLDER> <MIPOD_APPLICATION> <IMAGE.ub> [--no-format]
+> ./deployDevice <SD_DEVICE> <BOOT.bin>  <SSC_FOLDER> <Untrusted_app_APPLICATION> <IMAGE.ub> [--no-format]
 
 Args:
 - <SD_DEVICE> : The path to the SD card device to deploy the system to.
 - <BOOT.bin> : The path to the BOOT.bin
 - <SSC_FOLDER> : The path to the folder with the SSC files that will be loaded
-- <MIPOD_APPLICATION> : The path to the miPod application to run in Linux.
+- <Untrusted_app_APPLICATION> : The path to the Untrusted_app application to run in Linux.
 - <IMAGE.ub> : The path to the Petalinux kernel.
 - no-format : an optional flag that if present will not format the SD card.
 
@@ -121,7 +121,7 @@ if this is your first time running this.
 
 **[bm]**: `build_microblaze` in buildMicroblaze.py
 
-Builds the code in `/mb` and `miPod`, and produces a miPod that can be run.
+Builds the code in `/mb` and `Untrusted_app`, and produces a Untrusted_app that can be run.
 
 The following are used by the process:
 

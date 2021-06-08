@@ -49,7 +49,7 @@ void myISR(void) {
 }
 
 //////////////////////// MAIN ////////////////////////
-void query_drm(){
+void query_BYOT_runtime(){
 	mb_printf("Dummy: Check if calling procedure is ok \r\n");
 }
 void load_from_shared_to_local() {
@@ -165,7 +165,7 @@ int main() {
             	ssc_module_loaded = 1;
                 break;
             case QUERY_DRM:
-            	query_drm();
+            	query_BYOT_runtime();
             	break;
             case SSC_COMMAND:
             	forward_to_ssc();
