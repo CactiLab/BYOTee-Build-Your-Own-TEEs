@@ -53,20 +53,20 @@ Once you reset the board, you should see output on the screen indicating that th
 
 12. Press the `RESET` button on the board to reset it. You should now see the board boot and enter a Linux shell.
 13. `cd` to the `music` folder.
-14. Run the `./miPod` application, and run `help` to see a list of all possible commands.
+14. Run the `./Untrusted_app` application, and run `help` to see a list of all possible commands.
 
 
 ## Working With the Xilinx Tools
 You can launch `vivado` to modify the reference implementation programmable logic (PL).
 `vivado` will also allow you to generate the bitstream and export the hardware to the SDK.
 The SDK can be launched from Vivado, or directly from the command line to allow you to modify
-the DRM project runing on the MicroBlaze and the miPod project running on the Linux side.
+the DRM project runing on the MicroBlaze and the Untrusted_app project running on the Linux side.
 
 
 ### SDK Development Tips
 
 When first opening the SDK GUI, the project workspace should be set to the `mb/` directory. Import
-all three projects (Cora-Z7-07S, drm_audio_fw, and drm_audio_fw_bsp) and then import the miPod
+all three projects (Cora-Z7-07S, drm_audio_fw, and drm_audio_fw_bsp) and then import the Untrusted_app
 project. All four projects should appear in the Project Explorer to the left. If the initial build
 fails, select `Project > Clean...` to clean and rebuild the project.
 
@@ -74,9 +74,9 @@ fails, select `Project > Clean...` to clean and rebuild the project.
 While teams should regularly check that the full build and provision process works using the
 provisioning tools, it may be faster to build and flash the device manually. 
 
-To update the miPod:
+To update the Untrusted_app:
 1. Save all files to build the project. Ensure in the Console window that the build succeeded.
-2. Copy the file `miPod/Debug/miPod.elf` to `~/music/miPod` on the board (either over minicom or by USB drive)
+2. Copy the file `Untrusted_app/Debug/Untrusted_app.elf` to `~/music/Untrusted_app` on the board (either over minicom or by USB drive)
 
 To update the DRM:
 1. Save all files to build the project. Ensure in the Console window that the build succeeded.
@@ -97,6 +97,6 @@ To update the DRM:
    Otherwise, the following partitions should be added (**NOTE: THE ORDER MATTERS**):
        1. `boot-image/fsbl.elf` - a dummy bootloader that will never run. The real bootloader is
           encrypted for your team in `boot-image/BOOT.BIN`, however the Xilinx tools require a bootloader.
-       2. `mb/Cora-Z7-07S/download.bit` - the bitstream loaded with the DRM ELF (created by step 4)
+       2. `mb/Cora-Z7-07S/download.bit` - the bitstream loaded with the BYOT ELF (created by step 4)
 6. Insert the SD card into the Cora board and the RESET button next to the power jack. When Linux finishes
    booting, the MicroBlaze should have the updated bitstream.

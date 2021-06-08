@@ -65,10 +65,12 @@ void print_playback_help() {
 void query_BYOT_runtime()
 {
     send_command(QUERY_DRM);
+
     while (c->drm_state == STOPPED)
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
+
     mp_printf("Initialization Done!!\r\n");
 }
 
@@ -77,8 +79,9 @@ void query_BYOT_runtime()
 size_t load_file(char *fname, char *file_buf) {
     int fd;
     struct stat sb;
-    mp_printf("Inside load file function \r\n");
+
     fd = open(fname, O_RDONLY);
+
     if (fd == -1)
     {
         mp_printf("Failed to open file! Error = %d\r\n", errno);
@@ -92,7 +95,6 @@ size_t load_file(char *fname, char *file_buf) {
     }
 
     read(fd, file_buf, sb.st_size);
-
     close(fd);
 
     mp_printf("Loaded file into shared buffer (%dB)\r\n", sb.st_size);
@@ -108,8 +110,8 @@ void login(char *username, char *pin) {
     }
 
     specify_ssc_command(LOGIN);
-    strcpy((void*)c->drm_chnl.username, username);
-    strcpy((void*)c->drm_chnl.pin , pin);
+    strncpy((void*)c->drm_chnl.username, username, USERNAME_SZ);
+    strncpy((void*)c->drm_chnl.pin , pin, MAX_PIN_SZ);
     send_command(SSC_COMMAND);
 
     while (c->drm_state == STOPPED)
@@ -140,7 +142,7 @@ void load_code(char *fileName)
 
     mp_printf("Finished loading file\r\n");
 
-    if (!strcmp(fileName, "DRM_audio_SSC"))
+    if (!strncmp(fileName, "DRM_audio_SSC", sizeof("DRM_audio_SSC")))
     {
     	secure_drm_load = 1;
     	secure_drm_print_help();
@@ -166,6 +168,7 @@ void exit_SSC()
 		continue; // wait for DRM to start working
 	while (c->drm_state == WORKING)
 		continue; // wait for DRM to dump file
+
 	secure_drm_load = 0;
 	mp_printf("Cleaned UP SSC\r\n");
 }
@@ -187,7 +190,7 @@ void share_song(char *song_name, char *username) {
         return;
     }
 
-    strcpy((char *)c->drm_chnl.username, username);
+    strncpy((char *)c->drm_chnl.username, username, USERNAME_SZ);
 
     // drive DRM
     send_command(SSC_COMMAND);
@@ -196,7 +199,7 @@ void share_song(char *song_name, char *username) {
     while (c->drm_state == WORKING) continue; // wait for DRM to share song
 
     // request was rejected if WAV length is 0
-   length = c->drm_chnl.song.wav_size;
+    length = c->drm_chnl.song.wav_size;
     if (length == 0) {
         mp_printf("Share rejected\r\n");
         return;
@@ -233,13 +236,16 @@ void query_song(char *song_file_name) {
 		print_help();
 		return;
 	}
+
 	specify_ssc_command(QUERY);
+
     if (!load_file(song_file_name, (void *)&c->drm_chnl.song))
     {
         mp_printf("Failed to load song file!\r\n");
         return -1;
     }
     send_command(SSC_COMMAND);
+
     while (c->drm_state == STOPPED)
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
@@ -278,6 +284,7 @@ int play_song(char *song_name) {
     // drive the DRM
     specify_ssc_command(PLAY);
     send_command(SSC_COMMAND);
+    
     while (c->drm_state == STOPPED) continue; // wait for DRM to start playing
 
     // play loop
@@ -299,35 +306,35 @@ int play_song(char *song_name) {
         if (!cmd) {
             continue;
         }
-        else if (!strcmp(cmd, "help"))
+        else if (!strncmp(cmd, "help", sizeof("help")))
         {
         	print_playback_help();
         }
-        else if (!strcmp(cmd, "resume"))
+        else if (!strncmp(cmd, "resume", sizeof("resume")))
         {
         	specify_ssc_command(PLAY);
             send_command(SSC_COMMAND);
             usleep(200000); // wait for DRM to print
         }
-        else if (!strcmp(cmd, "pause"))
+        else if (!strncmp(cmd, "pause", sizeof("pause")))
         {
         	specify_ssc_command(PAUSE);
             send_command(SSC_COMMAND);
             usleep(200000); // wait for DRM to print
         }
-        else if (!strcmp(cmd, "stop"))
+        else if (!strncmp(cmd, "stop", sizeof("stop")))
         {
         	specify_ssc_command(STOP);
             send_command(SSC_COMMAND);
             usleep(200000); // wait for DRM to print
             break;
         }
-        else if (!strcmp(cmd, "restart"))
+        else if (!strncmp(cmd, "restart", sizeof("restart")))
         {
         	specify_ssc_command(RESTART);
             send_command(SSC_COMMAND);
         }
-        else if (!strcmp(cmd, "quit"))
+        else if (!strncmp(cmd, "quit", sizeof("quit")))
         {
             mp_printf("Quitting...\r\n");
             specify_ssc_command(STOP);
@@ -416,52 +423,53 @@ int main(int argc, char **argv)
         {
             continue;
         }
-        else if (!strcmp(cmd, "help"))
+        else if (!strncmp(cmd, "help", sizeof("help")))
         {
             print_help();
 
             if (secure_drm_load)
             	secure_drm_print_help();
         }
-        else if (!strcmp(cmd, "load"))
+        else if (!strncmp(cmd, "load", sizeof("load")))
         {
             load_code(arg1);
         }
-        else if (!strcmp(cmd, "exe"))
+        else if (!strncmp(cmd, "exe", sizeof("exe")))
         {
         	execute_SSC();
         }
-        else if (!strcmp(cmd, "exit"))
+        else if (!strncmp(cmd, "exit", sizeof("exit")))
         {
         	exit_SSC();
         }
-        else if (!strcmp(cmd, "login"))
+        else if (!strncmp(cmd, "login", sizeof("login")))
         {
         	login(arg1, arg2);
         }
-        else if (!strcmp(cmd, "logout"))
+        else if (!strncmp(cmd, "logout", sizeof("logout")))
         {
         	logout();
         }
-        else if (!strcmp(cmd, "query"))
+        else if (!strncmp(cmd, "query", sizeof("query")))
         {
         	 query_song(arg1);
         }
-        else if (!strcmp(cmd, "share"))
+        else if (!strncmp(cmd, "share", sizeof("share")))
 	    {
         	share_song(arg1, arg2);
 	    }
-        else if (!strcmp(cmd, "play")) {
+        else if (!strncmp(cmd, "play", sizeof("play")))
+        {
 			// break if exit was commanded in play loop
 			if (play_song(arg1) < 0) {
 				break;
 			}
 		}
-        else if (!strcmp(cmd, "digital_out"))
+        else if (!strncmp(cmd, "digital_out", sizeof("digital_out")))
         {
 		     digital_out(arg1);
 	    }
-        else if (!strcmp(cmd, "quit"))
+        else if (!strncmp(cmd, "quit", sizeof("quit")))
         {
         	mp_printf("Exiting untrusted application.....\r\n");
         	break;

@@ -158,7 +158,7 @@ int main() {
             InterruptProcessed = FALSE;
             set_working();
 
-            // c->cmd is set by the miPod player
+            // c->cmd is set by the Untrusted_app player
             switch (c->cmd) {
             case LOAD_CODE:
             	load_code();

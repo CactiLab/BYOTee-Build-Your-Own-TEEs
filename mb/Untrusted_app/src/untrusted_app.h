@@ -2,7 +2,7 @@
 #define SRC_UNTRUSTED_APP_H_
 
 
-// miPod constants
+// Untrusted_app constants
 #define USR_CMD_SZ 64
 
 #define CODE_SIZE 50000
