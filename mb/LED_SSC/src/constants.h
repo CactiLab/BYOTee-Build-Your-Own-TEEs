@@ -11,8 +11,8 @@
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 
 // protocol constants
-#define CODE_SIZE 20000
-
+#define CODE_SIZE 50000
+#define PADING_SZ 2
 
 // LED colors and controller
 struct color {
@@ -31,6 +31,7 @@ enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
+   char padding[PADING_SZ];
    char code [CODE_SIZE];
 } cmd_channel;
 

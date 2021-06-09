@@ -39,7 +39,7 @@ void parse_input(char *input, char **cmd, char **arg1, char **arg2)
 void print_help()
 {
     mp_printf("Untrusted Application options:\r\n");
-    mp_printf("  load <fileName> : load SSC module to be executed in CTEE\r\n");
+    mp_printf("  load <fileName>: load SSC module to be executed in CTEE\r\n");
     mp_printf("  exe: Execute the loaded SSC module\r\n");
     mp_printf("  exit: Clean the loaded SSC module from CTEE\r\n");
     mp_printf("  quit: To quit the untrusted application\r\n");

@@ -1,7 +1,6 @@
 #ifndef SRC_CONSTANTS_H_
 #define SRC_CONSTANTS_H_
 // struct to interpret shared command channel
-#define COMMAND_SIZE 10
 #define SHARED_DDR_BASE (0x20000000 + 0x1CC00000)
 #define MAX_REGIONS 64
 #define REGION_NAME_SZ 64
@@ -12,8 +11,10 @@
 #define CHUNK_SZ 16000
 #define FIFO_CAP 4096*4
 #define CODE_SIZE 50000
-#define INPUT_SIZE 2000
 #define PREVIEW_TIME_SEC 30
+#define PADING_SZ 2
+#define PACKAGING_SZ1 4
+#define PACKAGING_SZ2 32
 #define MB_PROMPT "\r\nDRM_SSC> "
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 // ADC/DAC sampling rate in Hz
@@ -55,9 +56,9 @@ typedef struct __attribute__((__packed__)) {
 } drm_md;
 
 typedef struct __attribute__((__packed__)) {
-    char packing1[4];
+    char packing1[PACKAGING_SZ1];
     int file_size;
-    char packing2[32];
+    char packing2[PACKAGING_SZ2];
     int wav_size;
     drm_md md;
 } song;
@@ -88,7 +89,7 @@ typedef struct __attribute__((__packed__)) {
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
-   char padding[2];
+   char padding[PADING_SZ];
    char code [CODE_SIZE];
    drm_audio_channel audio_data;
 } drm_channel;

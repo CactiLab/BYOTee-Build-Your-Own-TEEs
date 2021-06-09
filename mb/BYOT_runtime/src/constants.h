@@ -16,8 +16,7 @@
 #define RO_DATA_SIZE 3000
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
-#define INPUT_SIZE 2000
-#define OUTPUT_SIZE 2000
+#define PADING_SZ 2
 
 // LED colors and controller
 struct color {
@@ -36,7 +35,7 @@ enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
-   char padding[2];
+   char padding[PADING_SZ];
    char code [CODE_SIZE];
 } cmd_channel;
 
