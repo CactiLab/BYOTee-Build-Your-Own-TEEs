@@ -478,6 +478,9 @@ int main(int argc, char **argv)
         {
             mp_printf("Unrecognized command.\r\n\r\n");
             print_help();
+
+            if (secure_drm_load)
+            	secure_drm_print_help();
         }
     }
 

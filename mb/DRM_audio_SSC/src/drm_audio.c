@@ -15,13 +15,13 @@
 
 
 // audio DMR pointer
-void *sAxiDma_pointer = (void *)0x00017640;
+void *sAxiDma_pointer = (void *)SAXI_DMA_POINTER_ADDRESS;
 volatile drm_channel *drm_chnl = (drm_channel*)SHARED_DDR_BASE;
 
 // internal state store
 drm_internal_state s;
 
-void *point_to_runtime_interrrupt = (void *)0x00017d94;
+void *point_to_runtime_interrrupt = (void *)INTERRUPT_POINTER_ADDRESS;
 //void *point_to_runtime_interrrupt = (void *)0x19798;
 
 //////////////////////// INTERRUPT HANDLING ////////////////////////
@@ -352,7 +352,6 @@ void play_song() {
 
     // write entire file to two-block codec fifo
     // writes to one block while the other is being played
-    //set_playing();
     while(rem > 0) {
         // check for interrupt to stop playback
         while (*(int *)point_to_runtime_interrrupt) {
@@ -361,12 +360,10 @@ void play_song() {
             switch (drm_chnl->audio_data.ssc_cmd) {
             case PAUSE:
                 mb_printf("Pausing... \r\n");
-               // set_paused();
                 while (!(*(int *)point_to_runtime_interrrupt)) continue; // wait for interrupt
                 break;
             case PLAY:
                 mb_printf("Resuming... \r\n");
-                //set_playing();
                 break;
             case STOP:
                 mb_printf("Stopping playback...");
@@ -374,7 +371,6 @@ void play_song() {
             case RESTART:
                 mb_printf("Restarting song... \r\n");
                 rem = length; // reset song counter
-                //set_playing();
             default:
                 break;
             }
