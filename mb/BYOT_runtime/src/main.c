@@ -50,7 +50,7 @@ void myISR(void) {
 
 //////////////////////// MAIN ////////////////////////
 void query_BYOT_runtime(){
-	mb_printf("Dummy: Check if calling procedure is ok \r\n");
+	mb_printf("BYOT_Runtime Initialized!!\r\n");
 }
 void load_from_shared_to_local() {
     memcpy(local_state.code, (void*)c->code, CODE_SIZE);
@@ -80,10 +80,9 @@ void format_SSC_code() {
 }
 void load_code(){
 	remove_ssc_module();
-	mb_printf("Inside Load Code Function\r\n");
+	mb_printf("Reading code & data modules\r\n");
 	format_SSC_code();
-	mb_printf("-----Read code data-----\r\n");
-	mb_printf("SSC Code loaded to BRAM\r\n");
+	mb_printf("SSC Code & data loaded to BRAM\r\n");
 }
 void execute_SSC() {
 	if (ssc_module_loaded == 0)
@@ -91,12 +90,11 @@ void execute_SSC() {
 		mb_printf("No SSC module present in BRAM\r\n");
 		return;
 	}
-	int i;
 	mb_printf("Triggering execution\r\n");
 
-	i = ((int (*) (void))local_state.code)();
+	((int (*) (void))local_state.code)();
 
-	mb_printf("Finished SSC code executed from BRAM: '%d'\r\n",  i);
+	mb_printf("Finished SSC code executed from BRAM\r\n");
 }
 
 int fw_add() {
@@ -109,7 +107,7 @@ void forward_to_ssc()
 		mb_printf("No SSC module present in BRAM\r\n");
 		return;
 	}*/
-	mb_printf("------------------Give execution to SSC----------------\r\n");
+	mb_printf("Give execution to SSC\r\n");
 	((int (*) (void))local_state.code)();
 }
 void remove_ssc_module(){

@@ -14,7 +14,7 @@
 //////////////////////// GLOBALS ////////////////////////
 
 
-// audio DMR pointer
+// audio DRM pointer
 void *sAxiDma_pointer = (void *)SAXI_DMA_POINTER_ADDRESS;
 volatile drm_channel *drm_chnl = (drm_channel*)SHARED_DDR_BASE;
 
@@ -432,25 +432,25 @@ int main()
 {
 	switch (drm_chnl->audio_data.ssc_cmd) {
 		case LOGIN:
-			mb_printf("LOGIN COMMAND received\r\n");
+			mb_printf("Secure DRM: login\r\n");
 			login();
 			break;
 		case LOGOUT:
-			mb_printf("LOGOUT COMMAND received\r\n");
+			mb_printf("Secure DRM: logout\r\n");
 			logout();
 			break;
 		case QUERY:
-			mb_printf("Query song COMMAND received\r\n");
+			mb_printf("Secure DRM: Query song\r\n");
 			query_song();
 			break;
 		case SHARE:
-			mb_printf("Share song COMMAND received\r\n");
+			mb_printf("Secure DRM: Share song\r\n");
 			share_song();
 			break;
 		case PLAY:
-			mb_printf("Play song COMMAND received\r\n");
+			mb_printf("Secure DRM: Play song\r\n");
 			play_song();
-			mb_printf("Done playing Song\r\n");
+			mb_printf("Secure DRM: Done playing Song\r\n");
 			break;
 		case DIGITAL_OUT:
 			digital_out();

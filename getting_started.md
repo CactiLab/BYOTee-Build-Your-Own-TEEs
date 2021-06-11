@@ -40,7 +40,7 @@ To build the reference design for the first time, follow these steps:
  
 6. Insert the SD card into the SD card reader, and insert that into your laptop.
     Ensure that this is passed through to the VM through the VirtualBox USB options
-7. Run the `./deployDevice /dev/sdc ../BOOT.bin SSC/ device1/Untrusted_app ../boot-image/image.ub --Untrusted_app-bin-path device1/Untrusted_app.bin` script.
+7. Run the `./deployDevice /dev/sdb ../BOOT.bin SSC/ device1/Untrusted_app ../boot-image/image.ub --Untrusted_app-bin-path device1/miPod.bin` script.
 8. Remove the SD card and place it into the board.
 9. Ensure that the jumper is connecting both pins of JP2 (this allows the device to boot from the SD card)
 10. Connect the Cora board to the computer. Ensure that the board (Digilent Adept USB Device) is passed through to the VM.

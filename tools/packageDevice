@@ -40,7 +40,7 @@ def build_system(bif, outpath, bitstream_path, secure=False):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('bif', help=("This is the .bif file to create the Untrusted_app.BIN."))
+    parser.add_argument('bif', help=("This is the .bif file to create the mipod.BIN."))
     parser.add_argument("outpath", help=("The path to output the Untrusted_app.bin to."))
     parser.add_argument("bitstream", help="The path to your bitstream")
     parser.add_argument("--secure",
