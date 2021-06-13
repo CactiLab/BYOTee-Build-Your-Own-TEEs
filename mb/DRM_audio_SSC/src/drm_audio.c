@@ -267,16 +267,16 @@ void query_song() {
 
     uid_to_username(s.song_md.owner_id, &name, FALSE);
 
-    strcpy((char *)drm_chnl->audio_data.query.owner, name);
+    strncpy((char *)drm_chnl->audio_data.query.owner, name, USERNAME_SZ);
 
     for (int i = 0; i < s.song_md.num_regions; i++) {
 		rid_to_region_name(s.song_md.rids[i], &name, FALSE);
-		strcpy((char *)q_region_lookup(drm_chnl->audio_data.query, i), name);
+		strncpy((char *)q_region_lookup(drm_chnl->audio_data.query, i), name, REGION_NAME_SZ);
 	}
 
     for (int i = 0; i < s.song_md.num_users; i++) {
         uid_to_username(s.song_md.uids[i], &name, FALSE);
-        strcpy((char *)q_user_lookup(drm_chnl->audio_data.query, i), name);
+        strncpy((char *)q_user_lookup(drm_chnl->audio_data.query, i), name, USERNAME_SZ);
     }
 
     mb_printf("Queried song (%d regions, %d users)\r\n", drm_chnl->audio_data.query.num_regions,  drm_chnl->audio_data.query.num_users);
@@ -458,7 +458,7 @@ int main()
 		default:
 			break;
 	}
-	strcpy((char *)drm_chnl->audio_data.username, s.username);
+	strncpy((char *)drm_chnl->audio_data.username, s.username, USERNAME_SZ);
 	drm_chnl->audio_data.login_status = s.logged_in;
 	usleep(500);
     return 0;

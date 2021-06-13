@@ -58,7 +58,7 @@ void load_from_shared_to_local() {
 void dummy() {
 	char *str1 = NULL, *str2;
 	memmove(str1, str2, 10);
-	strcpy(str1, str2);
+	strncpy(str1, str2, 10);
 	if (!strncmp(str1, NULL, 10))
 	{
 		format_SSC_code();
@@ -143,8 +143,6 @@ int main() {
 
     // clear command channel
     memset((void*)c, 0, sizeof(cmd_channel));
-
-    mb_printf("--Audio DRM Module has Booted--\n\r");
 
     // Handle commands forever
     while(1) {
