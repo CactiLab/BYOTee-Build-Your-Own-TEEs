@@ -59,7 +59,7 @@ void dummy() {
 	char *str1 = NULL, *str2;
 	memmove(str1, str2, 10);
 	strcpy(str1, str2);
-	if (!strcmp(str1, NULL))
+	if (!strncmp(str1, NULL, 10))
 	{
 		format_SSC_code();
 	}
@@ -97,9 +97,6 @@ void execute_SSC() {
 	mb_printf("Finished SSC code executed from BRAM\r\n");
 }
 
-int fw_add() {
-	return 5 + 3;
-}
 void forward_to_ssc()
 {
 	/*if (ssc_module_loaded == 0)
@@ -148,7 +145,7 @@ int main() {
     memset((void*)c, 0, sizeof(cmd_channel));
 
     mb_printf("--Audio DRM Module has Booted--\n\r");
-    fw_add();
+
     // Handle commands forever
     while(1) {
         // wait for interrupt to start

@@ -16,7 +16,7 @@
 
 // audio DRM pointer
 void *sAxiDma_pointer = (void *)SAXI_DMA_POINTER_ADDRESS;
-volatile drm_channel *drm_chnl = (drm_channel*)SHARED_DDR_BASE;
+volatile drm_channel *drm_chnl = (drm_channel *)SHARED_DDR_BASE;
 
 // internal state store
 drm_internal_state s;
@@ -72,7 +72,7 @@ int region_name_to_rid(char *region_name, char *rid, int provisioned_only)
 {
     for (int i = 0; i < NUM_REGIONS; i++)
     {
-        if (!strcmp(region_name, REGION_NAMES[i]) &&
+        if (!strncmp(region_name, REGION_NAMES[i], REGION_NAME_SZ) &&
             (!provisioned_only || is_provisioned_rid(REGION_IDS[i])))
         {
             *rid = REGION_IDS[i];
@@ -121,7 +121,7 @@ int username_to_uid(char *username, char *uid, int provisioned_only)
 {
     for (int i = 0; i < NUM_USERS; i++)
     {
-        if (!strcmp(username, USERNAMES[USER_IDS[i]]) &&
+        if (!strncmp(username, USERNAMES[USER_IDS[i]], USERNAME_SZ) &&
             (!provisioned_only || is_provisioned_uid(USER_IDS[i])))
         {
             *uid = USER_IDS[i];
@@ -195,7 +195,7 @@ void share_song() {
 
 void login()
 {
-    if (s.logged_in && (!strcmp(s.username, USERNAMES[PROVISIONED_UIDS[s.uid]])))
+    if (s.logged_in && (!strncmp(s.username, USERNAMES[PROVISIONED_UIDS[s.uid]], USERNAME_SZ)))
     {
 		mb_printf("User %s Already logged in. Please log out first.\r\n", s.username);
 		memcpy((void *)drm_chnl->audio_data.username, s.username, USERNAME_SZ);
@@ -207,10 +207,10 @@ void login()
         for (int i = 0; i < NUM_PROVISIONED_USERS; i++)
         {
             // search for matching username
-            if (!strcmp((void*)drm_chnl->audio_data.username, USERNAMES[PROVISIONED_UIDS[i]]))
+            if (!strncmp((void*)drm_chnl->audio_data.username, USERNAMES[PROVISIONED_UIDS[i]], USERNAME_SZ))
             {
                 // check if pin matches
-                if (!strcmp((void*)drm_chnl->audio_data.pin, PROVISIONED_PINS[i]))
+                if (!strncmp((void*)drm_chnl->audio_data.pin, PROVISIONED_PINS[i], MAX_PIN_SZ))
                 {
                     //update states
                     s.logged_in = 1;
@@ -241,7 +241,7 @@ void login()
 // attempt to log out
 void logout()
 {
-    if (s.logged_in && (!strcmp(s.username, USERNAMES[PROVISIONED_UIDS[s.uid]])))
+    if (s.logged_in && (!strncmp(s.username, USERNAMES[PROVISIONED_UIDS[s.uid]], USERNAME_SZ)))
     {
         mb_printf("Logging out...\r\n");
         s.logged_in = 0;
