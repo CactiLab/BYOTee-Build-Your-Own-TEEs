@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>DRM_audio_SSC</name>
+	<name>Secure_DRM</name>
 	<comment>Created by SDK v2017.4. BYOT_bsp - microblaze_0</comment>
 	<projects>
 		<project>BYOT_bsp</project>

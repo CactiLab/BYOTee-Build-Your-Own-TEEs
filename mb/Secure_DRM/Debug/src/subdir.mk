@@ -7,18 +7,18 @@ LD_SRCS += \
 ../src/lscript.ld 
 
 C_SRCS += \
-../src/drm_audio.c \
 ../src/platform.c \
+../src/secure_drm.c \
 ../src/util.c 
 
 OBJS += \
-./src/drm_audio.o \
 ./src/platform.o \
+./src/secure_drm.o \
 ./src/util.o 
 
 C_DEPS += \
-./src/drm_audio.d \
 ./src/platform.d \
+./src/secure_drm.d \
 ./src/util.d 
 
 

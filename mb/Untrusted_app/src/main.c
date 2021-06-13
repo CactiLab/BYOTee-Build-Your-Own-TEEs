@@ -142,7 +142,7 @@ void load_code(char *fileName)
 
     mp_printf("Finished loading file\r\n");
 
-    if (!strncmp(fileName, "DRM_audio_SSC", sizeof("DRM_audio_SSC")))
+    if (!strncmp(fileName, "Secure_DRM", sizeof("Secure_DRM")))
     {
     	secure_drm_load = 1;
     	secure_drm_print_help();

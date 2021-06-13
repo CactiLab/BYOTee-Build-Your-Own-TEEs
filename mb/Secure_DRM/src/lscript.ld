@@ -49,8 +49,8 @@ SECTIONS
 
 .test : {
 	*(.text.ssc_entry)
-    *drm_audio.o(.text)
-	*drm_audio.o(.text.*)
+    *secure_drm.o(.text)
+	*secure_drm.o(.text.*)
 	*platform.o(.text)
 	*platform.o(.text.*)
 	*util.o(.text)
