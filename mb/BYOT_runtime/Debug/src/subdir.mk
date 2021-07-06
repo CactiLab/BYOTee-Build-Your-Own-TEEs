@@ -7,16 +7,22 @@ LD_SRCS += \
 ../src/lscript.ld 
 
 C_SRCS += \
+../src/AES_test.c \
+../src/aes.c \
 ../src/main.c \
 ../src/platform.c \
 ../src/util.c 
 
 OBJS += \
+./src/AES_test.o \
+./src/aes.o \
 ./src/main.o \
 ./src/platform.o \
 ./src/util.o 
 
 C_DEPS += \
+./src/AES_test.d \
+./src/aes.d \
 ./src/main.d \
 ./src/platform.d \
 ./src/util.d 

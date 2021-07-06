@@ -11,7 +11,7 @@
 /*******************************************************************/
 
 _STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x400;
-_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x400;
+_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x800;
 
 /* Define Memories in the system */
 
@@ -45,39 +45,11 @@ SECTIONS
 .vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 } 
-.ssc.buffer 0x50:
-{
-	KEEP(*(.ssc.code.buffer))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.test : {
-    *main.o(.text)
-	*main.o(.text.*)
-	*platform.o(.text)
-	*platform.o(.text.*)
-	*util.o(.text)
-	*util.o(.text.*)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
-/* .text 0xd440: { */
 .text : {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-/*
-.ssc.data.buffer 0x145ac:
-{
-	KEEP(*(.ssc.data.buffer))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-*/
-.data : {
-   . = ALIGN(4);
-   __data_start = .;
-   *(.data)
-   *(.data.*)
-   *(.gnu.linkonce.d.*)
-   __data_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 .init : {
@@ -109,12 +81,6 @@ SECTIONS
    PROVIDE(__DTOR_END__ = .);
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-/*
-.ssc.ro.data.buffer 0x16318:
-{
-	KEEP(*(.ssc.ro.data.buffer))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-*/
 
 .rodata : {
    __rodata_start = .;
@@ -142,6 +108,14 @@ SECTIONS
    __sbss2_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
+.data : {
+   . = ALIGN(4);
+   __data_start = .;
+   *(.data)
+   *(.data.*)
+   *(.gnu.linkonce.d.*)
+   __data_end = .;
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 .got : {
    *(.got)
@@ -167,7 +141,6 @@ SECTIONS
    *(.gcc_except_table)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-
 .sdata : {
    . = ALIGN(8);
    __sdata_start = .;
@@ -187,7 +160,6 @@ SECTIONS
    __sbss_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-
 .tdata : {
    __tdata_start = .;
    *(.tdata)
@@ -203,7 +175,6 @@ SECTIONS
    *(.gnu.linkonce.tb.*)
    __tbss_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
 
 .bss (NOLOAD) : {
    . = ALIGN(4);
@@ -238,6 +209,6 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    __stack = _stack;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-
 _end = .;
 }
+

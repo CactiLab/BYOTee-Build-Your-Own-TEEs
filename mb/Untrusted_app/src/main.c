@@ -162,6 +162,12 @@ void execute_SSC()
 }
 void exit_SSC()
 {
+	/*unsigned char test_plain_text[64] = { (unsigned char) 0x6b, (unsigned char) 0xc1, (unsigned char) 0xbe, (unsigned char) 0xe2, (unsigned char) 0x2e, (unsigned char) 0x40, (unsigned char) 0x9f, (unsigned char) 0x96, (unsigned char) 0xe9, (unsigned char) 0x3d, (unsigned char) 0x7e, (unsigned char) 0x11, (unsigned char) 0x73, (unsigned char) 0x93, (unsigned char) 0x17, (unsigned char) 0x2a,
+	                               (unsigned char) 0xae, (unsigned char) 0x2d, (unsigned char) 0x8a, (unsigned char) 0x57, (unsigned char) 0x1e, (unsigned char) 0x03, (unsigned char) 0xac, (unsigned char) 0x9c, (unsigned char) 0x9e, (unsigned char) 0xb7, (unsigned char) 0x6f, (unsigned char) 0xac, (unsigned char) 0x45, (unsigned char) 0xaf, (unsigned char) 0x8e, (unsigned char) 0x51,
+	                               (unsigned char) 0x30, (unsigned char) 0xc8, (unsigned char) 0x1c, (unsigned char) 0x46, (unsigned char) 0xa3, (unsigned char) 0x5c, (unsigned char) 0xe4, (unsigned char) 0x11, (unsigned char) 0xe5, (unsigned char) 0xfb, (unsigned char) 0xc1, (unsigned char) 0x19, (unsigned char) 0x1a, (unsigned char) 0x0a, (unsigned char) 0x52, (unsigned char) 0xef,
+	                               (unsigned char) 0xf6, (unsigned char) 0x9f, (unsigned char) 0x24, (unsigned char) 0x45, (unsigned char) 0xdf, (unsigned char) 0x4f, (unsigned char) 0x9b, (unsigned char) 0x17, (unsigned char) 0xad, (unsigned char) 0x2b, (unsigned char) 0x41, (unsigned char) 0x7b, (unsigned char) 0xe6, (unsigned char) 0x6c, (unsigned char) 0x37, (unsigned char) 0x10 };
+
+	memcpy((void *)&c->plain_text, &test_plain_text, 64); */
 	send_command(EXIT);
 
 	while (c->drm_state == STOPPED)
