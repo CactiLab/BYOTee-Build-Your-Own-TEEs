@@ -1,0 +1,85 @@
+{
+    "Board": {
+      "Name": "cora-z7-07s",
+      "Vendor": "digilentinc.com",
+      "Part": "xc7z007sclg400-1",
+      "Version": "1.0"
+    },
+    "Project": {
+      "Name": "Project_3",
+      "Folder_Name": "Test_Project3",
+      "Location": "/home/tomal/Desktop/cmdTest/"
+    },
+    "REE": {
+      "Clock_Speed": "50MHz",
+      "Cross_Trigger_in": "False",
+      "Cross_Trigger_out": "False"
+    },
+    "CTEEs": {
+      "CTEE_1": {
+        "Name": "MicroBlaze_0",
+        "Type": "MicroBlaze",
+        "Implementation_bits": "32",
+        "CTEE Memory Size": "16KB",
+        "Preset": "None",
+        "Local_Memory_ECC": "None",
+        "Debug_Module": "Extended",
+        "Cache_Configuration": {
+          "Data_cache": "",
+          "Instruction_cache": ""
+        },
+        "Interfaces": {
+          "Interface1": {
+            "Type": "AXI",
+            "Connections": [
+              "AXI_Peripheral_Instruction_Interface",
+              "AXI_Peripheral_Data_Interface"
+            ]
+          }
+        }
+      },
+      "CTEE_2": {
+        "Name": "MicroBlaze_1",
+        "Type": "MicroBlaze",
+        "Implementation_bits": "32",
+        "CTEE Memory Size": "16KB",
+        "Preset": "None",
+        "Local_Memory_ECC": "None",
+        "Debug_Module": "Extended",
+        "Cache_Configuration": {
+          "Data_cache": "",
+          "Instruction_cache": ""
+        },
+        "Interfaces": {
+          "Interface1": {
+            "Type": "AXI",
+            "Connections": [
+              "AXI_Peripheral_Instruction_Interface",
+              "AXI_Peripheral_Data_Interface"
+            ]
+          }
+        }
+      }
+    },
+    "Peripherals": {
+      "peripheral1": {
+        "Type": "AXI_GPIO",
+        "Board_Interface": "btns 2bits",
+        "Mode": "Slave",
+        "Processor access": [
+          "REE",
+          "CTEE2"
+        ]
+      },
+      "UART_Lite": {
+        "Type": "UART_Lite",
+        "Baud_Rate": "115200",
+        "Data_bits": "8",
+        "Mode": "Slave",
+        "Processor access": [
+          "REE",
+          "CTEE1"
+        ]
+      }
+    }
+  }
