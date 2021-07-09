@@ -45,11 +45,12 @@ SECTIONS
 .vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 } 
+/*
 .ssc.buffer 0x50:
 {
 	KEEP(*(.ssc.code.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
+*/
 .test : {
     *main.o(.text)
 	*main.o(.text.*)

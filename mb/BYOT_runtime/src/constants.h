@@ -24,7 +24,7 @@ struct color {
     u32 g;
     u32 b;
 };
-//uint8_t received_plaintext[64]; /*remove later*/
+uint8_t received_plaintext[64]; /*remove later*/
 
 enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
@@ -37,7 +37,8 @@ typedef volatile struct __attribute__((__packed__)) {
    char drm_state;
    char padding[PADING_SZ];
    char code [CODE_SIZE];
-  // uint8_t plain_text[64]; /*just for test remove later */
+   uint8_t plain_text[64]; /*just for test remove later */
+   uint8_t cipher_text[64];
 } cmd_channel;
 
 // store of internal state

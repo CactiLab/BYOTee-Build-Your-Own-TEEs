@@ -50,7 +50,7 @@
 #include <stdint.h>
 #include "platform.h"
 #include "xil_printf.h"
-//#include "constants.h" /*remove*/
+#include "constants.h"
 
 // Enable ECB, CTR and CBC mode. Note this can be done before including aes.h or at compile-time.
 // E.g. with GCC by using the -D flag: gcc -c aes.c -DCBC=0 -DCTR=1 -DECB=1
@@ -69,7 +69,7 @@ static int test_decrypt_ctr(void);
 static int test_encrypt_ecb(void);
 static int test_decrypt_ecb(void);
 static void test_encrypt_ecb_verbose(void);
-
+uint8_t received_plaintext[64];
 
 //int main(void)
 int aes_test(void)
@@ -86,18 +86,18 @@ int aes_test(void)
     xil_printf("You need to specify a symbol between AES128, AES192 or AES256. Exiting");
     return 0;
 #endif
-   /* uint8_t received_plaintext[64];
 
-    xil_printf("plain text:\r\n");
-       for (uint8_t i = (uint8_t) 0; i < (uint8_t) 4; ++i)
-       {
-           phex(received_plaintext + i * (uint8_t) 16);
-       }
-       xil_printf("\r\n"); */
-    exit = test_encrypt_cbc() + test_decrypt_cbc() +
+	xil_printf("plain text:\r\n");
+	for (uint8_t i = (uint8_t) 0; i < (uint8_t) 4; ++i)
+	{
+	   phex(received_plaintext + i * (uint8_t) 16);
+	}
+	xil_printf("\r\n");
+	exit = SSC_encrypt();
+    /*exit = test_encrypt_cbc() + test_decrypt_cbc() +
 	test_encrypt_ctr() + test_decrypt_ctr() +
 	test_decrypt_ecb() + test_encrypt_ecb();
-    test_encrypt_ecb_verbose();
+    test_encrypt_ecb_verbose();*/
 
     return exit;
 }
@@ -162,6 +162,21 @@ static void test_encrypt_ecb_verbose(void)
     xil_printf("\r\n");
 }
 
+
+int SSC_encrypt(void)
+{
+#if defined(AES128)
+    uint8_t key[] = { 0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
+#endif
+
+  //  uint8_t in[]  = { 0x6b, 0xc1, 0xbe, 0xe2, 0x2e, 0x40, 0x9f, 0x96, 0xe9, 0x3d, 0x7e, 0x11, 0x73, 0x93, 0x17, 0x2a };
+    struct AES_ctx ctx;
+
+    AES_init_ctx(&ctx, key);
+    AES_ECB_encrypt(&ctx, received_plaintext);
+
+    xil_printf("SSC Encryption Done return output to UA\r\n");
+}
 
 static int test_encrypt_ecb(void)
 {

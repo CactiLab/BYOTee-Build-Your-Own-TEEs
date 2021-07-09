@@ -76,7 +76,8 @@ typedef volatile struct __attribute__((__packed__)) {
    char drm_state;
    char padding[PADING_SZ];
    char code [CODE_SIZE];
- //  unsigned char plain_text[64];
+   unsigned char plain_text[64];
+   unsigned char cipher_text[64];
    drm_audio_channel drm_chnl;
 } cmd_channel;
 
