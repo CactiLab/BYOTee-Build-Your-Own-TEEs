@@ -35,7 +35,7 @@ all: BYOT_runtime.elf secondary-outputs
 BYOT_runtime.elf: $(OBJS) ../src/lscript.ld $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MicroBlaze gcc linker'
-	mb-gcc -L"/home/tomal/Desktop/Cacti_lab/BTEE/v2/code-build-your-own-TEE/mb/BYOT_bsp/microblaze_0/lib" -Wl,-T -Wl,../src/lscript.ld -L"/home/tomal/Desktop/Cacti_lab/BTEE/v2/code-build-your-own-TEE/mb/BYOT_bsp/microblaze_0/include" -mlittle-endian -mcpu=v10.0 -mxl-soft-mul -o "BYOT_runtime.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	mb-gcc -L"/home/tomal/Desktop/cacti_lab/BYOT/code-build-your-own-TEE/mb/BYOT_bsp/microblaze_0/lib" -Wl,-T -Wl,../src/lscript.ld -L"/home/tomal/Desktop/cacti_lab/BYOT/code-build-your-own-TEE/mb/BYOT_bsp/microblaze_0/include" -mlittle-endian -mcpu=v10.0 -mxl-soft-mul -o "BYOT_runtime.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

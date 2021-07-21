@@ -27,7 +27,10 @@ void specify_ssc_command(int cmd)
 {
 	memcpy((void *)&c->drm_chnl.ssc_cmd, &cmd, 1);
 }
-
+void specify_aes_ssc_command(int cmd)
+{
+	memcpy((void *)&c->aes_cmd, &cmd, 1);
+}
 void parse_input(char *input, char **cmd, char **arg1, char **arg2)
 {
     *cmd = strtok(input, " \r\n");
@@ -185,7 +188,9 @@ void encrypt_SSC()
 		phex((void *)&c->enc_dec_data + i * (unsigned char) ENC_DEC_BLOCK_SIZE);
 	}
 	printf("\n");
-	send_command(ENC);
+
+	specify_aes_ssc_command(ENC);
+	send_command(SSC_COMMAND);
 
 	while (c->drm_state == STOPPED)
 		continue; // wait for DRM to start working
@@ -215,7 +220,9 @@ void decrypt_SSC()
 		phex((void *)&c->enc_dec_data + i * (unsigned char) ENC_DEC_BLOCK_SIZE);
 	}
 	printf("\n");
-	send_command(DEC);
+
+	specify_aes_ssc_command(DEC);
+	send_command(SSC_COMMAND);
 
 	while (c->drm_state == STOPPED)
 		continue; // wait for DRM to start working

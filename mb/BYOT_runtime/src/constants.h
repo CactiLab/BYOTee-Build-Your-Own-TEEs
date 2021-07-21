@@ -19,15 +19,12 @@
 #define PADING_SZ 2
 //AES SSC CONSTANTS
 #define ENC_DEC_DATA_SIZE 64
-#define ENC_DEC_BLOCK_SIZE 16
 // LED colors and controller
 struct color {
     u32 r;
     u32 g;
     u32 b;
 };
-//AES SSC variable
-uint8_t received_data[ENC_DEC_DATA_SIZE];
 
 enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE, ENC, DEC};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
@@ -38,10 +35,10 @@ enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
+   char aes_cmd;
    char padding[PADING_SZ];
    char code [CODE_SIZE];
    uint8_t enc_dec_data[ENC_DEC_DATA_SIZE]; /*just for test remove later */
-   //uint8_t cipher_text[64];
 } cmd_channel;
 
 // store of internal state

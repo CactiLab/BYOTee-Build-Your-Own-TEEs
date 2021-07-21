@@ -14,7 +14,7 @@
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
 #define MAX_SONG_SZ (1<<25)
-#define PADING_SZ 2
+#define PADING_SZ 1
 #define PACKAGING_SZ1 4
 #define PACKAGING_SZ2 32
 #define ENC_DEC_DATA_SIZE 64
@@ -76,6 +76,7 @@ typedef struct __attribute__((__packed__)) {
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
+   char aes_cmd;
    char padding[PADING_SZ];
    char code [CODE_SIZE];
    unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];

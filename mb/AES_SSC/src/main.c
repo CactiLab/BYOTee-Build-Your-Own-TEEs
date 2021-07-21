@@ -50,6 +50,7 @@
 #include <stdint.h>
 #include "platform.h"
 #include "xil_printf.h"
+#include "BYOT_header.h"
 #include "constants.h"
 
 // Enable ECB, CTR and CBC mode. Note this can be done before including aes.h or at compile-time.
@@ -70,9 +71,44 @@ static int test_encrypt_ecb(void);
 static int test_decrypt_ecb(void);
 static void test_encrypt_ecb_verbose(void);
 
+volatile cmd_channel *cmd_chnl = (cmd_channel *)SHARED_DDR_BASE;
 
+int dummy_aes_ssc()
+{
+	u32 t, s;
+	char *str1 = NULL, *str2;
+    usleep(500);
+    sleep(50);
+    MB_Sleep(10);
+    init_platform();
+    cleanup_platform();
+	memmove(str1, str2, 10);
+	strcpy(str1, str2);
+	if (!strcmp(str1, NULL))
+	{
+		*str1 = NULL;
+	}
+	Xil_MemCpy(str1, str2, 10);
+}
+int main()
+{
+	memcpy(&received_data, (void*)cmd_chnl->enc_dec_data, 64);
+	switch(cmd_chnl->aes_cmd)
+	{
+		case ENC:
+			aes_enc_test();
+			memcpy((void*)cmd_chnl->enc_dec_data, &received_data,  ENC_DEC_DATA_SIZE);
+			break;
+		case DEC:
+			aes_dec_test();
+			memcpy((void*)cmd_chnl->enc_dec_data, &received_data,  ENC_DEC_DATA_SIZE);
+			break;
+		default:
+			mb_printf("Unrecognized command!!!");
+			break;
+	}
 
-//int main(void)
+}
 void aes_dec_test(uint8_t *output)
 {
 #if defined(AES256)
@@ -95,8 +131,6 @@ void aes_dec_test(uint8_t *output)
 
 	test_decrypt_ecb_verbose();
 	xil_printf("Decryption done writing to shared location \r\n");
-	memcpy(output, &received_data,  ENC_DEC_DATA_SIZE);
-
 }
 void aes_enc_test(uint8_t *output)
 {
@@ -147,14 +181,7 @@ static void test_encrypt_ecb_verbose(void)
 
     // 128bit key
     uint8_t key[16] =        { (uint8_t) 0x2b, (uint8_t) 0x7e, (uint8_t) 0x15, (uint8_t) 0x16, (uint8_t) 0x28, (uint8_t) 0xae, (uint8_t) 0xd2, (uint8_t) 0xa6, (uint8_t) 0xab, (uint8_t) 0xf7, (uint8_t) 0x15, (uint8_t) 0x88, (uint8_t) 0x09, (uint8_t) 0xcf, (uint8_t) 0x4f, (uint8_t) 0x3c };
-    // print text to encrypt, key and IV
-    /*xil_printf("ECB encrypt verbose:\r\n");
-    xil_printf("plain text:\r\n");
-    for (i = (uint8_t) 0; i < (uint8_t) 4; ++i)
-    {
-        phex(received_data + i * (uint8_t) 16);
-    }
-    xil_printf("\r\n");*/
+
     struct AES_ctx ctx;
 
     xil_printf("Key:\r\n");
