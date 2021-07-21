@@ -17,6 +17,8 @@
 #define PADING_SZ 2
 #define PACKAGING_SZ1 4
 #define PACKAGING_SZ2 32
+#define ENC_DEC_DATA_SIZE 64
+#define ENC_DEC_BLOCK_SIZE 16
 // printing utility
 #define MP_PROMPT "UA> "
 #define mp_printf(...) printf(MP_PROMPT __VA_ARGS__)
@@ -24,7 +26,7 @@
 #define print_prompt() printf(USER_PROMPT, "")
 #define print_prompt_msg(...) printf(USER_PROMPT, __VA_ARGS__)
 
-enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT,  EXECUTE};
+enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT,  EXECUTE, ENC, DEC};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE, PLAY, PAUSE, STOP, RESTART, DIGITAL_OUT };
 
@@ -76,8 +78,8 @@ typedef volatile struct __attribute__((__packed__)) {
    char drm_state;
    char padding[PADING_SZ];
    char code [CODE_SIZE];
-   unsigned char plain_text[64];
-   unsigned char cipher_text[64];
+   unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];
+   //unsigned char cipher_text[64];
    drm_audio_channel drm_chnl;
 } cmd_channel;
 

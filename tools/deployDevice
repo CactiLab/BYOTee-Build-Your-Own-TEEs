@@ -5,8 +5,8 @@ import subprocess
 import argparse
 
 # the directory to mount the sd card to
-BOOT_MNT = '/media/vagrant/boot'
-SSC_MNT = '/media/vagrant/root'
+BOOT_MNT = '/media/tomal/boot'
+SSC_MNT = '/media/tomal/root'
 
 # the names to copy the boot and mes files to on the sd card
 BOOT_FILE = 'BOOT.bin'
@@ -14,6 +14,8 @@ UA_BIN_FILE = "miPod.bin"
 
 
 def copy_file(src, dst):
+    print("Destination :")
+    print(dst)
     """
     This function copies a files from the src path to the destination path.
     This is used for copying files to the sd card.

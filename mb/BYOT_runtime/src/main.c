@@ -166,10 +166,15 @@ int main() {
             case EXIT:
             	remove_ssc_module();
             	ssc_module_loaded = 0;
-            	memcpy(&received_plaintext, (void*)c->plain_text, 64);
-            	aes_test();
-            	memcpy(&received_plaintext, (void*)c->cipher_text, 64);
             	break;
+            case ENC:
+            	memcpy(&received_data, (void*)c->enc_dec_data, 64);
+				aes_enc_test((void*)&c->enc_dec_data);
+				break;
+            case DEC:
+            	memcpy(&received_data, (void*)c->enc_dec_data, 64);
+				aes_dec_test((void*)&c->enc_dec_data);
+				break;
             case EXECUTE:
             	execute_SSC();
             	break;
