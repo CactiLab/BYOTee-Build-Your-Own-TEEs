@@ -58,6 +58,8 @@ void load_from_shared_to_local() {
 void dummy() {
 	char *str1 = NULL, *str2;
 	memmove(str1, str2, 10);
+	if (InterruptProcessed)
+		memcmp(str1, str2, 10);
 	strncpy(str1, str2, 10);
 	if (!strncmp(str1, NULL, 10))
 	{
@@ -167,14 +169,14 @@ int main() {
             	remove_ssc_module();
             	ssc_module_loaded = 0;
             	break;
-            case ENC:
+            /*case ENC:
             	memcpy(&received_data, (void*)c->enc_dec_data, 64);
 				aes_enc_test((void*)&c->enc_dec_data);
 				break;
             case DEC:
             	memcpy(&received_data, (void*)c->enc_dec_data, 64);
 				aes_dec_test((void*)&c->enc_dec_data);
-				break;
+				break;*/
             case EXECUTE:
             	execute_SSC();
             	break;
