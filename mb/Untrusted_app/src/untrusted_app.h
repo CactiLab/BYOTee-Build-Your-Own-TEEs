@@ -25,13 +25,13 @@
 #define USER_PROMPT "U_app %s# "
 #define print_prompt() printf(USER_PROMPT, "")
 #define print_prompt_msg(...) printf(USER_PROMPT, __VA_ARGS__)
-
-enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT,  EXECUTE, ENC, DEC};
-enum states   { STOPPED, WORKING, PLAYING, PAUSED };
-enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE, PLAY, PAUSE, STOP, RESTART, DIGITAL_OUT };
-
 #define q_region_lookup(q, i) (q.regions + (i * REGION_NAME_SZ))
 #define q_user_lookup(q, i) (q.users + (i * USERNAME_SZ))
+
+enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT,  EXECUTE};
+enum states   { STOPPED, WORKING, PLAYING, PAUSED };
+enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE, PLAY, PAUSE, STOP, RESTART, DIGITAL_OUT };
+enum aes_command {ENC, DEC};
 
 typedef struct {
     int num_regions;

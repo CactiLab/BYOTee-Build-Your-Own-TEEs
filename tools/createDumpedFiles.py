@@ -56,7 +56,7 @@ def main():
     final_data = struct.pack(">i",test_address) + struct.pack(">i",data_address) + struct.pack(">i",rodata_address) + struct.pack(">i",len(test_data)) + struct.pack(">i",len(data)) + struct.pack(">i",len(rodata))
     
     final_data = final_data + test_data + data + rodata
-
+    print("TEst section size: " + str(len(test_data)))
     try:
         SSC_file.write(final_data)
     except:

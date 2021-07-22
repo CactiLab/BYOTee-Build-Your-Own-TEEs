@@ -83,8 +83,13 @@ int dummy_aes_ssc()
     init_platform();
     cleanup_platform();
 	memmove(str1, str2, 10);
-	strcpy(str1, str2);
-	if (!strcmp(str1, NULL))
+	//strcpy(str1, str2);
+	/*if (!strcmp(str1, NULL))
+	{
+		*str1 = NULL;
+	}*/
+	strncpy(str1, str2, 10);
+	if (!strncmp(str1, NULL, 10))
 	{
 		*str1 = NULL;
 	}
@@ -104,7 +109,7 @@ int main()
 			memcpy((void*)cmd_chnl->enc_dec_data, &received_data,  ENC_DEC_DATA_SIZE);
 			break;
 		default:
-			mb_printf("Unrecognized command!!!");
+			xil_printf("SSC> Unrecognized command!!!\r\n");
 			break;
 	}
 

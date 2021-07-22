@@ -18,8 +18,9 @@
 #define ENC_DEC_BLOCK_SIZE 16
 
 
-enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE, ENC, DEC};
+enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
+enum aes_command {ENC, DEC};
 
 struct color {
     u32 r;
