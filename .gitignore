@@ -9,3 +9,5 @@ BOOT.bin
 *.vagrant
 *.a
 *makefile
+*.log
+*.jou
