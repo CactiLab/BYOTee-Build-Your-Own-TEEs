@@ -18,7 +18,7 @@
 # NOTE: In order to use this script for source control purposes, please make sure that the
 #       following files are added to the source control system:-
 #
-# 1. This project restoration tcl script (build.tcl) that was generated.
+# 1. This project restoration tcl script (create_project.tcl) that was generated.
 #
 # 2. The following source(s) files that were local or imported into the original project.
 #    (Please see the '$orig_proj_dir' and '$origin_dir' variable setting below at the start of the script)
@@ -50,7 +50,7 @@ if { [info exists ::user_project_name] } {
 }
 
 variable script_file
-set script_file "build.tcl"
+	set script_file "create_project.tcl"
 
 # Help information for this script
 proc help {} {
@@ -111,7 +111,7 @@ set obj [current_project]
 set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "dsa.num_compute_units" -value "60" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
-set_property -name "ip_output_repo" -value "/home/tomal/Desktop/cacti_lab/BYOT/AES_version/code-build-your-own-TEE/pl/repo/cache" -objects $obj
+set_property -name "ip_output_repo" -value "repo/cache" -objects $obj
 set_property -name "part" -value "xc7z007sclg400-1" -objects $obj
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
