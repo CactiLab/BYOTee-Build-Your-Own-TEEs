@@ -1,0 +1,16 @@
+*.o
+*.d
+*.a
+*.elf
+*.size
+download.bit
+*.bif
+# SDK files
+RemoteSystemsTempFiles
+.metadata
+*.jou
+*.log
+webtalk
+*.hdf
+mb/Cora-Z7-07S/
+
