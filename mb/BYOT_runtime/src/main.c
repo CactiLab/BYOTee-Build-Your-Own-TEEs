@@ -46,6 +46,8 @@ const uint8_t data[BLAKE2S_BLOCKBYTES] = {0, 1, 2, 3}; // block length must be >
 volatile static int InterruptProcessed = FALSE;
 static XIntc InterruptController;
 
+ssc_meta_data recived_meta_data;
+
 void myISR(void) {
     InterruptProcessed = TRUE;
 }
@@ -72,7 +74,7 @@ void dummy() {
 	Xil_MemCpy(str1, str2, 10);
 }
 void format_SSC_code() {
-	ssc_meta_data recived_meta_data;
+
 	unsigned char temp_buffer [24];
 
 	memset(&recived_meta_data, 0, sizeof(ssc_meta_data));
@@ -120,12 +122,22 @@ void remove_ssc_module(){
 	memset(&ssc_ro_data, 0, RO_DATA_SIZE);
 }
 void preExeAtt(){
+
+	uint8_t result[MEASUREMENT_SIZE];
+	int data_size = recived_meta_data.sss_code_size;
+	int remainder = data_size % BLAKE2S_BLOCKBYTES;
+
 	challenge_numer = (c->challenge_number);
 	mb_printf("preExeAtt for challenge %d\r\n", challenge_numer);
-    uint8_t result[32];
 
     // hash the data
-	blake2s(result, data, sizeof(data));
+	if (remainder != 0)
+	{
+		memset((local_state.code + recived_meta_data.sss_code_size), 0, (BLAKE2S_BLOCKBYTES - remainder));
+		xil_printf("Remainder of code is not equal to zero\r\n");
+		data_size += (BLAKE2S_BLOCKBYTES - remainder);
+	}
+	blake2s(result, local_state.code, data_size);
 
 	// do something with the result
 	for (size_t i = 0; i < sizeof(result); i++) {

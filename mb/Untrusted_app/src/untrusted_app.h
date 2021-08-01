@@ -81,7 +81,6 @@ typedef volatile struct __attribute__((__packed__)) {
    unsigned int challenge_number;
    char code [CODE_SIZE];
    unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];
-   //unsigned char cipher_text[64];
    drm_audio_channel drm_chnl;
 } cmd_channel;
 

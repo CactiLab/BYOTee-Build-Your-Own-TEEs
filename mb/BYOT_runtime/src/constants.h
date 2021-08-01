@@ -17,6 +17,7 @@
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
 #define PADING_SZ 2
+#define MEASUREMENT_SIZE 32
 //AES SSC CONSTANTS
 #define ENC_DEC_DATA_SIZE 64
 // LED colors and controller
