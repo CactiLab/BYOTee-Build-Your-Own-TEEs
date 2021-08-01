@@ -11,3 +11,4 @@ BOOT.bin
 *makefile
 *.log
 *.jou
+*.mk

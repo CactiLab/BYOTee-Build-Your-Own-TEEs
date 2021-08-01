@@ -9,7 +9,7 @@
 #include "xintc.h"
 #include "constants.h"
 #include "sleep.h"
-
+#include "blake2s.h"
 
 //////////////////////// GLOBALS ////////////////////////
 static XAxiDma sAxiDma;
@@ -39,6 +39,8 @@ ro_data_content __attribute__((section (".ssc.ro.data.buffer"))) ssc_ro_data;
 char ssc_module_loaded = 0;
 //////////////////////// INTERRUPT HANDLING ////////////////////////
 
+__attribute__((aligned(4)))
+const uint8_t data[BLAKE2S_BLOCKBYTES] = {0, 1, 2, 3}; // block length must be > 0 and a multiple of 64
 
 // shared variable between main thread and interrupt processing thread
 volatile static int InterruptProcessed = FALSE;
@@ -81,6 +83,7 @@ void format_SSC_code() {
 	memcpy(local_state.code, ((void*)c->code + 24), recived_meta_data.sss_code_size);
 	memcpy(ssc_data.data, ((void*)c->code + 24 + recived_meta_data.sss_code_size), recived_meta_data.data_sec_size);
 	memcpy(ssc_ro_data.ro_data, ((void*)c->code + 24 + recived_meta_data.sss_code_size + recived_meta_data.data_sec_size), recived_meta_data.ro_data_size);
+
 }
 void load_code(){
 	remove_ssc_module();
@@ -116,7 +119,20 @@ void remove_ssc_module(){
 	memset(&ssc_data, 0, DATA_SIZE);
 	memset(&ssc_ro_data, 0, RO_DATA_SIZE);
 }
+void preExeAtt(){
+	challenge_numer = (c->challenge_number);
+	mb_printf("preExeAtt for challenge %d\r\n", challenge_numer);
+    uint8_t result[32];
 
+    // hash the data
+	blake2s(result, data, sizeof(data));
+
+	// do something with the result
+	for (size_t i = 0; i < sizeof(result); i++) {
+		xil_printf("%02x", result[i]);
+	}
+	xil_printf("\r\n");
+}
 int main() {
     u32 status;
 
@@ -174,6 +190,9 @@ int main() {
             case EXECUTE:
             	execute_SSC();
             	break;
+            case PREEXEATT:
+				preExeAtt();
+				break;
             default:
                 break;
             }
@@ -181,7 +200,6 @@ int main() {
             set_stopped();
         }
     }
-
     cleanup_platform();
     return 0;
 }

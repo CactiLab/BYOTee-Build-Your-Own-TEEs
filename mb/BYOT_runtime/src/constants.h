@@ -26,16 +26,17 @@ struct color {
     u32 b;
 };
 
-enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE};
+enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE, PREEXEATT, POSTEXEATT};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
-
+unsigned int challenge_numer;
 // struct to interpret shared command channel
 
 typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
    char padding[PADING_SZ];
+   unsigned int challenge_number;
    char code [CODE_SIZE];
 } cmd_channel;
 

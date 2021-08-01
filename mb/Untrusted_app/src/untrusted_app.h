@@ -28,7 +28,7 @@
 #define q_region_lookup(q, i) (q.regions + (i * REGION_NAME_SZ))
 #define q_user_lookup(q, i) (q.users + (i * USERNAME_SZ))
 
-enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT,  EXECUTE};
+enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT,  EXECUTE, PREEXEATT, POSTEXEATT};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE, PLAY, PAUSE, STOP, RESTART, DIGITAL_OUT };
 enum aes_command {ENC, DEC};
@@ -78,6 +78,7 @@ typedef volatile struct __attribute__((__packed__)) {
    char drm_state;
    char aes_cmd;
    char padding[PADING_SZ];
+   unsigned int challenge_number;
    char code [CODE_SIZE];
    unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];
    //unsigned char cipher_text[64];
@@ -85,3 +86,4 @@ typedef volatile struct __attribute__((__packed__)) {
 } cmd_channel;
 
 #endif /* SRC_UNTRUSTED_APP_H_ */
+

@@ -467,6 +467,26 @@ void digital_out(char *song_name) {
     mp_printf("Finished writing file\r\n");
 }
 
+void preExeAtt()
+{
+	time_t t;
+	srand((unsigned) time(&t));
+	c->challenge_number = rand();
+	mp_printf("Challenge number is %d\n", c->challenge_number);
+
+	send_command(PREEXEATT);
+
+	while (c->drm_state == STOPPED)
+		continue; // wait for DRM to start working
+	while (c->drm_state == WORKING)
+		continue; // wait for DRM to dump file
+
+	mp_printf("Finished preExeAtt measurement\r\n");
+}
+void postExeAtt()
+{
+
+}
 int main(int argc, char **argv)
 {
     int mem;
@@ -519,6 +539,14 @@ int main(int argc, char **argv)
         {
         	exit_SSC();
         }
+        else if (!strncmp(cmd, "preExeAtt", sizeof("preExeAtt")))
+        {
+        	preExeAtt();
+        }
+        else if (!strncmp(cmd, "postExeAtt", sizeof("postExeAtt")))
+		{
+        	postExeAtt();
+		}
         else if (!strncmp(cmd, "login", sizeof("login")))
         {
         	login(arg1, arg2);

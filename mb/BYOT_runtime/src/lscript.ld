@@ -45,12 +45,12 @@ SECTIONS
 .vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 } 
-
+/*
 .ssc.buffer 0x50:
 {
 	KEEP(*(.ssc.code.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
+*/
 .test : {
     *main.o(.text)
 	*main.o(.text.*)
@@ -60,18 +60,18 @@ SECTIONS
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0xd440: {
-
+/*.text 0xd440: {*/
+.text : {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
+/*
 .ssc.data.buffer 0x14678:
 {
 	KEEP(*(.ssc.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
+*/
 .data : {
    . = ALIGN(4);
    __data_start = .;
@@ -110,12 +110,12 @@ SECTIONS
    PROVIDE(__DTOR_END__ = .);
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
+/*
 .ssc.ro.data.buffer 0x163dc:
 {
 	KEEP(*(.ssc.ro.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
+*/
 .rodata : {
    __rodata_start = .;
    *(.rodata)
@@ -241,4 +241,3 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 
 _end = .;
 }
-__TMC_END__ = 0x157c0;
