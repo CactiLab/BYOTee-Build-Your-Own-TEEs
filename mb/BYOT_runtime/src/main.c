@@ -124,26 +124,28 @@ void remove_ssc_module(){
 void preExeAtt(){
 
 	uint8_t result[MEASUREMENT_SIZE];
-	int data_size = received_metadata.sss_code_size;
+	int data_size = received_metadata.sss_code_size + received_metadata.ro_data_size + received_metadata.data_sec_size + sizeof(challenge_number);
+	//int data_size = received_metadata.sss_code_size;
 	int remainder = data_size % BLAKE2S_BLOCKBYTES;
 
-	challenge_numer = (c->challenge_number);
-	mb_printf("preExeAtt for challenge %d\r\n", challenge_numer);
+	challenge_number = (c->challenge_number);
+	mb_printf("preExeAtt for challenge %d\r\n", challenge_number);
 
-    // hash the data
+	memcpy((local_state.code + received_metadata.sss_code_size), ssc_data.data, received_metadata.data_sec_size);
+	memcpy((local_state.code + received_metadata.sss_code_size + received_metadata.data_sec_size), ssc_ro_data.ro_data, received_metadata.ro_data_size);
+	memcpy((local_state.code + received_metadata.sss_code_size + received_metadata.data_sec_size + received_metadata.ro_data_size), &challenge_number, sizeof(challenge_number));
+	/*Need to include inputs in the measurement*/
+
 	if (remainder != 0)
 	{
-		memset((local_state.code + received_metadata.sss_code_size), 0, (BLAKE2S_BLOCKBYTES - remainder));
+		memset((local_state.code + data_size), 0, (BLAKE2S_BLOCKBYTES - remainder));
 		data_size += (BLAKE2S_BLOCKBYTES - remainder);
 	}
-	blake2s(result, local_state.code, data_size);
+	// hash the data
+	blake2s(result, local_state.code , data_size);
 
-	// do something with the result
-	/*for (size_t i = 0; i < sizeof(result); i++) {
-		xil_printf("%02x", result[i]);
-	}
-	xil_printf("\r\n");*/
 	memcpy((void*)&c->hash, &result, MEASUREMENT_SIZE);
+	memset((local_state.code + received_metadata.sss_code_size), 0, CODE_SIZE - received_metadata.sss_code_size);
 
 }
 void postExeAtt(){
@@ -152,15 +154,15 @@ void postExeAtt(){
 	int data_size = received_metadata.sss_code_size;
 	int remainder = data_size % BLAKE2S_BLOCKBYTES;
 
-	challenge_numer = (c->challenge_number);
-	mb_printf("preExeAtt for challenge %d\r\n", challenge_numer);
+	challenge_number = (c->challenge_number);
+	mb_printf("preExeAtt for challenge %d\r\n", challenge_number);
 
-    // hash the data
 	if (remainder != 0)
 	{
 		memset((local_state.code + received_metadata.sss_code_size), 0, (BLAKE2S_BLOCKBYTES - remainder));
 		data_size += (BLAKE2S_BLOCKBYTES - remainder);
 	}
+	// hash the data
 	blake2s(result, local_state.code, data_size);
 
 	// do something with the result

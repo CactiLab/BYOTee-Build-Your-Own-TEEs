@@ -30,7 +30,7 @@ struct color {
 enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE, PREEXEATT, POSTEXEATT};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
-unsigned int challenge_numer;
+unsigned int challenge_number;
 // struct to interpret shared command channel
 
 typedef volatile struct __attribute__((__packed__)) {
@@ -40,6 +40,7 @@ typedef volatile struct __attribute__((__packed__)) {
    unsigned int challenge_number;
    unsigned char hash[MEASUREMENT_SIZE];
    char code [CODE_SIZE];
+   uint8_t enc_dec_data[ENC_DEC_DATA_SIZE];
 } cmd_channel;
 
 // store of internal state
