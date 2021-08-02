@@ -52,6 +52,7 @@
 #include "xil_printf.h"
 #include "BYOT_header.h"
 #include "constants.h"
+//#include "blake2s.h"
 
 // Enable ECB, CTR and CBC mode. Note this can be done before including aes.h or at compile-time.
 // E.g. with GCC by using the -D flag: gcc -c aes.c -DCBC=0 -DCTR=1 -DECB=1
@@ -83,6 +84,7 @@ int dummy_aes_ssc()
     init_platform();
     cleanup_platform();
 	memmove(str1, str2, 10);
+
 	//strcpy(str1, str2);
 	/*if (!strcmp(str1, NULL))
 	{
@@ -94,6 +96,7 @@ int dummy_aes_ssc()
 		*str1 = NULL;
 	}
 	Xil_MemCpy(str1, str2, 10);
+	//blake2s(str1, str1, 10);
 }
 int main()
 {
