@@ -39,9 +39,6 @@ ro_data_content __attribute__((section (".ssc.ro.data.buffer"))) ssc_ro_data;
 char ssc_module_loaded = 0;
 //////////////////////// INTERRUPT HANDLING ////////////////////////
 
-__attribute__((aligned(4)))
-const uint8_t data[BLAKE2S_BLOCKBYTES] = {0, 1, 2, 3}; // block length must be > 0 and a multiple of 64
-
 // shared variable between main thread and interrupt processing thread
 volatile static int InterruptProcessed = FALSE;
 static XIntc InterruptController;
