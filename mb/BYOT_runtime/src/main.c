@@ -75,16 +75,16 @@ void dummy() {
 }
 void format_SSC_code() {
 
-	unsigned char temp_buffer [24];
+	unsigned char temp_buffer [sizeof(ssc_meta_data)];
 
 	memset(&received_metadata, 0, sizeof(ssc_meta_data));
 
-	memcpy(temp_buffer, (void*)c->code , 24);
+	memcpy(temp_buffer, (void*)c->code , sizeof(ssc_meta_data));
 	get_unsigned_int(temp_buffer, &received_metadata);
 
-	memcpy(local_state.code, ((void*)c->code + 24), received_metadata.sss_code_size);
-	memcpy(ssc_data.data, ((void*)c->code + 24 + received_metadata.sss_code_size), received_metadata.data_sec_size);
-	memcpy(ssc_ro_data.ro_data, ((void*)c->code + 24 + received_metadata.sss_code_size + received_metadata.data_sec_size), received_metadata.ro_data_size);
+	memcpy(local_state.code, ((void*)c->code + sizeof(ssc_meta_data)), received_metadata.sss_code_size);
+	memcpy(ssc_data.data, ((void*)c->code + sizeof(ssc_meta_data) + received_metadata.sss_code_size), received_metadata.data_sec_size);
+	memcpy(ssc_ro_data.ro_data, ((void*)c->code + sizeof(ssc_meta_data) + received_metadata.sss_code_size + received_metadata.data_sec_size), received_metadata.ro_data_size);
 
 }
 void load_code(){
@@ -122,6 +122,31 @@ void remove_ssc_module(){
 	memset(&ssc_ro_data, 0, RO_DATA_SIZE);
 }
 void preExeAtt(){
+
+	uint8_t result[MEASUREMENT_SIZE];
+	int data_size = received_metadata.sss_code_size;
+	int remainder = data_size % BLAKE2S_BLOCKBYTES;
+
+	challenge_numer = (c->challenge_number);
+	mb_printf("preExeAtt for challenge %d\r\n", challenge_numer);
+
+    // hash the data
+	if (remainder != 0)
+	{
+		memset((local_state.code + received_metadata.sss_code_size), 0, (BLAKE2S_BLOCKBYTES - remainder));
+		data_size += (BLAKE2S_BLOCKBYTES - remainder);
+	}
+	blake2s(result, local_state.code, data_size);
+
+	// do something with the result
+	/*for (size_t i = 0; i < sizeof(result); i++) {
+		xil_printf("%02x", result[i]);
+	}
+	xil_printf("\r\n");*/
+	memcpy((void*)&c->hash, &result, MEASUREMENT_SIZE);
+
+}
+void postExeAtt(){
 
 	uint8_t result[MEASUREMENT_SIZE];
 	int data_size = received_metadata.sss_code_size;
@@ -206,6 +231,8 @@ int main() {
             case PREEXEATT:
 				preExeAtt();
 				break;
+            case POSTEXEATT:
+            	postExeAtt();
             default:
                 break;
             }

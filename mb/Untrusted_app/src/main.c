@@ -492,7 +492,25 @@ void preExeAtt()
 }
 void postExeAtt()
 {
+	time_t t;
+	srand((unsigned) time(&t));
+	c->challenge_number = rand();
+	mp_printf("Challenge number is %d\n", c->challenge_number);
 
+	send_command(POSTEXEATT);
+
+	while (c->drm_state == STOPPED)
+		continue; // wait for DRM to start working
+	while (c->drm_state == WORKING)
+		continue; // wait for DRM to dump file
+
+	mp_printf("Computed measurement: ");
+	for (int i = 0; i < MEASUREMENT_SIZE; i++)
+	{
+		printf("%02x", c->hash[i]);
+	}
+	printf("\r\n");
+	mp_printf("Finished postExeAtt measurement\r\n");
 }
 int main(int argc, char **argv)
 {
