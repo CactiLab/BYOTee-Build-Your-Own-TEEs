@@ -19,6 +19,7 @@
 #define PACKAGING_SZ2 32
 #define ENC_DEC_DATA_SIZE 64
 #define ENC_DEC_BLOCK_SIZE 16
+#define MEASUREMENT_SIZE 32
 // printing utility
 #define MP_PROMPT "UA> "
 #define mp_printf(...) printf(MP_PROMPT __VA_ARGS__)
@@ -79,10 +80,15 @@ typedef volatile struct __attribute__((__packed__)) {
    char aes_cmd;
    char padding[PADING_SZ];
    unsigned int challenge_number;
+   unsigned char hash[MEASUREMENT_SIZE];
    char code [CODE_SIZE];
    unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];
    drm_audio_channel drm_chnl;
 } cmd_channel;
 
+/*typedef volatile struct __attribute__((__packed__)) {
+	char a1;
+	int a2;
+}testing_channel;*/
 #endif /* SRC_UNTRUSTED_APP_H_ */
 

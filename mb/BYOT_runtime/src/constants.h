@@ -5,7 +5,7 @@
 
 // shared DDR address
 #define SHARED_DDR_BASE (0x20000000 + 0x1CC00000)
-
+//#define SHARED_DDR_BASE2 (0x20000000 + 0x1CC00000 + 0xc358)
 // printing utility
 #define MB_PROMPT "\r\nBYOT_Runtime> "
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
@@ -38,6 +38,7 @@ typedef volatile struct __attribute__((__packed__)) {
    char drm_state;
    char padding[PADING_SZ];
    unsigned int challenge_number;
+   unsigned char hash[MEASUREMENT_SIZE];
    char code [CODE_SIZE];
 } cmd_channel;
 

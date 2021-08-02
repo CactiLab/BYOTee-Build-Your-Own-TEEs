@@ -46,7 +46,7 @@ const uint8_t data[BLAKE2S_BLOCKBYTES] = {0, 1, 2, 3}; // block length must be >
 volatile static int InterruptProcessed = FALSE;
 static XIntc InterruptController;
 
-ssc_meta_data recived_meta_data;
+ssc_meta_data received_metadata;
 
 void myISR(void) {
     InterruptProcessed = TRUE;
@@ -77,14 +77,14 @@ void format_SSC_code() {
 
 	unsigned char temp_buffer [24];
 
-	memset(&recived_meta_data, 0, sizeof(ssc_meta_data));
+	memset(&received_metadata, 0, sizeof(ssc_meta_data));
 
 	memcpy(temp_buffer, (void*)c->code , 24);
-	get_unsigned_int(temp_buffer, &recived_meta_data);
+	get_unsigned_int(temp_buffer, &received_metadata);
 
-	memcpy(local_state.code, ((void*)c->code + 24), recived_meta_data.sss_code_size);
-	memcpy(ssc_data.data, ((void*)c->code + 24 + recived_meta_data.sss_code_size), recived_meta_data.data_sec_size);
-	memcpy(ssc_ro_data.ro_data, ((void*)c->code + 24 + recived_meta_data.sss_code_size + recived_meta_data.data_sec_size), recived_meta_data.ro_data_size);
+	memcpy(local_state.code, ((void*)c->code + 24), received_metadata.sss_code_size);
+	memcpy(ssc_data.data, ((void*)c->code + 24 + received_metadata.sss_code_size), received_metadata.data_sec_size);
+	memcpy(ssc_ro_data.ro_data, ((void*)c->code + 24 + received_metadata.sss_code_size + received_metadata.data_sec_size), received_metadata.ro_data_size);
 
 }
 void load_code(){
@@ -124,7 +124,7 @@ void remove_ssc_module(){
 void preExeAtt(){
 
 	uint8_t result[MEASUREMENT_SIZE];
-	int data_size = recived_meta_data.sss_code_size;
+	int data_size = received_metadata.sss_code_size;
 	int remainder = data_size % BLAKE2S_BLOCKBYTES;
 
 	challenge_numer = (c->challenge_number);
@@ -133,17 +133,18 @@ void preExeAtt(){
     // hash the data
 	if (remainder != 0)
 	{
-		memset((local_state.code + recived_meta_data.sss_code_size), 0, (BLAKE2S_BLOCKBYTES - remainder));
-		xil_printf("Remainder of code is not equal to zero\r\n");
+		memset((local_state.code + received_metadata.sss_code_size), 0, (BLAKE2S_BLOCKBYTES - remainder));
 		data_size += (BLAKE2S_BLOCKBYTES - remainder);
 	}
 	blake2s(result, local_state.code, data_size);
 
 	// do something with the result
-	for (size_t i = 0; i < sizeof(result); i++) {
+	/*for (size_t i = 0; i < sizeof(result); i++) {
 		xil_printf("%02x", result[i]);
 	}
-	xil_printf("\r\n");
+	xil_printf("\r\n");*/
+	memcpy((void*)&c->hash, &result, MEASUREMENT_SIZE);
+
 }
 int main() {
     u32 status;

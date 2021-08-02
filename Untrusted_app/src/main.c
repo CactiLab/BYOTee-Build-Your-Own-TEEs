@@ -11,6 +11,7 @@
 #include <string.h>
 
 volatile cmd_channel *c;
+//volatile testing_channel *tt;
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 int secure_drm_load = 0;
 // sends a command to the CTEE using the shared command channel and interrupt
@@ -481,6 +482,12 @@ void preExeAtt()
 	while (c->drm_state == WORKING)
 		continue; // wait for DRM to dump file
 
+	mp_printf("Computed measurement: ");
+	for (int i = 0; i < MEASUREMENT_SIZE; i++)
+	{
+		printf("%02x", c->hash[i]);
+	}
+	printf("\r\n");
 	mp_printf("Finished preExeAtt measurement\r\n");
 }
 void postExeAtt()
@@ -496,12 +503,18 @@ int main(int argc, char **argv)
     // open command channel
     mem = open("/dev/uio0", O_RDWR);
     c = mmap(NULL, sizeof(cmd_channel), PROT_READ | PROT_WRITE, MAP_SHARED, mem, 0);
-
     if (c == MAP_FAILED)
-    {
-        mp_printf("MMAP Failed! Error = %d\r\n", errno);
-        return -1;
-    }
+	{
+		mp_printf("MMAP Failed! Error = %d\r\n", errno);
+		return -1;
+	}
+   /* mem = open("/dev/uio1", O_RDWR);
+    tt = mmap(NULL, sizeof(testing_channel), PROT_READ | PROT_WRITE, MAP_SHARED, mem, 0);
+    if (tt == MAP_FAILED)
+	{
+		mp_printf("MMAP Failed! Error = %d\r\n", errno);
+		return -1;
+	}*/
     mp_printf("Command channel open at %p (%dB)\r\n", c, sizeof(cmd_channel));
 
     // dump player information before command loop
