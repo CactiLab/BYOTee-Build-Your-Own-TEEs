@@ -121,6 +121,15 @@ void remove_ssc_module(){
 	memset(&ssc_data, 0, DATA_SIZE);
 	memset(&ssc_ro_data, 0, RO_DATA_SIZE);
 }
+int adjust_block_size(int data_size)
+{
+	int remainder = data_size % BLAKE2S_BLOCKBYTES;
+	if (remainder != 0)
+	{
+		data_size += (BLAKE2S_BLOCKBYTES - remainder);
+	}
+	return data_size;
+}
 void preExeAtt(){
 
 	if (ssc_module_loaded == 0)
@@ -128,29 +137,33 @@ void preExeAtt(){
 		mb_printf("No SSC module present in BRAM to perform attestation\r\n");
 		return;
 	}
+
+	int data_size;
 	uint8_t result[MEASUREMENT_SIZE];
-	int data_size = received_metadata.sss_code_size + received_metadata.ro_data_size + received_metadata.data_sec_size + sizeof(challenge_number);
-	//int data_size = received_metadata.sss_code_size;
-	int remainder = data_size % BLAKE2S_BLOCKBYTES;
 
 	challenge_number = (c->challenge_number);
 	mb_printf("preExeAtt for challenge %d\r\n", challenge_number);
 
-	memcpy((local_state.code + received_metadata.sss_code_size), ssc_data.data, received_metadata.data_sec_size);
-	memcpy((local_state.code + received_metadata.sss_code_size + received_metadata.data_sec_size), ssc_ro_data.ro_data, received_metadata.ro_data_size);
-	memcpy((local_state.code + received_metadata.sss_code_size + received_metadata.data_sec_size + received_metadata.ro_data_size), &challenge_number, sizeof(challenge_number));
-	/*Need to include inputs in the measurement*/
+	data_size = adjust_block_size(received_metadata.ro_data_size);
+	// hash the read only data section
+	blake2s(result, ssc_ro_data.ro_data, data_size);
 
-	if (remainder != 0)
-	{
-		memset((local_state.code + data_size), 0, (BLAKE2S_BLOCKBYTES - remainder));
-		data_size += (BLAKE2S_BLOCKBYTES - remainder);
-	}
-	// hash the data
+	data_size = adjust_block_size(received_metadata.data_sec_size + MEASUREMENT_SIZE);
+	memcpy((ssc_data.data + received_metadata.data_sec_size), result, MEASUREMENT_SIZE);
+	// hash the data section + previous hash
+	blake2s(result, ssc_data.data, data_size);
+
+	data_size = adjust_block_size(received_metadata.sss_code_size + MEASUREMENT_SIZE + sizeof(challenge_number));
+	memcpy((local_state.code + received_metadata.sss_code_size), &challenge_number, sizeof(challenge_number));
+	memcpy((local_state.code + received_metadata.sss_code_size + sizeof(challenge_number)), result, MEASUREMENT_SIZE);
+	// hash the code text section + previous hash + challenge number
 	blake2s(result, local_state.code , data_size);
 
+
+	/*Need to include inputs in the measurement*/
+
+
 	memcpy((void*)&c->hash, &result, MEASUREMENT_SIZE);
-	memset((local_state.code + received_metadata.sss_code_size), 0, CODE_SIZE - received_metadata.sss_code_size);
 
 }
 void postExeAtt(){
