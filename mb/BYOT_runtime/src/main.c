@@ -123,6 +123,11 @@ void remove_ssc_module(){
 }
 void preExeAtt(){
 
+	if (ssc_module_loaded == 0)
+	{
+		mb_printf("No SSC module present in BRAM to perform attestation\r\n");
+		return;
+	}
 	uint8_t result[MEASUREMENT_SIZE];
 	int data_size = received_metadata.sss_code_size + received_metadata.ro_data_size + received_metadata.data_sec_size + sizeof(challenge_number);
 	//int data_size = received_metadata.sss_code_size;
@@ -155,7 +160,7 @@ void postExeAtt(){
 	int remainder = data_size % BLAKE2S_BLOCKBYTES;
 
 	challenge_number = (c->challenge_number);
-	mb_printf("preExeAtt for challenge %d\r\n", challenge_number);
+	mb_printf("postExeAtt for challenge %d\r\n", challenge_number);
 
 	if (remainder != 0)
 	{
