@@ -41,6 +41,7 @@ typedef volatile struct __attribute__((__packed__)) {
    unsigned char hash[MEASUREMENT_SIZE];
    char code [CODE_SIZE];
    uint8_t enc_dec_data[ENC_DEC_DATA_SIZE];
+   //drm_audio_channel drm_chnl;
 } cmd_channel;
 
 // store of internal state

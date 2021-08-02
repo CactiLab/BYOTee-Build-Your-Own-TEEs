@@ -144,8 +144,16 @@ void preExeAtt(){
 	challenge_number = (c->challenge_number);
 	mb_printf("preExeAtt for challenge %d\r\n", challenge_number);
 
-	data_size = adjust_block_size(received_metadata.ro_data_size);
-	// hash the read only data section
+	data_size = 2 * ENC_DEC_DATA_SIZE;
+	{
+		uint8_t aes_input[data_size];
+		memcpy(&aes_input,(void*)c->enc_dec_data, ENC_DEC_DATA_SIZE);
+		memcpy(&aes_input + ENC_DEC_DATA_SIZE,(void*)c->padding, PADING_SZ);
+		blake2s(result, aes_input, data_size);
+	}
+	data_size = adjust_block_size(received_metadata.ro_data_size + MEASUREMENT_SIZE);
+	memcpy((ssc_ro_data.ro_data + received_metadata.ro_data_size), result, MEASUREMENT_SIZE);
+	// hash the read only data section + input hash
 	blake2s(result, ssc_ro_data.ro_data, data_size);
 
 	data_size = adjust_block_size(received_metadata.data_sec_size + MEASUREMENT_SIZE);
@@ -168,27 +176,53 @@ void preExeAtt(){
 }
 void postExeAtt(){
 
-	uint8_t result[MEASUREMENT_SIZE];
-	int data_size = received_metadata.sss_code_size;
-	int remainder = data_size % BLAKE2S_BLOCKBYTES;
+	if (ssc_module_loaded == 0)
+		{
+			mb_printf("No SSC module present in BRAM to perform attestation\r\n");
+			return;
+		}
 
-	challenge_number = (c->challenge_number);
-	mb_printf("postExeAtt for challenge %d\r\n", challenge_number);
+		int data_size;
+		uint8_t result[MEASUREMENT_SIZE];
 
-	if (remainder != 0)
-	{
-		memset((local_state.code + received_metadata.sss_code_size), 0, (BLAKE2S_BLOCKBYTES - remainder));
-		data_size += (BLAKE2S_BLOCKBYTES - remainder);
-	}
-	// hash the data
-	blake2s(result, local_state.code, data_size);
+		challenge_number = (c->challenge_number);
+		mb_printf("postExeAtt for challenge %d\r\n", challenge_number);
 
-	// do something with the result
-	/*for (size_t i = 0; i < sizeof(result); i++) {
-		xil_printf("%02x", result[i]);
-	}
-	xil_printf("\r\n");*/
-	memcpy((void*)&c->hash, &result, MEASUREMENT_SIZE);
+		data_size = 2 * ENC_DEC_DATA_SIZE;
+		{
+			uint8_t aes_input[data_size];
+			memcpy(aes_input, (void*)c->enc_dec_data, ENC_DEC_DATA_SIZE);
+			memcpy(aes_input + ENC_DEC_DATA_SIZE, (void*)c->padding, PADING_SZ);
+			blake2s(result, aes_input, data_size);
+		}
+		data_size = adjust_block_size(ENC_DEC_DATA_SIZE + MEASUREMENT_SIZE);
+		{
+			uint8_t aes_output[data_size];
+			memcpy(aes_output, (void*)c->enc_dec_data, ENC_DEC_DATA_SIZE);
+			memcpy(aes_output, result, MEASUREMENT_SIZE);
+			blake2s(result, aes_output, data_size);
+		}
+		data_size = adjust_block_size(received_metadata.ro_data_size + MEASUREMENT_SIZE);
+		memcpy((ssc_ro_data.ro_data + received_metadata.ro_data_size), result, MEASUREMENT_SIZE);
+		// hash the read only data section + input hash
+		blake2s(result, ssc_ro_data.ro_data, data_size);
+
+		data_size = adjust_block_size(received_metadata.data_sec_size + MEASUREMENT_SIZE);
+		memcpy((ssc_data.data + received_metadata.data_sec_size), result, MEASUREMENT_SIZE);
+		// hash the data section + previous hash
+		blake2s(result, ssc_data.data, data_size);
+
+		data_size = adjust_block_size(received_metadata.sss_code_size + MEASUREMENT_SIZE + sizeof(challenge_number));
+		memcpy((local_state.code + received_metadata.sss_code_size), &challenge_number, sizeof(challenge_number));
+		memcpy((local_state.code + received_metadata.sss_code_size + sizeof(challenge_number)), result, MEASUREMENT_SIZE);
+		// hash the code text section + previous hash + challenge number
+		blake2s(result, local_state.code , data_size);
+
+
+		/*Need to include inputs in the measurement*/
+
+
+		memcpy((void*)&c->hash, &result, MEASUREMENT_SIZE);
 
 }
 int main() {
