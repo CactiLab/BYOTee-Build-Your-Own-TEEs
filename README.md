@@ -1,6 +1,18 @@
-# CactiLab-BYOT Example Code
+# CactiLab-BYOT Getting Started
 
-This repository contains three example reference system for BYOT System Design. 
+Below is the overview of how to set up the reference implementation BYOT framework for FPGA SoCs.
+
+Please note: if any step fails, it is highly unlikely that the process will get back on track by continuing to future steps.
+## Download Xilinx Tools
+We require using the two main Xilinx tools for the development of your
+design: Vivado and the Xilinx Software Development Kit (SDK). Vivado is used to create the
+Programmable Logic design. For the reference design, this includes the Xilinx MicroBlaze, a soft
+microprocessor core. Applications for the MicroBlaze can be written using the Xilinx SDK. More
+information about these tools will be discussed when building the reference design.
+
+ 1. [Go to the Xilinx website](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)
+ 2. Download the 2017.4 version -> All OS Installer Single-File Download
+ 3. Login or create a Xilinx account. Note: you can use your college email and location as your "corporation"
 
 ## Cloning Repository
 
@@ -9,6 +21,9 @@ This repository contains three example reference system for BYOT System Design.
 ```bash
 git clone git@github.com:CactiLab/code-build-your-own-TEE.git --recursive
 ``` 
+## CactiLab-BYOT Example Code
+
+This repository contains three example reference system for BYOT System Design. 
 
 ## Project structure
 The example code is structured as follows
@@ -24,7 +39,7 @@ In the hardware deisgn of the application CTEE is constructed with a micrbolze p
 * `CTEE-HS-generation/` - Contains a tool to generate the CTEE hardware configurations. The input file is in json format and it output tcl files to build the CTEE hardware design.
 
 ## Notes
-* To build and execute each application, go to the application directories and follow the getting started file instructions.
+* To build and execute each application, go to the application directories and follow the **getting started** file instructions.
  <!--- 
  * `boot-image/` - Contains a stock FSBL, `image.ub`, and `u-boot.elf` for booting the project on the board. The stock FSBL is only provided for the purposes of making the `miPod.bin`, since `bootgen` requires you provide a bootloader when creating a `.bin` image.
  * `mb/` - Contains BYOT runtime and example SSC running on the soft-core MicroBlaze. See [BYOT README](mb/README.md)

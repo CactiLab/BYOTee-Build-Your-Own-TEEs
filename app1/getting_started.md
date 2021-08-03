@@ -1,4 +1,4 @@
-# CactiLab-BYOT Getting Started
+<!--# CactiLab-BYOT Getting Started
 
 Below is the overview of how to set up the reference implementation BYOT framework for FPGA SoCs.
 
@@ -17,7 +17,7 @@ information about these tools will be discussed when building the reference desi
  3. Login or create a Xilinx account. Note: you can use your college email and location as your "corporation"
  4. Place the downloaded zip file into the root directory of your project - Vagrant will install it on the VM
 
-
+--->
 ## Building the Reference Design
 This section assumes that you have a Vagrant development
 environment running as described in the `vagrant` folder, and that you have read through all of the
