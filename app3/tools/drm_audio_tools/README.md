@@ -1,0 +1,7 @@
+To build the reference design for the first time, follow these steps:
+1.  Open a terminal and `cd` to the `tools/drm_audio_tools` directory.
+2.  Run `mkdir global_provisioning/audio -p` to make a directory called `global_provisioning`, with a subfolder of `audio` for audio files.
+3.  Run `./createRegions --region-list "United States" "Japan" "Australia" --outfile global_provisioning/region.secrets` script to create the geographical regions (USA, Japan, and Australia in this case)
+4.  Run `./createUsers --user-list "drew:123" "ben:abc" "misha:xyz" --outfile global_provisioning/user.secrets` script to create the 3 users ("drew", "ben" and "misha") with their pins.
+5.  Run `./protectSong --region-list "United States" --region-secrets-path global_provisioning/region.secrets --outfile ../SSC/demo.drm --infile sample_audio/Sound-Bite_One-Small-Step.wav --owner "drew" --user-secrets-path global_provisioning/user.secrets` to provision a song for the United States region, with "drew" as an owner.
+6.  Run `./createSecrets --region-list "United States" "Japan" --region-secrets-path global_provisioning/region.secrets --user-list "drew" "ben" "misha" --user-secrets-path global_provisioning/user.secrets`. This will create a device for the "United States" and "Japan" regions and provision the device for "drew", "ben", and "misha", allowing each of them to log in. Any output files will be put into a "device" directory.
