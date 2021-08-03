@@ -19,7 +19,7 @@ information about these tools will be discussed when building the reference desi
 
 1. Clone the BYOT repository using ssh or https 
 ```bash
-git clone git@github.com:CactiLab/code-build-your-own-TEE.git --recursive
+git clone git@github.com:CactiLab/code-build-your-own-TEE.git
 ``` 
 ## CactiLab-BYOT Example Code
 

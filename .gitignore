@@ -7,7 +7,6 @@ BOOT.bin
 *.wav
 *.drm
 *.vagrant
-*.a
 *makefile
 *.log
 *.jou
