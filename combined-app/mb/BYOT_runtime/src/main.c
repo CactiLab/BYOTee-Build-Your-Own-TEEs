@@ -36,22 +36,22 @@ internal_state __attribute__((section (".ssc.code.buffer"))) local_state;
 data_content __attribute__((section (".ssc.data.buffer"))) ssc_data;
 ro_data_content __attribute__((section (".ssc.ro.data.buffer"))) ssc_ro_data;
 attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
+ssc_meta_data received_metadata;
 
 char ssc_module_loaded = 0;
+uint8_t preExeResult[MEASUREMENT_SIZE];
 //////////////////////// INTERRUPT HANDLING ////////////////////////
 
 // shared variable between main thread and interrupt processing thread
 volatile static int InterruptProcessed = FALSE;
 static XIntc InterruptController;
 
-ssc_meta_data received_metadata;
-
 void myISR(void) {
     InterruptProcessed = TRUE;
 }
 
 //////////////////////// MAIN ////////////////////////
-void query_BYOT_runtime(){
+void query_BYOT_runtime() {
 	mb_printf("BYOT_Runtime Initialized!!\r\n");
 }
 void load_from_shared_to_local() {
@@ -85,7 +85,7 @@ void format_SSC_code() {
 	memcpy(ssc_ro_data.ro_data, ((void*)c->code + sizeof(ssc_meta_data) + received_metadata.sss_code_size + received_metadata.data_sec_size), received_metadata.ro_data_size);
 
 }
-void load_code(){
+void load_code() {
 	remove_ssc_module();
 	mb_printf("Reading code & data modules\r\n");
 	format_SSC_code();
@@ -104,8 +104,7 @@ void execute_SSC() {
 	mb_printf("Finished SSC code executed from BRAM\r\n");
 }
 
-void forward_to_ssc()
-{
+void forward_to_ssc() {
 	/*if (ssc_module_loaded == 0)
 	{
 		mb_printf("No SSC module present in BRAM\r\n");
@@ -114,13 +113,12 @@ void forward_to_ssc()
 	mb_printf("Give execution to SSC\r\n");
 	((int (*) (void))local_state.code)();
 }
-void remove_ssc_module(){
+void remove_ssc_module() {
 	memset(&local_state.code, 0, CODE_SIZE);
 	memset(&ssc_data, 0, DATA_SIZE);
 	memset(&ssc_ro_data, 0, RO_DATA_SIZE);
 }
-int adjust_block_size(int data_size)
-{
+int adjust_block_size(int data_size) {
 	int remainder = data_size % BLAKE2S_BLOCKBYTES;
 	if (remainder != 0)
 	{
@@ -128,111 +126,55 @@ int adjust_block_size(int data_size)
 	}
 	return data_size;
 }
-void input_attestation(){
-	uint8_t result[MEASUREMENT_SIZE];
-	challenge_number = (c->challenge_number);
-	mb_printf("preExeAtt for challenge %d\r\n", challenge_number);
-	int int_att = att_md.input_att_size;
-	/*blake2s(result, att_md, MEASUREMENT_SIZE * 2);
-	for (size_t i = 0; i < sizeof(result); i++) {
-		xil_printf("%02x", result[i]);
-	}
-	xil_printf("\n");*/
-}
-void preExeAtt(){
-
-	if (ssc_module_loaded == 0)
-	{
-		mb_printf("No SSC module present in BRAM to perform attestation\r\n");
+void input_attestation() {
+	if (att_md.input_att_size == 0)
 		return;
-	}
+	//Input to SSC data attestation
+	memcpy(att_md.att_input_data + att_md.input_att_size, preExeResult, MEASUREMENT_SIZE);
+	blake2s(preExeResult, att_md.att_input_data, MEASUREMENT_SIZE + att_md.input_att_size);
 
+	//copy the hash to DRAM
+	memcpy((void*)&c->preExehash, &preExeResult, MEASUREMENT_SIZE);
+}
+void output_attestation() {
+	if (att_md.output_att_size == 0)
+		return;
+	// Output attestation
+	memcpy(att_md.att_output_data + att_md.output_att_size, preExeResult, MEASUREMENT_SIZE);
+	blake2s(preExeResult, att_md.att_output_data, MEASUREMENT_SIZE + att_md.att_output_data);
+	//copy the hash to DRAM
+	memcpy((void*)&c->preExehash, &preExeResult, MEASUREMENT_SIZE);
+}
+//This functions performs measurements on code section, data section and readonly data section before and after SSC execution
+void preExeAtt() {
 	int data_size;
-	uint8_t result[MEASUREMENT_SIZE];
 
 	challenge_number = (c->challenge_number);
-	mb_printf("preExeAtt for challenge %d\r\n", challenge_number);
+	mb_printf("postExeAtt for challenge %d\r\n", challenge_number);
 
-	data_size = 2 * ENC_DEC_DATA_SIZE;
-	{
-		uint8_t aes_input[data_size];
-		memcpy(&aes_input,(void*)c->enc_dec_data, ENC_DEC_DATA_SIZE);
-		memcpy(&aes_input + ENC_DEC_DATA_SIZE,(void*)c->padding, PADING_SZ);
-		blake2s(result, aes_input, data_size);
-	}
-	data_size = adjust_block_size(received_metadata.ro_data_size + MEASUREMENT_SIZE);
-	memcpy((ssc_ro_data.ro_data + received_metadata.ro_data_size), result, MEASUREMENT_SIZE);
+	data_size = adjust_block_size(received_metadata.ro_data_size);
 	// hash the read only data section + input hash
-	blake2s(result, ssc_ro_data.ro_data, data_size);
+	blake2s(preExeResult, ssc_ro_data.ro_data, data_size);
 
 	data_size = adjust_block_size(received_metadata.data_sec_size + MEASUREMENT_SIZE);
-	memcpy((ssc_data.data + received_metadata.data_sec_size), result, MEASUREMENT_SIZE);
+	memcpy((ssc_data.data + received_metadata.data_sec_size), preExeResult, MEASUREMENT_SIZE);
 	// hash the data section + previous hash
-	blake2s(result, ssc_data.data, data_size);
+	blake2s(preExeResult, ssc_data.data, data_size);
 
 	data_size = adjust_block_size(received_metadata.sss_code_size + MEASUREMENT_SIZE + sizeof(challenge_number));
 	memcpy((local_state.code + received_metadata.sss_code_size), &challenge_number, sizeof(challenge_number));
-	memcpy((local_state.code + received_metadata.sss_code_size + sizeof(challenge_number)), result, MEASUREMENT_SIZE);
+	memcpy((local_state.code + received_metadata.sss_code_size + sizeof(challenge_number)), preExeResult, MEASUREMENT_SIZE);
 	// hash the code text section + previous hash + challenge number
-	blake2s(result, local_state.code , data_size);
-
-
-	/*Need to include inputs in the measurement*/
-
-
-	memcpy((void*)&c->hash, &result, MEASUREMENT_SIZE);
+	blake2s(preExeResult, local_state.code , data_size);
 
 }
-void postExeAtt(){
-
-	if (ssc_module_loaded == 0)
-		{
-			mb_printf("No SSC module present in BRAM to perform attestation\r\n");
-			return;
-		}
-
-		int data_size;
-		uint8_t result[MEASUREMENT_SIZE];
-
-		challenge_number = (c->challenge_number);
-		mb_printf("postExeAtt for challenge %d\r\n", challenge_number);
-
-		data_size = 2 * ENC_DEC_DATA_SIZE;
-		{
-			uint8_t aes_input[data_size];
-			memcpy(aes_input, (void*)c->enc_dec_data, ENC_DEC_DATA_SIZE);
-			memcpy(aes_input + ENC_DEC_DATA_SIZE, (void*)c->padding, PADING_SZ);
-			blake2s(result, aes_input, data_size);
-		}
-		data_size = adjust_block_size(ENC_DEC_DATA_SIZE + MEASUREMENT_SIZE);
-		{
-			uint8_t aes_output[data_size];
-			memcpy(aes_output, (void*)c->enc_dec_data, ENC_DEC_DATA_SIZE);
-			memcpy(aes_output, result, MEASUREMENT_SIZE);
-			blake2s(result, aes_output, data_size);
-		}
-		data_size = adjust_block_size(received_metadata.ro_data_size + MEASUREMENT_SIZE);
-		memcpy((ssc_ro_data.ro_data + received_metadata.ro_data_size), result, MEASUREMENT_SIZE);
-		// hash the read only data section + input hash
-		blake2s(result, ssc_ro_data.ro_data, data_size);
-
-		data_size = adjust_block_size(received_metadata.data_sec_size + MEASUREMENT_SIZE);
-		memcpy((ssc_data.data + received_metadata.data_sec_size), result, MEASUREMENT_SIZE);
-		// hash the data section + previous hash
-		blake2s(result, ssc_data.data, data_size);
-
-		data_size = adjust_block_size(received_metadata.sss_code_size + MEASUREMENT_SIZE + sizeof(challenge_number));
-		memcpy((local_state.code + received_metadata.sss_code_size), &challenge_number, sizeof(challenge_number));
-		memcpy((local_state.code + received_metadata.sss_code_size + sizeof(challenge_number)), result, MEASUREMENT_SIZE);
-		// hash the code text section + previous hash + challenge number
-		blake2s(result, local_state.code , data_size);
-
-
-		/*Need to include inputs in the measurement*/
-
-
-		memcpy((void*)&c->hash, &result, MEASUREMENT_SIZE);
-
+void postExeAtt() {
+	preExeAtt();
+	input_attestation();
+	output_attestation();
+}
+void cleaup_att_space() {
+	memset(&att_md, 0, sizeof(attestation_md));
 }
 int main() {
     u32 status;
@@ -283,7 +225,11 @@ int main() {
             	query_BYOT_runtime();
             	break;
             case SSC_COMMAND:
-            	forward_to_ssc();
+            	//preExeAtt();
+            	forward_to_ssc(); /*Executing SSC*/
+            	input_attestation();
+            	postExeAtt();
+            	cleaup_att_space();
             	break;
             case EXIT:
             	remove_ssc_module();

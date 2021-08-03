@@ -13,6 +13,7 @@
 // protocol constants
 #define CODE_SIZE 50000
 #define PADING_SZ 1 + 68
+#define ATTESTION_CAP 2000
 //AES SSC CONSTANTS
 #define ENC_DEC_DATA_SIZE 64
 #define ENC_DEC_BLOCK_SIZE 16
@@ -43,8 +44,8 @@ uint8_t received_data[ENC_DEC_DATA_SIZE];
 typedef struct {
 	unsigned int input_att_size;
 	unsigned int output_att_size;
-	char att_input_data[2000];
-	char att_output_data[2000];
+	unsigned char att_input_data[ATTESTION_CAP];
+	unsigned char att_output_data[ATTESTION_CAP];
 } attestation_md;
 
 #endif /* SRC_CONSTANTS_H_ */

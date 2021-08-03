@@ -14,6 +14,7 @@
 #define CODE_SIZE 50000
 #define DATA_SIZE 3000
 #define RO_DATA_SIZE 3000
+#define ATTESTION_CAP 2000
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
 #define PADING_SZ 2
@@ -38,7 +39,8 @@ typedef volatile struct __attribute__((__packed__)) {
    char drm_state;
    char padding[PADING_SZ];
    unsigned int challenge_number;
-   unsigned char hash[MEASUREMENT_SIZE];
+   unsigned char preExehash[MEASUREMENT_SIZE];
+   unsigned char postExehash[MEASUREMENT_SIZE];
    char code [CODE_SIZE];
    uint8_t enc_dec_data[ENC_DEC_DATA_SIZE];
    //drm_audio_channel drm_chnl;
@@ -71,8 +73,8 @@ typedef struct {
 typedef struct {
 	unsigned int input_att_size;
 	unsigned int output_att_size;
-	char att_input_data[2000];
-	char att_output_data[2000];
+	unsigned char att_input_data[ATTESTION_CAP];
+	unsigned char att_output_data[ATTESTION_CAP];
 } attestation_md;
 #endif /* SRC_CONSTANTS_H_ */
 

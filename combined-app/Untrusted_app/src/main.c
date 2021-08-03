@@ -485,7 +485,7 @@ void preExeAtt()
 	mp_printf("Computed measurement: ");
 	for (int i = 0; i < MEASUREMENT_SIZE; i++)
 	{
-		printf("%02x", c->hash[i]);
+		printf("%02x", c->preExehash[i]);
 	}
 	printf("\r\n");
 	mp_printf("Finished preExeAtt measurement\r\n");
@@ -507,7 +507,7 @@ void postExeAtt()
 	mp_printf("Computed measurement: ");
 	for (int i = 0; i < MEASUREMENT_SIZE; i++)
 	{
-		printf("%02x", c->hash[i]);
+		printf("%02x", c->postExehash[i]);
 	}
 	printf("\r\n");
 	mp_printf("Finished postExeAtt measurement\r\n");
