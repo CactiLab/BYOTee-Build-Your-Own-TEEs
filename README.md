@@ -1,21 +1,31 @@
 # CactiLab-BYOT Example Code
 
-This repository contains an example reference system for BYOT System Design. 
+This repository contains three example reference system for BYOT System Design. 
 
-
-## Getting Started
-Please see the [Getting Started Guide](getting_started.md).
 
 ## Project structure
 The example code is structured as follows
+* `app1/` - Contains an example of **Computational applications**. In this application the PS side sends a 64 bit data to the CTEE softcore(Microblaze). The CTEE SSC outputs AES encryption/decryption depending on the commands provided by the PS untrusted application.
+In the hardware deisgn of the application CTEE is constructed with a micrbolze processor with its BRAM.
+No peripherals are connected to the microblaze.
+* `app2/` - Contains an example of **Peripheral and PS Interacting Applications**. In this application the PS side just triggers the execution of SSC application without any input or output data. The CTEE SSC continuous toggels the LED color when the button is pressed.
+In the hardware deisgn of the application CTEE is constructed with a micrbolze processor with its BRAM, and two peripherals connected to that.
+The LED peripheral and the button peripheral in this case is included in the hardware TCB for the system.
+* `app3/` - Contains an example of **Peripheral, PS and CTEE Interacting Applications**. In this application the PS side continuously interact with the application in the CTEE. The CTEE SSC application is a digital medial player application.
+The audio files are stored in the SD card. The PS application sends the file from SD card to the CTEE SSC application.
+In the hardware deisgn of the application CTEE is constructed with a micrbolze processor with its BRAM, and axi dma, SPI module, peripherals.
+* `CTEE-HS-generation/` - Contains a tool to generate the CTEE hardware configurations. The input file is in json format and it output tcl files to build the CTEE hardware design.
 
+## Notes
+* To build and execute each application, go to the application directories and follow the getting started file instructions.
+ <!--- 
  * `boot-image/` - Contains a stock FSBL, `image.ub`, and `u-boot.elf` for booting the project on the board. The stock FSBL is only provided for the purposes of making the `miPod.bin`, since `bootgen` requires you provide a bootloader when creating a `.bin` image.
  * `mb/` - Contains BYOT runtime and example SSC running on the soft-core MicroBlaze. See [BYOT README](mb/README.md)
  * `Untrusted_app/` - Contains example Untrusted_app project for running the Linux-side miPoUntrusted_appd driver. See [Untrusted_app README](Untrusted_app/README.md)
  * `pl/` - Contains example PL implementation with soft-core MicroBlaze and audio codec. See [PL README](pl/README.md)
  * `tools/` - Contains example provisioning tools. See [tools README](tools/README.md)
  * `vivado-boards/` - Contains Vivado libraries for the board
- <!--- 
+
  * `MB_files/` - Contains testing Microblaze files. These are example files for testing purpose.
 
 
