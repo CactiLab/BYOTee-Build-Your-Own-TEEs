@@ -2,6 +2,13 @@
 
 This repository contains three example reference system for BYOT System Design. 
 
+## Cloning Repository
+
+
+1. Clone the BYOT repository using ssh or https 
+```bash
+git clone git@github.com:CactiLab/code-build-your-own-TEE.git --recursive
+``` 
 
 ## Project structure
 The example code is structured as follows

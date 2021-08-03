@@ -4,14 +4,6 @@ Below is the overview of how to set up the reference implementation BYOT framewo
 
 Please note: if any step fails, it is highly unlikely that the process will get back on track by continuing to future steps.
 
-## Cloning Repository
-
-
-1. Clone the BYOT repository using ssh or https 
-```bash
-git clone git@github.com:CactiLab/code-build-your-own-TEE.git --recursive
-``` 
-
 
 ## Download Xilinx Tools
 We require using the two main Xilinx tools for the development of your
