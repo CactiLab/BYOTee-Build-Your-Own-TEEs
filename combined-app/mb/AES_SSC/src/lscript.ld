@@ -44,7 +44,7 @@ SECTIONS
 
 .vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
-} 
+}
 
 .test : {
 	*(.text.ssc_entry)
@@ -58,13 +58,18 @@ SECTIONS
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0xfbc8: {
+.ssc.attestation.md 0xc3a0:
+{
+	KEEP(*(.ssc.attestation.md))
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+.text 0x104bc: {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.data 0x16ff4: {
+.data 0x176f4: {
    . = ALIGN(4);
    __data_start = .;
    *(.data)
@@ -73,11 +78,11 @@ SECTIONS
    __data_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.init 0x1813c: {
+.init 0x1883c: {
    KEEP (*(.init))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.fini 0x18178: {
+.fini 0x18878: {
    KEEP (*(.fini))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
@@ -103,7 +108,7 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.rodata 0x18d60: {
+.rodata 0x188a8: {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)

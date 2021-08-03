@@ -51,6 +51,11 @@ SECTIONS
 	KEEP(*(.ssc.code.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
+.ssc.attestation.md :
+{
+	KEEP(*(.ssc.attestation.md))
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
 .test : {
     *main.o(.text)
 	*main.o(.text.*)
@@ -62,17 +67,19 @@ SECTIONS
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 /*.text : { */
-.text 0xfbc8: {
+.text : {
 
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.ssc.data.buffer 0x16ff4:
+
+.ssc.data.buffer :
 {
 	KEEP(*(.ssc.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
 
 .data : {
    . = ALIGN(4);

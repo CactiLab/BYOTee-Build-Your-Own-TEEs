@@ -35,6 +35,7 @@ volatile cmd_channel *c = (cmd_channel*)SHARED_DDR_BASE;
 internal_state __attribute__((section (".ssc.code.buffer"))) local_state;
 data_content __attribute__((section (".ssc.data.buffer"))) ssc_data;
 ro_data_content __attribute__((section (".ssc.ro.data.buffer"))) ssc_ro_data;
+attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
 
 char ssc_module_loaded = 0;
 //////////////////////// INTERRUPT HANDLING ////////////////////////
@@ -126,6 +127,17 @@ int adjust_block_size(int data_size)
 		data_size += (BLAKE2S_BLOCKBYTES - remainder);
 	}
 	return data_size;
+}
+void input_attestation(){
+	uint8_t result[MEASUREMENT_SIZE];
+	challenge_number = (c->challenge_number);
+	mb_printf("preExeAtt for challenge %d\r\n", challenge_number);
+	int int_att = att_md.input_att_size;
+	/*blake2s(result, att_md, MEASUREMENT_SIZE * 2);
+	for (size_t i = 0; i < sizeof(result); i++) {
+		xil_printf("%02x", result[i]);
+	}
+	xil_printf("\n");*/
 }
 void preExeAtt(){
 
@@ -265,6 +277,7 @@ int main() {
             case LOAD_CODE:
             	load_code();
             	ssc_module_loaded = 1;
+            	//att_md.input_att_size = 10;
                 break;
             case QUERY_DRM:
             	query_BYOT_runtime();

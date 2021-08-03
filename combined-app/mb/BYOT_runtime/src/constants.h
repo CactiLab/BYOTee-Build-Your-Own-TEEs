@@ -68,5 +68,11 @@ typedef struct {
 	unsigned int ro_data_size;
 } ssc_meta_data;
 
+typedef struct {
+	unsigned int input_att_size;
+	unsigned int output_att_size;
+	char att_input_data[2000];
+	char att_output_data[2000];
+} attestation_md;
 #endif /* SRC_CONSTANTS_H_ */
 

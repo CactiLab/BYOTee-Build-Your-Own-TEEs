@@ -74,6 +74,8 @@ static void test_encrypt_ecb_verbose(void);
 
 volatile cmd_channel *cmd_chnl = (cmd_channel *)SHARED_DDR_BASE;
 
+attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
+
 int dummy_aes_ssc()
 {
 	u32 t, s;
@@ -101,6 +103,8 @@ int dummy_aes_ssc()
 int main()
 {
 	memcpy(&received_data, (void*)cmd_chnl->enc_dec_data, 64);
+	att_md.input_att_size = 64;
+	memcpy(&att_md.att_input_data, received_data, 64);
 	switch(cmd_chnl->aes_cmd)
 	{
 		case ENC:
@@ -115,6 +119,8 @@ int main()
 			xil_printf("SSC> Unrecognized command!!!\r\n");
 			break;
 	}
+	att_md.output_att_size = 64;
+	memcpy(received_data, &att_md.att_input_data, 64);
 
 }
 void aes_dec_test(uint8_t *output)
