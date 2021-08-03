@@ -1,5 +1,6 @@
 *.o
 *.d
+*.a
 *.elf
 *.size
 download.bit
