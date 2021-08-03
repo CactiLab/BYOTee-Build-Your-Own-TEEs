@@ -13,4 +13,4 @@ RemoteSystemsTempFiles
 webtalk
 *.hdf
 mb/Cora-Z7-07S/
-
+BYOT_bsp/microblaze_0/lib/*
