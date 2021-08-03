@@ -1,4 +1,4 @@
 
 [submodule "pl"]
-	path = pl
+	path = combined-app/pl 
 	url = git@github.com:CactiLab/hardware-design-BYOT.git
