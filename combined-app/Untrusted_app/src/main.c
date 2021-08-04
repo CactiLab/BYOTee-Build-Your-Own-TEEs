@@ -467,14 +467,16 @@ void digital_out(char *song_name) {
     close(fd);
     mp_printf("Finished writing file\r\n");
 }
-
-void preExeAtt()
+void generate_challenge_number()
 {
 	time_t t;
 	srand((unsigned) time(&t));
 	c->challenge_number = rand();
 	mp_printf("Challenge number is %d\n", c->challenge_number);
-
+}
+void preExeAtt()
+{
+	generate_challenge_number();
 	send_command(PREEXEATT);
 
 	while (c->drm_state == STOPPED)
@@ -489,6 +491,21 @@ void preExeAtt()
 	}
 	printf("\r\n");
 	mp_printf("Finished preExeAtt measurement\r\n");
+}
+void print_measurement()
+{
+	mp_printf("Computed preExeAtt measurement: ");
+	for (int i = 0; i < MEASUREMENT_SIZE; i++)
+	{
+		printf("%02x", c->preExehash[i]);
+	}
+	printf("\r\n");
+	mp_printf("Computed postExeAtt measurement: ");
+	for (int i = 0; i < MEASUREMENT_SIZE; i++)
+	{
+		printf("%02x", c->postExehash[i]);
+	}
+	printf("\r\n");
 }
 void postExeAtt()
 {
@@ -607,11 +624,15 @@ int main(int argc, char **argv)
 	    }
         else if (!strncmp(cmd, "encrypt", sizeof("encrypt")))
         {
+        	generate_challenge_number();
         	encrypt_SSC();
+        	print_measurement();
         }
         else if (!strncmp(cmd, "decrypt", sizeof("decrypt")))
 		{
+        	generate_challenge_number();
         	decrypt_SSC();
+        	print_measurement();
 		}
         else if (!strncmp(cmd, "quit", sizeof("quit")))
         {

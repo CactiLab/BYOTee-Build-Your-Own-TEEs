@@ -64,12 +64,12 @@
 
 
 static void phex(uint8_t* str);
-static int test_encrypt_cbc(void);
+/*static int test_encrypt_cbc(void);
 static int test_decrypt_cbc(void);
 static int test_encrypt_ctr(void);
 static int test_decrypt_ctr(void);
 static int test_encrypt_ecb(void);
-static int test_decrypt_ecb(void);
+static int test_decrypt_ecb(void);*/
 static void test_encrypt_ecb_verbose(void);
 
 volatile cmd_channel *cmd_chnl = (cmd_channel *)SHARED_DDR_BASE;
@@ -87,31 +87,29 @@ int dummy_aes_ssc()
     cleanup_platform();
 	memmove(str1, str2, 10);
 
-	//strcpy(str1, str2);
-	/*if (!strcmp(str1, NULL))
+	if (!memcmp(str1, str2, 10))
 	{
-		*str1 = NULL;
-	}*/
+		aes_dec_test();
+	}
 	strncpy(str1, str2, 10);
 	if (!strncmp(str1, NULL, 10))
 	{
 		*str1 = NULL;
 	}
 	Xil_MemCpy(str1, str2, 10);
-	//blake2s(str1, str1, 10);
+	//memcmp(str1, str2, 10);
 }
 int main()
 {
-	memcpy(&received_data, (void*)cmd_chnl->enc_dec_data, ENC_DEC_DATA_SIZE);
+	memcpy(received_data, (void*)cmd_chnl->enc_dec_data, ENC_DEC_DATA_SIZE);
 	att_md.input_att_size = ENC_DEC_DATA_SIZE;
-	//memcpy(&att_md.att_input_data, (void*)cmd_chnl->aes_cmd, 1);
-	memcpy(&att_md.att_input_data, received_data, ENC_DEC_DATA_SIZE);
+	memcpy(att_md.att_input_data, received_data, ENC_DEC_DATA_SIZE);
 
 	switch(cmd_chnl->aes_cmd)
 	{
 		case ENC:
 			aes_enc_test();
-			memcpy((void*)cmd_chnl->enc_dec_data, &received_data,  ENC_DEC_DATA_SIZE);
+			memcpy((void*)cmd_chnl->enc_dec_data, received_data,  ENC_DEC_DATA_SIZE);
 			break;
 		case DEC:
 			aes_dec_test();
@@ -121,11 +119,8 @@ int main()
 			xil_printf("SSC> Unrecognized command!!!\r\n");
 			break;
 	}
-	xil_printf("Writing output to bram for attestation");
 	att_md.output_att_size = ENC_DEC_DATA_SIZE;
 	memcpy(&att_md.att_output_data, received_data, ENC_DEC_DATA_SIZE);
-	xil_printf("Done Writing output to bram for attestation");
-
 }
 void aes_dec_test()
 {
@@ -235,7 +230,7 @@ int test_decrypt_ecb_verbose(void)
 	}
     xil_printf("\r\n");
 }
-
+/*
 static int test_encrypt_ecb(void)
 {
 #if defined(AES256)
@@ -410,7 +405,7 @@ static int test_xcrypt_ctr(const char* xcrypt)
 	return(1);
     }
 }
-
+*/
 
 
 

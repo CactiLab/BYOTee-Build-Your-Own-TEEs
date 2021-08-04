@@ -126,24 +126,29 @@ int adjust_block_size(int data_size) {
 	}
 	return data_size;
 }
-void input_attestation() {
+void input_attestation(char flag) {
 	if (att_md.input_att_size == 0)
 		return;
+	int data_size = adjust_block_size(att_md.input_att_size + MEASUREMENT_SIZE);
 	//Input to SSC data attestation
 	memcpy(att_md.att_input_data + att_md.input_att_size, preExeResult, MEASUREMENT_SIZE);
-	blake2s(preExeResult, att_md.att_input_data, MEASUREMENT_SIZE + att_md.input_att_size);
+	//memset(att_md.att_input_data + att_md.input_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.input_att_size + MEASUREMENT_SIZE));
+	blake2s(preExeResult, att_md.att_input_data, data_size);
 
+	if (flag == 1)
 	//copy the hash to DRAM
-	memcpy((void*)&c->preExehash, &preExeResult, MEASUREMENT_SIZE);
+		memcpy((void*)&c->preExehash, &preExeResult, MEASUREMENT_SIZE);
 }
 void output_attestation() {
 	if (att_md.output_att_size == 0)
 		return;
-	// Output attestation
+	int data_size = adjust_block_size(att_md.output_att_size + MEASUREMENT_SIZE);
+	//Input to SSC data attestation
 	memcpy(att_md.att_output_data + att_md.output_att_size, preExeResult, MEASUREMENT_SIZE);
-	blake2s(preExeResult, att_md.att_output_data, MEASUREMENT_SIZE + att_md.att_output_data);
+	//memset(att_md.att_output_data + att_md.output_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.output_att_size + MEASUREMENT_SIZE));
+	blake2s(preExeResult, att_md.att_output_data, data_size);
 	//copy the hash to DRAM
-	memcpy((void*)&c->preExehash, &preExeResult, MEASUREMENT_SIZE);
+	memcpy((void*)&c->postExehash, &preExeResult, MEASUREMENT_SIZE);
 }
 //This functions performs measurements on code section, data section and readonly data section before and after SSC execution
 void preExeAtt() {
@@ -170,7 +175,7 @@ void preExeAtt() {
 }
 void postExeAtt() {
 	preExeAtt();
-	input_attestation();
+	input_attestation(0);
 	output_attestation();
 }
 void cleaup_att_space() {
@@ -219,15 +224,14 @@ int main() {
             case LOAD_CODE:
             	load_code();
             	ssc_module_loaded = 1;
-            	//att_md.input_att_size = 10;
                 break;
             case QUERY_DRM:
             	query_BYOT_runtime();
             	break;
             case SSC_COMMAND:
-            	//preExeAtt();
+            	preExeAtt();
             	forward_to_ssc(); /*Executing SSC*/
-            	input_attestation();
+            	input_attestation(1);
             	postExeAtt();
             	cleaup_att_space();
             	break;

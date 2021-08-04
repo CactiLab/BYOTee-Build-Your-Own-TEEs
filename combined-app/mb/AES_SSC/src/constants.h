@@ -39,7 +39,6 @@ typedef volatile struct __attribute__((__packed__)) {
    uint8_t enc_dec_data[ENC_DEC_DATA_SIZE];
 } cmd_channel;
 
-uint8_t received_data[ENC_DEC_DATA_SIZE];
 
 typedef struct {
 	unsigned int input_att_size;
@@ -48,5 +47,6 @@ typedef struct {
 	unsigned char att_output_data[ATTESTION_CAP];
 } attestation_md;
 
+uint8_t received_data[ENC_DEC_DATA_SIZE];
 #endif /* SRC_CONSTANTS_H_ */
 
