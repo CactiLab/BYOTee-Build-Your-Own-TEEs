@@ -466,7 +466,28 @@ void digital_out(char *song_name) {
     close(fd);
     mp_printf("Finished writing file\r\n");
 }
-
+void generate_challenge_number()
+{
+	time_t t;
+	srand((unsigned) time(&t));
+	c->challenge_number = rand();
+	mp_printf("Challenge number is %d\n", c->challenge_number);
+}
+void print_measurement()
+{
+	mp_printf("Computed preExeAtt measurement: ");
+	for (int i = 0; i < MEASUREMENT_SIZE; i++)
+	{
+		printf("%02x", c->preExehash[i]);
+	}
+	printf("\r\n");
+	mp_printf("Computed postExeAtt measurement: ");
+	for (int i = 0; i < MEASUREMENT_SIZE; i++)
+	{
+		printf("%02x", c->postExehash[i]);
+	}
+	printf("\r\n");
+}
 int main(int argc, char **argv)
 {
     int mem;
@@ -476,12 +497,11 @@ int main(int argc, char **argv)
     // open command channel
     mem = open("/dev/uio0", O_RDWR);
     c = mmap(NULL, sizeof(cmd_channel), PROT_READ | PROT_WRITE, MAP_SHARED, mem, 0);
-
     if (c == MAP_FAILED)
-    {
-        mp_printf("MMAP Failed! Error = %d\r\n", errno);
-        return -1;
-    }
+	{
+		mp_printf("MMAP Failed! Error = %d\r\n", errno);
+		return -1;
+	}
     mp_printf("Command channel open at %p (%dB)\r\n", c, sizeof(cmd_channel));
 
     // dump player information before command loop
@@ -548,11 +568,15 @@ int main(int argc, char **argv)
 	    }
         else if (!strncmp(cmd, "encrypt", sizeof("encrypt")))
         {
+        	generate_challenge_number();
         	encrypt_SSC();
+        	print_measurement();
         }
         else if (!strncmp(cmd, "decrypt", sizeof("decrypt")))
 		{
+        	generate_challenge_number();
         	decrypt_SSC();
+        	print_measurement();
 		}
         else if (!strncmp(cmd, "quit", sizeof("quit")))
         {

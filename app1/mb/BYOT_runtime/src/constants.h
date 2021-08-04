@@ -24,7 +24,7 @@
 
 
 
-enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE, PREEXEATT, POSTEXEATT};
+enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE};
 enum states   { STOPPED, WORKING, PLAYING, PAUSED };
 
 unsigned int challenge_number;

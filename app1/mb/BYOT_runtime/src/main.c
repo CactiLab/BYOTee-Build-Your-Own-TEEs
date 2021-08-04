@@ -219,11 +219,6 @@ int main() {
             case EXECUTE:
             	execute_SSC();
             	break;
-            case PREEXEATT:
-				preExeAtt();
-				break;
-			case POSTEXEATT:
-				postExeAtt();
             default:
                 break;
             }
