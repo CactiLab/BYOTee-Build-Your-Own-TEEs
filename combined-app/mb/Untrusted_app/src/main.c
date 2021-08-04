@@ -334,6 +334,8 @@ void query_song(char *song_file_name) {
         mp_printf("Failed to load song file!\r\n");
         return -1;
     }
+
+    generate_challenge_number();
     send_command(SSC_COMMAND);
 
     while (c->drm_state == STOPPED)
@@ -360,6 +362,7 @@ void query_song(char *song_file_name) {
 		}
 	}
 	printf("\r\n");
+	print_measurement();
 }
 
 int play_song(char *song_name) {

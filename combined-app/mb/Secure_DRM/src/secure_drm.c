@@ -286,6 +286,9 @@ void logout()
 void query_song() {
 
     char *name;
+    //Attest query song input
+    att_md.input_att_size = adjust_block_size(drm_chnl->audio_data.song.md.md_size);
+    memcpy(att_md.att_input_data, (void *)&drm_chnl->audio_data.song.md, drm_chnl->audio_data.song.md.md_size);
 
     load_song_md();
     memset((void *)&drm_chnl->audio_data.query, 0, sizeof(query));
@@ -306,6 +309,9 @@ void query_song() {
         uid_to_username(s.song_md.uids[i], &name, FALSE);
         strncpy((char *)q_user_lookup(drm_chnl->audio_data.query, i), name, USERNAME_SZ);
     }
+    //Attest query song outputs
+    att_md.output_att_size = adjust_block_size(sizeof(query)/(PACKAGING_SZ1 + 2));
+	memcpy(att_md.att_output_data, (void *)&drm_chnl->audio_data.query, sizeof(query)/(PACKAGING_SZ1 + 2));
 
     mb_printf("Queried song (%d regions, %d users)\r\n", drm_chnl->audio_data.query.num_regions,  drm_chnl->audio_data.query.num_users);
 }
