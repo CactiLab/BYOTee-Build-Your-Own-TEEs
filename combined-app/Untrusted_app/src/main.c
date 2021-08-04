@@ -279,7 +279,7 @@ void share_song(char *song_name, char *username) {
         mp_printf("Failed to load song!\r\n");
         return;
     }
-
+    generate_challenge_number();
     strncpy((char *)c->drm_chnl.username, username, USERNAME_SZ);
 
     // drive DRM
@@ -315,6 +315,7 @@ void share_song(char *song_name, char *username) {
     }
     close(fd);
     mp_printf("Finished writing file\r\n");
+    print_measurement();
 }
 
 

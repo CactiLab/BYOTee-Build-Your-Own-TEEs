@@ -181,6 +181,9 @@ void share_song() {
     int new_md_len, shift;
     char new_md[256], uid;
 
+    //Attest the share song input data
+    att_md.input_att_size = adjust_block_size(drm_chnl->audio_data.song.md.md_size);
+	memcpy(att_md.att_input_data, (void *)&drm_chnl->audio_data.song.md, drm_chnl->audio_data.song.md.md_size);
     // reject non-owner attempts to share
     load_song_md();
     if (!s.logged_in) {
@@ -211,6 +214,11 @@ void share_song() {
     // update file size
     drm_chnl->audio_data.song.file_size += shift;
     drm_chnl->audio_data.song.wav_size  += shift;
+    //Attest the share song output data
+	att_md.output_att_size = adjust_block_size(new_md_len + 2 * sizeof(int));
+	memcpy(att_md.att_input_data, (void *)&drm_chnl->audio_data.song.file_size, sizeof(int));
+	memcpy(att_md.att_input_data + sizeof(int), (void *)&drm_chnl->audio_data.song.wav_size, sizeof(int));
+	memcpy(att_md.att_input_data + (2 * sizeof(int)), new_md, new_md_len);
 
     mb_printf("Shared song with '%s'\r\n", drm_chnl->audio_data.username);
 }
