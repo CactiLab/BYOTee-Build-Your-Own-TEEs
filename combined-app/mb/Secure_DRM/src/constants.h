@@ -11,10 +11,12 @@
 #define CHUNK_SZ 16000
 #define FIFO_CAP 4096*4
 #define CODE_SIZE 50000
+#define ATTESTION_CAP 2000
 #define SAXI_DMA_POINTER_ADDRESS 0x000175b0
 #define INTERRUPT_POINTER_ADDRESS 0x00017d04
 #define PREVIEW_TIME_SEC 30
-#define PADING_SZ 2
+#define PADING_SZ 2 + 68
+#define PADING_SZ2 64
 #define PACKAGING_SZ1 4
 #define PACKAGING_SZ2 32
 #define MB_PROMPT "\r\nDRM_SSC> "
@@ -93,6 +95,7 @@ typedef volatile struct __attribute__((__packed__)) {
    char drm_state;
    char padding[PADING_SZ];
    char code [CODE_SIZE];
+   char enc_padding[PADING_SZ2];
    drm_audio_channel audio_data;
 } drm_channel;
 
@@ -105,4 +108,10 @@ typedef struct
     song_md song_md;            // current song metadata
 } drm_internal_state;
 
+typedef struct {
+	unsigned int input_att_size;
+	unsigned int output_att_size;
+	unsigned char att_input_data[ATTESTION_CAP];
+	unsigned char att_output_data[ATTESTION_CAP];
+} attestation_md;
 #endif /* SRC_CONSTANTS_H_ */

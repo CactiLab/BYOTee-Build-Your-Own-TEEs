@@ -17,7 +17,7 @@
 // audio DRM pointer
 void *sAxiDma_pointer = (void *)SAXI_DMA_POINTER_ADDRESS;
 volatile drm_channel *drm_chnl = (drm_channel *)SHARED_DDR_BASE;
-
+attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
 // internal state store
 drm_internal_state s;
 
@@ -28,11 +28,17 @@ void *point_to_runtime_interrrupt = (void *)INTERRUPT_POINTER_ADDRESS;
 int dummy_drm()
 {
 	u32 t, s;
+	char *str1 = NULL, *str2;
+
     usleep(500);
     sleep(50);
     MB_Sleep(10);
     init_platform();
     cleanup_platform();
+    if (!memcmp(str1, str2, 10))
+	{
+    	load_song_md();
+	}
 }
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 
