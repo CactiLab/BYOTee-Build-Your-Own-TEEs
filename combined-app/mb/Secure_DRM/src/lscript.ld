@@ -62,13 +62,13 @@ SECTIONS
 	KEEP(*(.ssc.attestation.md))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0xfbf4: {
+.text 0xfc04: {
    *(.text)
    *(.text.*) 
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.data 0x16e2c: {
+.data 0x16e3c: {
    . = ALIGN(4);
    __data_start = .;
    *(.data)
@@ -77,11 +77,11 @@ SECTIONS
    __data_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.init 0x17f74: {
+.init 0x17f84: {
    KEEP (*(.init))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.fini 0x17fb0: {
+.fini 0x17fc0: {
    KEEP (*(.fini))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
@@ -107,7 +107,7 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.rodata 0x17fe0: {
+.rodata 0x17ff0: {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)

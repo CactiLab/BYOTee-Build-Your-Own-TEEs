@@ -7,6 +7,7 @@
 #define MAX_USERS 64
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
+#define BLAKE2S_BLOCKBYTES 64
 #define MAX_SONG_SZ (1<<25)
 #define CHUNK_SZ 16000
 #define FIFO_CAP 4096*4

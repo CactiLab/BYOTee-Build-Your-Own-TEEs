@@ -67,7 +67,7 @@ SECTIONS
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 /*.text : { */
-.text 0xfbf4: {
+.text 0xfc04: {
 
    *(.text)
    *(.text.*)

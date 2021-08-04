@@ -113,6 +113,8 @@ void login(char *username, char *pin) {
         return;
     }
 
+    generate_challenge_number();
+
     specify_ssc_command(LOGIN);
     strncpy((void*)c->drm_chnl.username, username, USERNAME_SZ);
     strncpy((void*)c->drm_chnl.pin , pin, MAX_PIN_SZ);
@@ -122,10 +124,20 @@ void login(char *username, char *pin) {
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
+
+    print_measurement();
 }
 void logout() {
+	generate_challenge_number();
+
 	specify_ssc_command(LOGOUT);
 	send_command(SSC_COMMAND);
+    while (c->drm_state == STOPPED)
+		continue; // wait for DRM to start working
+	while (c->drm_state == WORKING)
+		continue; // wait for DRM to dump file
+
+	print_measurement();
 }
 //////////////////////// MAIN ////////////////////////
 void load_code(char *fileName)

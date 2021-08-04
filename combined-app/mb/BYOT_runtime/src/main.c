@@ -127,33 +127,34 @@ int adjust_block_size(int data_size) {
 	return data_size;
 }
 void input_attestation(char flag) {
-	if (att_md.input_att_size == 0)
-		return;
 	int data_size = adjust_block_size(att_md.input_att_size + MEASUREMENT_SIZE);
-	//Input to SSC data attestation
-	memcpy(att_md.att_input_data + att_md.input_att_size, preExeResult, MEASUREMENT_SIZE);
-	//memset(att_md.att_input_data + att_md.input_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.input_att_size + MEASUREMENT_SIZE));
-	blake2s(preExeResult, att_md.att_input_data, data_size);
-
+	if (att_md.input_att_size != 0)
+	{
+		//Input to SSC data attestation
+		memcpy(att_md.att_input_data + att_md.input_att_size, preExeResult, MEASUREMENT_SIZE);
+		//memset(att_md.att_input_data + att_md.input_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.input_att_size + MEASUREMENT_SIZE));
+		blake2s(preExeResult, att_md.att_input_data, data_size);
+	}
 	if (flag == 1)
 	//copy the hash to DRAM
 		memcpy((void*)&c->preExehash, &preExeResult, MEASUREMENT_SIZE);
 }
 void output_attestation() {
-	if (att_md.output_att_size == 0)
-		return;
 	int data_size = adjust_block_size(att_md.output_att_size + MEASUREMENT_SIZE);
-	//Input to SSC data attestation
-	memcpy(att_md.att_output_data + att_md.output_att_size, preExeResult, MEASUREMENT_SIZE);
-	//memset(att_md.att_output_data + att_md.output_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.output_att_size + MEASUREMENT_SIZE));
-	blake2s(preExeResult, att_md.att_output_data, data_size);
+	if (att_md.output_att_size != 0)
+	{
+		//Input to SSC data attestation
+		memcpy(att_md.att_output_data + att_md.output_att_size, preExeResult, MEASUREMENT_SIZE);
+		//memset(att_md.att_output_data + att_md.output_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.output_att_size + MEASUREMENT_SIZE));
+		blake2s(preExeResult, att_md.att_output_data, data_size);
+	}
 	//copy the hash to DRAM
 	memcpy((void*)&c->postExehash, &preExeResult, MEASUREMENT_SIZE);
 }
 //This functions performs measurements on code section, data section and readonly data section before and after SSC execution
 void preExeAtt() {
 	int data_size;
-
+	memset(preExeResult, 0, MEASUREMENT_SIZE);
 	challenge_number = (c->challenge_number);
 	mb_printf("postExeAtt for challenge %d\r\n", challenge_number);
 
@@ -181,6 +182,11 @@ void postExeAtt() {
 void cleaup_att_space() {
 	memset(&att_md, 0, sizeof(attestation_md));
 }
+/*
+void clear_shared_hash_storage()
+{
+	memset((void*)c->postExehash, 0, 2 * MEASUREMENT_SIZE);
+}*/
 int main() {
     u32 status;
 

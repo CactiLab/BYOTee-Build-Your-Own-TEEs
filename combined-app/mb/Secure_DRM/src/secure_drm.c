@@ -41,7 +41,23 @@ int dummy_drm()
 	}
 }
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
+//Attest the user name and pin
+void usr_name_pin_attst(char in)
+{
+	if (in == 0)
+	{
+		att_md.input_att_size = adjust_block_size(USERNAME_SZ + MAX_PIN_SZ);
+		memcpy(att_md.att_input_data, (void *)drm_chnl->audio_data.username, USERNAME_SZ);
+		memcpy(att_md.att_input_data + USERNAME_SZ, (void*)drm_chnl->audio_data.pin, MAX_PIN_SZ);
+	}
+	else
+	{
+		att_md.output_att_size = adjust_block_size(USERNAME_SZ + MAX_PIN_SZ);
+		memcpy(att_md.att_output_data, (void *)drm_chnl->audio_data.username, USERNAME_SZ);
+		memcpy(att_md.att_output_data + USERNAME_SZ, (void*)drm_chnl->audio_data.pin, MAX_PIN_SZ);
+	}
 
+}
 // returns whether an rid has been provisioned
 int is_provisioned_rid(char rid)
 {
@@ -198,15 +214,16 @@ void share_song() {
 
     mb_printf("Shared song with '%s'\r\n", drm_chnl->audio_data.username);
 }
-
 void login()
 {
     if (s.logged_in && (!strncmp(s.username, USERNAMES[PROVISIONED_UIDS[s.uid]], USERNAME_SZ)))
     {
+    	usr_name_pin_attst(0);
 		mb_printf("User %s Already logged in. Please log out first.\r\n", s.username);
 		memcpy((void *)drm_chnl->audio_data.username, s.username, USERNAME_SZ);
 		memcpy((void *)drm_chnl->audio_data.pin, s.pin, MAX_PIN_SZ);
-
+		//Attest the output
+		usr_name_pin_attst(1);
     }
     else
     {
@@ -219,15 +236,19 @@ void login()
                 if (!strncmp((void*)drm_chnl->audio_data.pin, PROVISIONED_PINS[i], MAX_PIN_SZ))
                 {
                     //update states
+                	usr_name_pin_attst(0);
                     s.logged_in = 1;
                     memcpy(s.username, (void*)drm_chnl->audio_data.username, USERNAME_SZ);
                     memcpy(s.pin, (void*)drm_chnl->audio_data.pin, MAX_PIN_SZ);
                     s.uid = PROVISIONED_UIDS[i];
                     mb_printf("Logged in for user '%s'\r\n", drm_chnl->audio_data.username);
+                    //Attest the input
                     return;
                 }
                 else
                 {
+                	//Attest the input
+                	usr_name_pin_attst(0);
                     // reject login attempt
                     mb_printf("Incorrect pin for user '%s'\r\n", drm_chnl->audio_data.username);
                     memset((void*)drm_chnl->audio_data.username, 0, USERNAME_SZ);
@@ -237,6 +258,7 @@ void login()
             }
         }
 
+        usr_name_pin_attst(0);
         // reject login attempt
         mb_printf("User not found\r\n");
         memset((void*)drm_chnl->audio_data.username, 0, USERNAME_SZ);
