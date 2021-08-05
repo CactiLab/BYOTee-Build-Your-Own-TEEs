@@ -427,7 +427,13 @@ void play_song() {
         Xil_MemCpy((void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset),
                    (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem),
                    (u32)(cp_num));
-
+        int data_size = adjust_block_size(cp_num);
+        blake2s(measurement, (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem), data_size);
+        for (int i = 0; i < MEASUREMENT_SIZE; i++)
+        {
+        	xil_printf("%.2x", measurement[i]);
+        }
+        xil_printf("\r\n");
         cp_xfil_cnt = cp_num;
 
         while (cp_xfil_cnt > 0) {
@@ -445,9 +451,11 @@ void play_song() {
             fnAudioPlay(*(XAxiDma *)sAxiDma_pointer, offset, dma_cnt);
             cp_xfil_cnt -= dma_cnt;
         }
-
+        xil_printf("on to the next hop\r\n");
         rem -= cp_num;
     }
+    att_md.ssc_flag = 1;
+    memcpy(att_md.ssc_measurement, measurement, MEASUREMENT_SIZE);
 }
 
 // removes DRM data from song for digital out
