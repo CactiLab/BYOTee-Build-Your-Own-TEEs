@@ -427,8 +427,12 @@ void play_song() {
         Xil_MemCpy((void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset),
                    (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem),
                    (u32)(cp_num));
-        int data_size = adjust_block_size(cp_num);
-        blake2s(measurement, (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem), data_size);
+        //Attest song data for each chunk
+        Xil_MemCpy((void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset + (u32)(cp_num)),
+        		measurement, MEASUREMENT_SIZE);
+        int data_size = adjust_block_size(offset + cp_num);
+        //blake2s(measurement, (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem), data_size);
+        blake2s(measurement, (void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset), data_size);
         for (int i = 0; i < MEASUREMENT_SIZE; i++)
         {
         	xil_printf("%.2x", measurement[i]);

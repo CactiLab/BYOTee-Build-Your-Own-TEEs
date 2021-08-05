@@ -243,6 +243,7 @@ int main() {
             	preExeAtt();
             	forward_to_ssc(); /*Executing SSC*/
             	input_attestation(1);
+            	concat_SSC_attst();
             	postExeAtt();
             	concat_SSC_attst();
             	cleaup_att_space();

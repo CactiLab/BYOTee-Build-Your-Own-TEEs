@@ -374,6 +374,7 @@ int play_song(char *song_name) {
         return 0;
     }
 
+    generate_challenge_number();
     // drive the DRM
     specify_ssc_command(PLAY);
     send_command(SSC_COMMAND);
@@ -440,7 +441,7 @@ int play_song(char *song_name) {
             print_playback_help();
         }
     }
-
+    print_measurement();
     return 0;
 }
 
