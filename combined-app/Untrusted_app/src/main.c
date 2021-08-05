@@ -452,7 +452,7 @@ void digital_out(char *song_name) {
         mp_printf("Failed to load song!\r\n");
         return;
     }
-
+    generate_challenge_number();
     // drive DRM
     specify_ssc_command(DIGITAL_OUT);
     send_command(SSC_COMMAND);
@@ -481,6 +481,7 @@ void digital_out(char *song_name) {
     }
     close(fd);
     mp_printf("Finished writing file\r\n");
+    print_measurement();
 }
 void generate_challenge_number()
 {

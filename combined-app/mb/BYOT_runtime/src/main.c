@@ -182,11 +182,16 @@ void postExeAtt() {
 void cleaup_att_space() {
 	memset(&att_md, 0, sizeof(attestation_md));
 }
-/*
-void clear_shared_hash_storage()
+void concat_SSC_attst()
 {
-	memset((void*)c->postExehash, 0, 2 * MEASUREMENT_SIZE);
-}*/
+	if (att_md.ssc_flag == 1)
+	{
+		mb_printf("ssc flag one concating ssc measurement\r\n");
+		memcpy(att_md.att_input_data, preExeResult, MEASUREMENT_SIZE);
+		memcpy(att_md.att_input_data + MEASUREMENT_SIZE, att_md.ssc_measurement, MEASUREMENT_SIZE);
+		blake2s((void*)&c->postExehash, att_md.att_input_data, 2 * MEASUREMENT_SIZE);
+	}
+}
 int main() {
     u32 status;
 
@@ -239,6 +244,7 @@ int main() {
             	forward_to_ssc(); /*Executing SSC*/
             	input_attestation(1);
             	postExeAtt();
+            	concat_SSC_attst();
             	cleaup_att_space();
             	break;
             case EXIT:

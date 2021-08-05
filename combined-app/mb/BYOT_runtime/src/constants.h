@@ -11,10 +11,11 @@
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 
 // protocol constants
-#define CODE_SIZE 50000
-#define DATA_SIZE 3000
-#define RO_DATA_SIZE 3000
-#define ATTESTION_CAP 2000
+#define CODE_SIZE 40000
+#define SSC_SIZE 50000
+#define DATA_SIZE 5000
+#define RO_DATA_SIZE 5000
+#define ATTESTION_CAP 3008
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
 #define PADING_SZ 2
@@ -41,7 +42,7 @@ typedef volatile struct __attribute__((__packed__)) {
    unsigned int challenge_number;
    unsigned char preExehash[MEASUREMENT_SIZE];
    unsigned char postExehash[MEASUREMENT_SIZE];
-   char code [CODE_SIZE];
+   char code [SSC_SIZE];
    uint8_t enc_dec_data[ENC_DEC_DATA_SIZE];
    //drm_audio_channel drm_chnl;
 } cmd_channel;
@@ -75,6 +76,8 @@ typedef struct {
 	unsigned int output_att_size;
 	unsigned char att_input_data[ATTESTION_CAP];
 	unsigned char att_output_data[ATTESTION_CAP];
+	uint8_t ssc_measurement[MEASUREMENT_SIZE];
+	char ssc_flag;
 } attestation_md;
 #endif /* SRC_CONSTANTS_H_ */
 

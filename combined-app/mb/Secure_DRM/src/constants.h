@@ -11,8 +11,9 @@
 #define MAX_SONG_SZ (1<<25)
 #define CHUNK_SZ 16000
 #define FIFO_CAP 4096*4
-#define CODE_SIZE 50000
-#define ATTESTION_CAP 2000
+#define CODE_SIZE 40000
+#define SSC_SIZE 50000
+#define ATTESTION_CAP 3008
 #define SAXI_DMA_POINTER_ADDRESS 0x000175b0
 #define INTERRUPT_POINTER_ADDRESS 0x00017d04
 #define PREVIEW_TIME_SEC 30
@@ -20,6 +21,7 @@
 #define PADING_SZ2 64
 #define PACKAGING_SZ1 4
 #define PACKAGING_SZ2 32
+#define MEASUREMENT_SIZE 32
 #define MB_PROMPT "\r\nDRM_SSC> "
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 // ADC/DAC sampling rate in Hz
@@ -95,7 +97,7 @@ typedef volatile struct __attribute__((__packed__)) {
    char cmd;
    char drm_state;
    char padding[PADING_SZ];
-   char code [CODE_SIZE];
+   char code [SSC_SIZE];
    char enc_padding[PADING_SZ2];
    drm_audio_channel audio_data;
 } drm_channel;
@@ -114,5 +116,7 @@ typedef struct {
 	unsigned int output_att_size;
 	unsigned char att_input_data[ATTESTION_CAP];
 	unsigned char att_output_data[ATTESTION_CAP];
+	uint8_t ssc_measurement[MEASUREMENT_SIZE];
+	char ssc_flag;
 } attestation_md;
 #endif /* SRC_CONSTANTS_H_ */

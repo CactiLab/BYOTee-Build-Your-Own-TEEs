@@ -59,15 +59,16 @@ SECTIONS
 .test : {
     *main.o(.text)
 	*main.o(.text.*)
-	*blake2s.o(.text)
-	*blake2s.o(.text.*)
 	*platform.o(.text)
 	*platform.o(.text.*)
 	*util.o(.text)
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-/*.text : { */
-.text 0xfc04: {
+/*.text : {  
+	*blake2s.o(.text)
+	*blake2s.o(.text.*)
+	*/
+.text 0xda5c: {
 
    *(.text)
    *(.text.*)
@@ -75,7 +76,7 @@ SECTIONS
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 
-.ssc.data.buffer :
+.ssc.data.buffer 0x156cc + 0x3e8:
 {
 	KEEP(*(.ssc.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem

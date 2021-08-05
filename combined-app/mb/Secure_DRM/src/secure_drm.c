@@ -13,7 +13,7 @@
 #include "BYOT_header.h"
 //////////////////////// GLOBALS ////////////////////////
 
-
+u_int8_t measurement[MEASUREMENT_SIZE];
 // audio DRM pointer
 void *sAxiDma_pointer = (void *)SAXI_DMA_POINTER_ADDRESS;
 volatile drm_channel *drm_chnl = (drm_channel *)SHARED_DDR_BASE;
@@ -39,6 +39,7 @@ int dummy_drm()
 	{
     	load_song_md();
 	}
+    blake2s(str1, str2 , 10);
 }
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 //Attest the user name and pin
@@ -460,12 +461,20 @@ void digital_out() {
         drm_chnl->audio_data.song.file_size -= drm_chnl->audio_data.song.wav_size - PREVIEW_SZ;
         drm_chnl->audio_data.song.wav_size = PREVIEW_SZ;
     }
+    //Attestation on digital out data
+    for (int i = 0; i < drm_chnl->audio_data.song.wav_size; i += (ATTESTION_CAP - MEASUREMENT_SIZE))
+    {
+    	memcpy(att_md.att_output_data, (void *)&drm_chnl->audio_data.song.md + i, (ATTESTION_CAP - MEASUREMENT_SIZE));
+    	memcpy(att_md.att_output_data + (ATTESTION_CAP - MEASUREMENT_SIZE), measurement, MEASUREMENT_SIZE);
+    	blake2s(measurement, att_md.att_output_data, ATTESTION_CAP);
+    }
 
     // move WAV file up in buffer, skipping metadata
     mb_printf(MB_PROMPT "Dumping song (%dB)...", drm_chnl->audio_data.song.wav_size);
     memmove((void *)&drm_chnl->audio_data.song.md, (void *)get_drm_song(drm_chnl->audio_data.song), drm_chnl->audio_data.song.wav_size);
-
     mb_printf("Song dump finished\r\n");
+    att_md.ssc_flag = 1;
+    memcpy(att_md.ssc_measurement, measurement, MEASUREMENT_SIZE);
 }
 
 //////////////////////// MAIN ////////////////////////
