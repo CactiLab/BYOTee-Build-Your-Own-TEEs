@@ -392,7 +392,7 @@ void play_song() {
 
     rem = length;
     fifo_fill = (u32 *)XPAR_FIFO_COUNT_AXI_GPIO_0_BASEADDR;
-
+    att_md.ssc_flag = 1;
     // write entire file to two-block codec fifo
     // writes to one block while the other is being played
     while(rem > 0) {
@@ -429,13 +429,13 @@ void play_song() {
                    (u32)(cp_num));
         //Attest song data for each chunk
         Xil_MemCpy((void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset + (u32)(cp_num)),
-        		measurement, MEASUREMENT_SIZE);
+        		att_md.ssc_measurement, MEASUREMENT_SIZE);
         int data_size = adjust_block_size(offset + cp_num);
         //blake2s(measurement, (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem), data_size);
-        blake2s(measurement, (void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset), data_size);
+        blake2s(att_md.ssc_measurement, (void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset), data_size);
         for (int i = 0; i < MEASUREMENT_SIZE; i++)
         {
-        	xil_printf("%.2x", measurement[i]);
+        	xil_printf("%.2x", att_md.ssc_measurement[i]);
         }
         xil_printf("\r\n");
         cp_xfil_cnt = cp_num;
@@ -458,8 +458,6 @@ void play_song() {
         xil_printf("on to the next hop\r\n");
         rem -= cp_num;
     }
-    att_md.ssc_flag = 1;
-    memcpy(att_md.ssc_measurement, measurement, MEASUREMENT_SIZE);
 }
 
 // removes DRM data from song for digital out
