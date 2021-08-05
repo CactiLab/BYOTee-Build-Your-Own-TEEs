@@ -11,7 +11,6 @@
 #include <string.h>
 
 volatile cmd_channel *c;
-//volatile testing_channel *tt;
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 int secure_drm_load = 0;
 // sends a command to the CTEE using the shared command channel and interrupt
@@ -559,16 +558,9 @@ int main(int argc, char **argv)
 		mp_printf("MMAP Failed! Error = %d\r\n", errno);
 		return -1;
 	}
-   /* mem = open("/dev/uio1", O_RDWR);
-    tt = mmap(NULL, sizeof(testing_channel), PROT_READ | PROT_WRITE, MAP_SHARED, mem, 0);
-    if (tt == MAP_FAILED)
-	{
-		mp_printf("MMAP Failed! Error = %d\r\n", errno);
-		return -1;
-	}*/
     mp_printf("Command channel open at %p (%dB)\r\n", c, sizeof(cmd_channel));
 
-    // dump player information before command loop
+    // verify the initialization of BYOT_FW
     query_BYOT_runtime();
 
     // go into command loop until quit is requested
