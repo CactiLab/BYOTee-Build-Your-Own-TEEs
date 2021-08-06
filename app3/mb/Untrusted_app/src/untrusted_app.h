@@ -80,7 +80,8 @@ typedef volatile struct __attribute__((__packed__)) {
    char aes_cmd;
    char padding[PADING_SZ];
    unsigned int challenge_number;
-   unsigned char hash[MEASUREMENT_SIZE];
+   unsigned char preExehash[MEASUREMENT_SIZE];
+   unsigned char postExehash[MEASUREMENT_SIZE];
    char code [CODE_SIZE];
    unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];
    drm_audio_channel drm_chnl;

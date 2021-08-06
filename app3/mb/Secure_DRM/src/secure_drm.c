@@ -13,29 +13,50 @@
 #include "BYOT_header.h"
 //////////////////////// GLOBALS ////////////////////////
 
-
+u_int8_t measurement[MEASUREMENT_SIZE];
 // audio DRM pointer
 void *sAxiDma_pointer = (void *)SAXI_DMA_POINTER_ADDRESS;
 volatile drm_channel *drm_chnl = (drm_channel *)SHARED_DDR_BASE;
-
+attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
 // internal state store
 drm_internal_state s;
 
 void *point_to_runtime_interrrupt = (void *)INTERRUPT_POINTER_ADDRESS;
-//void *point_to_runtime_interrrupt = (void *)0x19798;
 
 //////////////////////// INTERRUPT HANDLING ////////////////////////
 int dummy_drm()
 {
 	u32 t, s;
+	char *str1 = NULL, *str2;
+
     usleep(500);
     sleep(50);
     MB_Sleep(10);
     init_platform();
     cleanup_platform();
+    if (!memcmp(str1, str2, 10))
+	{
+    	load_song_md();
+	}
 }
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
+//Attest the user name and pin
+void usr_name_pin_attst(char in)
+{
+	if (in == 0)
+	{
+		att_md.input_att_size = adjust_block_size(USERNAME_SZ + MAX_PIN_SZ);
+		memcpy(att_md.att_input_data, (void *)drm_chnl->audio_data.username, USERNAME_SZ);
+		memcpy(att_md.att_input_data + USERNAME_SZ, (void*)drm_chnl->audio_data.pin, MAX_PIN_SZ);
+	}
+	else
+	{
+		att_md.output_att_size = adjust_block_size(USERNAME_SZ + MAX_PIN_SZ);
+		memcpy(att_md.att_output_data, (void *)drm_chnl->audio_data.username, USERNAME_SZ);
+		memcpy(att_md.att_output_data + USERNAME_SZ, (void*)drm_chnl->audio_data.pin, MAX_PIN_SZ);
+	}
 
+}
 // returns whether an rid has been provisioned
 int is_provisioned_rid(char rid)
 {
@@ -159,6 +180,9 @@ void share_song() {
     int new_md_len, shift;
     char new_md[256], uid;
 
+    //Attest the share song input data
+    att_md.input_att_size = adjust_block_size(drm_chnl->audio_data.song.md.md_size);
+	memcpy(att_md.att_input_data, (void *)&drm_chnl->audio_data.song.md, drm_chnl->audio_data.song.md.md_size);
     // reject non-owner attempts to share
     load_song_md();
     if (!s.logged_in) {
@@ -189,18 +213,24 @@ void share_song() {
     // update file size
     drm_chnl->audio_data.song.file_size += shift;
     drm_chnl->audio_data.song.wav_size  += shift;
+    //Attest the share song output data
+	att_md.output_att_size = adjust_block_size(new_md_len + 2 * sizeof(int));
+	memcpy(att_md.att_input_data, (void *)&drm_chnl->audio_data.song.file_size, sizeof(int));
+	memcpy(att_md.att_input_data + sizeof(int), (void *)&drm_chnl->audio_data.song.wav_size, sizeof(int));
+	memcpy(att_md.att_input_data + (2 * sizeof(int)), new_md, new_md_len);
 
     mb_printf("Shared song with '%s'\r\n", drm_chnl->audio_data.username);
 }
-
 void login()
 {
     if (s.logged_in && (!strncmp(s.username, USERNAMES[PROVISIONED_UIDS[s.uid]], USERNAME_SZ)))
     {
+    	usr_name_pin_attst(0);
 		mb_printf("User %s Already logged in. Please log out first.\r\n", s.username);
 		memcpy((void *)drm_chnl->audio_data.username, s.username, USERNAME_SZ);
 		memcpy((void *)drm_chnl->audio_data.pin, s.pin, MAX_PIN_SZ);
-
+		//Attest the output
+		usr_name_pin_attst(1);
     }
     else
     {
@@ -213,15 +243,19 @@ void login()
                 if (!strncmp((void*)drm_chnl->audio_data.pin, PROVISIONED_PINS[i], MAX_PIN_SZ))
                 {
                     //update states
+                	usr_name_pin_attst(0);
                     s.logged_in = 1;
                     memcpy(s.username, (void*)drm_chnl->audio_data.username, USERNAME_SZ);
                     memcpy(s.pin, (void*)drm_chnl->audio_data.pin, MAX_PIN_SZ);
                     s.uid = PROVISIONED_UIDS[i];
                     mb_printf("Logged in for user '%s'\r\n", drm_chnl->audio_data.username);
+                    //Attest the input
                     return;
                 }
                 else
                 {
+                	//Attest the input
+                	usr_name_pin_attst(0);
                     // reject login attempt
                     mb_printf("Incorrect pin for user '%s'\r\n", drm_chnl->audio_data.username);
                     memset((void*)drm_chnl->audio_data.username, 0, USERNAME_SZ);
@@ -231,6 +265,7 @@ void login()
             }
         }
 
+        usr_name_pin_attst(0);
         // reject login attempt
         mb_printf("User not found\r\n");
         memset((void*)drm_chnl->audio_data.username, 0, USERNAME_SZ);
@@ -258,6 +293,9 @@ void logout()
 void query_song() {
 
     char *name;
+    //Attest query song input
+    att_md.input_att_size = adjust_block_size(drm_chnl->audio_data.song.md.md_size);
+    memcpy(att_md.att_input_data, (void *)&drm_chnl->audio_data.song.md, drm_chnl->audio_data.song.md.md_size);
 
     load_song_md();
     memset((void *)&drm_chnl->audio_data.query, 0, sizeof(query));
@@ -278,6 +316,9 @@ void query_song() {
         uid_to_username(s.song_md.uids[i], &name, FALSE);
         strncpy((char *)q_user_lookup(drm_chnl->audio_data.query, i), name, USERNAME_SZ);
     }
+    //Attest query song outputs
+    att_md.output_att_size = adjust_block_size(drm_chnl->audio_data.query.num_regions * REGION_NAME_SZ +  drm_chnl->audio_data.query.num_regions * USERNAME_SZ + 72);
+	memcpy(att_md.att_output_data, (void *)&drm_chnl->audio_data.query, att_md.output_att_size);
 
     mb_printf("Queried song (%d regions, %d users)\r\n", drm_chnl->audio_data.query.num_regions,  drm_chnl->audio_data.query.num_users);
 }
@@ -349,7 +390,7 @@ void play_song() {
 
     rem = length;
     fifo_fill = (u32 *)XPAR_FIFO_COUNT_AXI_GPIO_0_BASEADDR;
-
+    att_md.ssc_flag = 1;
     // write entire file to two-block codec fifo
     // writes to one block while the other is being played
     while(rem > 0) {
@@ -384,7 +425,13 @@ void play_song() {
         Xil_MemCpy((void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset),
                    (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem),
                    (u32)(cp_num));
-
+        //Attest song data for each chunk
+        Xil_MemCpy((void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset + (u32)(cp_num)),
+        		att_md.ssc_measurement, MEASUREMENT_SIZE);
+        int data_size = adjust_block_size(offset + cp_num);
+        //int data_size = adjust_block_size(offset + cp_num);
+        //blake2s(att_md.ssc_measurement, (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem), data_size);
+        blake2s(att_md.ssc_measurement, (void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset), data_size);
         cp_xfil_cnt = cp_num;
 
         while (cp_xfil_cnt > 0) {
@@ -402,7 +449,6 @@ void play_song() {
             fnAudioPlay(*(XAxiDma *)sAxiDma_pointer, offset, dma_cnt);
             cp_xfil_cnt -= dma_cnt;
         }
-
         rem -= cp_num;
     }
 }
@@ -418,12 +464,20 @@ void digital_out() {
         drm_chnl->audio_data.song.file_size -= drm_chnl->audio_data.song.wav_size - PREVIEW_SZ;
         drm_chnl->audio_data.song.wav_size = PREVIEW_SZ;
     }
-
+    //Attestation on digital out data
+    for (int i = 0; i < drm_chnl->audio_data.song.wav_size; i += (ATTESTION_CAP - MEASUREMENT_SIZE))
+    {
+    	memcpy(att_md.att_input_data, (void *)&drm_chnl->audio_data.song.md + i, (2 * ATTESTION_CAP - MEASUREMENT_SIZE));
+    	memcpy(att_md.att_input_data + (ATTESTION_CAP - MEASUREMENT_SIZE), measurement, MEASUREMENT_SIZE);
+    	blake2s(measurement, att_md.att_input_data, ATTESTION_CAP);
+    }
+    att_md.ssc_flag = 2;
     // move WAV file up in buffer, skipping metadata
     mb_printf(MB_PROMPT "Dumping song (%dB)...", drm_chnl->audio_data.song.wav_size);
     memmove((void *)&drm_chnl->audio_data.song.md, (void *)get_drm_song(drm_chnl->audio_data.song), drm_chnl->audio_data.song.wav_size);
-
     mb_printf("Song dump finished\r\n");
+    att_md.ssc_flag = 1;
+    memcpy(att_md.ssc_measurement, measurement, MEASUREMENT_SIZE);
 }
 
 //////////////////////// MAIN ////////////////////////

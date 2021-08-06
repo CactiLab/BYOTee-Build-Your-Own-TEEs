@@ -10,8 +10,8 @@
 /*                                                                 */
 /*******************************************************************/
 
-_STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x400;
-_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x400;
+_STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x800;
+_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x800;
 
 /* Define Memories in the system */
 
@@ -51,28 +51,36 @@ SECTIONS
 	KEEP(*(.ssc.code.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
+.ssc.attestation.md :
+{
+	KEEP(*(.ssc.attestation.md))
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
 .test : {
     *main.o(.text)
 	*main.o(.text.*)
-	*blake2s.o(.text)
-	*blake2s.o(.text.*)
 	*platform.o(.text)
 	*platform.o(.text.*)
 	*util.o(.text)
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-/*.text : { */
-.text 0xfbc8: {
+/*.text : {  
+	*blake2s.o(.text)
+	*blake2s.o(.text.*)
+	*/
+.text 0xda5c: {
 
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.ssc.data.buffer 0x16ff4:
+
+.ssc.data.buffer 0x156cc + 0x3e8:
 {
 	KEEP(*(.ssc.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
 
 .data : {
    . = ALIGN(4);

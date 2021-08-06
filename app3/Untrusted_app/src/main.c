@@ -11,7 +11,6 @@
 #include <string.h>
 
 volatile cmd_channel *c;
-//volatile testing_channel *tt;
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 int secure_drm_load = 0;
 // sends a command to the CTEE using the shared command channel and interrupt
@@ -113,6 +112,8 @@ void login(char *username, char *pin) {
         return;
     }
 
+    generate_challenge_number();
+
     specify_ssc_command(LOGIN);
     strncpy((void*)c->drm_chnl.username, username, USERNAME_SZ);
     strncpy((void*)c->drm_chnl.pin , pin, MAX_PIN_SZ);
@@ -122,10 +123,20 @@ void login(char *username, char *pin) {
         continue; // wait for DRM to start working
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
+
+    print_measurement();
 }
 void logout() {
+	generate_challenge_number();
+
 	specify_ssc_command(LOGOUT);
 	send_command(SSC_COMMAND);
+    while (c->drm_state == STOPPED)
+		continue; // wait for DRM to start working
+	while (c->drm_state == WORKING)
+		continue; // wait for DRM to dump file
+
+	print_measurement();
 }
 //////////////////////// MAIN ////////////////////////
 void load_code(char *fileName)
@@ -267,7 +278,7 @@ void share_song(char *song_name, char *username) {
         mp_printf("Failed to load song!\r\n");
         return;
     }
-
+    generate_challenge_number();
     strncpy((char *)c->drm_chnl.username, username, USERNAME_SZ);
 
     // drive DRM
@@ -303,6 +314,7 @@ void share_song(char *song_name, char *username) {
     }
     close(fd);
     mp_printf("Finished writing file\r\n");
+    print_measurement();
 }
 
 
@@ -322,6 +334,8 @@ void query_song(char *song_file_name) {
         mp_printf("Failed to load song file!\r\n");
         return -1;
     }
+
+    generate_challenge_number();
     send_command(SSC_COMMAND);
 
     while (c->drm_state == STOPPED)
@@ -348,6 +362,7 @@ void query_song(char *song_file_name) {
 		}
 	}
 	printf("\r\n");
+	print_measurement();
 }
 
 int play_song(char *song_name) {
@@ -359,6 +374,7 @@ int play_song(char *song_name) {
         return 0;
     }
 
+    generate_challenge_number();
     // drive the DRM
     specify_ssc_command(PLAY);
     send_command(SSC_COMMAND);
@@ -425,7 +441,7 @@ int play_song(char *song_name) {
             print_playback_help();
         }
     }
-
+    print_measurement();
     return 0;
 }
 
@@ -437,7 +453,7 @@ void digital_out(char *song_name) {
         mp_printf("Failed to load song!\r\n");
         return;
     }
-
+    generate_challenge_number();
     // drive DRM
     specify_ssc_command(DIGITAL_OUT);
     send_command(SSC_COMMAND);
@@ -466,15 +482,18 @@ void digital_out(char *song_name) {
     }
     close(fd);
     mp_printf("Finished writing file\r\n");
+    print_measurement();
 }
-
-void preExeAtt()
+void generate_challenge_number()
 {
 	time_t t;
 	srand((unsigned) time(&t));
 	c->challenge_number = rand();
 	mp_printf("Challenge number is %d\n", c->challenge_number);
-
+}
+void preExeAtt()
+{
+	generate_challenge_number();
 	send_command(PREEXEATT);
 
 	while (c->drm_state == STOPPED)
@@ -485,10 +504,25 @@ void preExeAtt()
 	mp_printf("Computed measurement: ");
 	for (int i = 0; i < MEASUREMENT_SIZE; i++)
 	{
-		printf("%02x", c->hash[i]);
+		printf("%02x", c->preExehash[i]);
 	}
 	printf("\r\n");
 	mp_printf("Finished preExeAtt measurement\r\n");
+}
+void print_measurement()
+{
+	mp_printf("Computed preExeAtt measurement: ");
+	for (int i = 0; i < MEASUREMENT_SIZE; i++)
+	{
+		printf("%02x", c->preExehash[i]);
+	}
+	printf("\r\n");
+	mp_printf("Computed postExeAtt measurement: ");
+	for (int i = 0; i < MEASUREMENT_SIZE; i++)
+	{
+		printf("%02x", c->postExehash[i]);
+	}
+	printf("\r\n");
 }
 void postExeAtt()
 {
@@ -507,7 +541,7 @@ void postExeAtt()
 	mp_printf("Computed measurement: ");
 	for (int i = 0; i < MEASUREMENT_SIZE; i++)
 	{
-		printf("%02x", c->hash[i]);
+		printf("%02x", c->postExehash[i]);
 	}
 	printf("\r\n");
 	mp_printf("Finished postExeAtt measurement\r\n");
@@ -526,16 +560,9 @@ int main(int argc, char **argv)
 		mp_printf("MMAP Failed! Error = %d\r\n", errno);
 		return -1;
 	}
-   /* mem = open("/dev/uio1", O_RDWR);
-    tt = mmap(NULL, sizeof(testing_channel), PROT_READ | PROT_WRITE, MAP_SHARED, mem, 0);
-    if (tt == MAP_FAILED)
-	{
-		mp_printf("MMAP Failed! Error = %d\r\n", errno);
-		return -1;
-	}*/
     mp_printf("Command channel open at %p (%dB)\r\n", c, sizeof(cmd_channel));
 
-    // dump player information before command loop
+    // verify the initialization of BYOT_FW
     query_BYOT_runtime();
 
     // go into command loop until quit is requested
@@ -607,11 +634,15 @@ int main(int argc, char **argv)
 	    }
         else if (!strncmp(cmd, "encrypt", sizeof("encrypt")))
         {
+        	generate_challenge_number();
         	encrypt_SSC();
+        	print_measurement();
         }
         else if (!strncmp(cmd, "decrypt", sizeof("decrypt")))
 		{
+        	generate_challenge_number();
         	decrypt_SSC();
+        	print_measurement();
 		}
         else if (!strncmp(cmd, "quit", sizeof("quit")))
         {
