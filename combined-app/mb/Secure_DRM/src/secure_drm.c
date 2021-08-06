@@ -22,7 +22,6 @@ attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
 drm_internal_state s;
 
 void *point_to_runtime_interrrupt = (void *)INTERRUPT_POINTER_ADDRESS;
-//void *point_to_runtime_interrrupt = (void *)0x19798;
 
 //////////////////////// INTERRUPT HANDLING ////////////////////////
 int dummy_drm()
@@ -39,7 +38,6 @@ int dummy_drm()
 	{
     	load_song_md();
 	}
-    blake2s(str1, str2 , 10);
 }
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 //Attest the user name and pin
@@ -433,11 +431,6 @@ void play_song() {
         int data_size = adjust_block_size(offset + cp_num);
         //blake2s(measurement, (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem), data_size);
         blake2s(att_md.ssc_measurement, (void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset), data_size);
-        for (int i = 0; i < MEASUREMENT_SIZE; i++)
-        {
-        	xil_printf("%.2x", att_md.ssc_measurement[i]);
-        }
-        xil_printf("\r\n");
         cp_xfil_cnt = cp_num;
 
         while (cp_xfil_cnt > 0) {
@@ -455,7 +448,6 @@ void play_song() {
             fnAudioPlay(*(XAxiDma *)sAxiDma_pointer, offset, dma_cnt);
             cp_xfil_cnt -= dma_cnt;
         }
-        xil_printf("on to the next hop\r\n");
         rem -= cp_num;
     }
 }
@@ -474,9 +466,9 @@ void digital_out() {
     //Attestation on digital out data
     for (int i = 0; i < drm_chnl->audio_data.song.wav_size; i += (ATTESTION_CAP - MEASUREMENT_SIZE))
     {
-    	memcpy(att_md.att_output_data, (void *)&drm_chnl->audio_data.song.md + i, (ATTESTION_CAP - MEASUREMENT_SIZE));
-    	memcpy(att_md.att_output_data + (ATTESTION_CAP - MEASUREMENT_SIZE), measurement, MEASUREMENT_SIZE);
-    	blake2s(measurement, att_md.att_output_data, ATTESTION_CAP);
+    	memcpy(att_md.att_input_data, (void *)&drm_chnl->audio_data.song.md + i, (2 * ATTESTION_CAP - MEASUREMENT_SIZE));
+    	memcpy(att_md.att_input_data + (ATTESTION_CAP - MEASUREMENT_SIZE), measurement, MEASUREMENT_SIZE);
+    	blake2s(measurement, att_md.att_input_data, ATTESTION_CAP);
     }
 
     // move WAV file up in buffer, skipping metadata

@@ -186,7 +186,6 @@ void concat_SSC_attst(char flag)
 {
 	if (att_md.ssc_flag == 1)
 	{
-		mb_printf("ssc flag one concating ssc measurement\r\n");
 		memcpy(att_md.att_input_data, preExeResult, MEASUREMENT_SIZE);
 		memcpy(att_md.att_input_data + MEASUREMENT_SIZE, att_md.ssc_measurement, MEASUREMENT_SIZE);
 		if (flag == 0)
