@@ -429,7 +429,8 @@ void play_song() {
         Xil_MemCpy((void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset + (u32)(cp_num)),
         		att_md.ssc_measurement, MEASUREMENT_SIZE);
         int data_size = adjust_block_size(offset + cp_num);
-        //blake2s(measurement, (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem), data_size);
+        //int data_size = adjust_block_size(offset + cp_num);
+        //blake2s(att_md.ssc_measurement, (void *)(get_drm_song(drm_chnl->audio_data.song) + length - rem), data_size);
         blake2s(att_md.ssc_measurement, (void *)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset), data_size);
         cp_xfil_cnt = cp_num;
 
@@ -470,7 +471,7 @@ void digital_out() {
     	memcpy(att_md.att_input_data + (ATTESTION_CAP - MEASUREMENT_SIZE), measurement, MEASUREMENT_SIZE);
     	blake2s(measurement, att_md.att_input_data, ATTESTION_CAP);
     }
-
+    att_md.ssc_flag = 2;
     // move WAV file up in buffer, skipping metadata
     mb_printf(MB_PROMPT "Dumping song (%dB)...", drm_chnl->audio_data.song.wav_size);
     memmove((void *)&drm_chnl->audio_data.song.md, (void *)get_drm_song(drm_chnl->audio_data.song), drm_chnl->audio_data.song.wav_size);
