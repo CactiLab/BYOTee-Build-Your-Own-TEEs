@@ -63,7 +63,7 @@ def main():
         print("Write to file failed")
         raise
     SSC_file.close()
-    #os.system("./encrypt_SSA SSC/AES_SSC")
+    os.system("./encrypt_SSA SSC/AES_SSC")
     print ("\n" + SSC_dump_location + " --dumped file dumped at location -> SSC/")
     #os.system(dump_command)
 

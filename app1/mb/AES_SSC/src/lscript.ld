@@ -108,7 +108,7 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.rodata 0x161d4: {
+.rodata 0x1561c: {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)

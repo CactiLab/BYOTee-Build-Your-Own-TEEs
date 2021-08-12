@@ -79,6 +79,7 @@ void format_SSC_code() {
 	memcpy(ssc_data.data, (local_state.code + sizeof(ssc_meta_data) + received_metadata.sss_code_size), received_metadata.data_sec_size);
 	memcpy(ssc_ro_data.ro_data, (local_state.code + sizeof(ssc_meta_data) + received_metadata.sss_code_size + received_metadata.data_sec_size), received_metadata.ro_data_size);
 	memmove(local_state.code, (local_state.code + sizeof(ssc_meta_data)), received_metadata.sss_code_size);
+	//memset(local_state.code + received_metadata.sss_code_size, 0, CODE_SIZE - received_metadata.sss_code_size);
 
 }
 void load_code(){
