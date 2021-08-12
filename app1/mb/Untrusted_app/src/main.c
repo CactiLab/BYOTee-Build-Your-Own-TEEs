@@ -129,8 +129,9 @@ void logout() {
 //////////////////////// MAIN ////////////////////////
 void load_code(char *fileName)
 {
+	c->file_size = (int) load_file(fileName, (void *)&c->code);
     // load file into shared buffer
-    if (!load_file(fileName, (void *)&c->code))
+    if (!c->file_size)
     {
         mp_printf("Failed to load code!\r\n");
         return -1;

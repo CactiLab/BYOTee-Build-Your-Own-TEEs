@@ -84,6 +84,7 @@ typedef volatile struct __attribute__((__packed__)) {
    unsigned char postExehash[MEASUREMENT_SIZE];
    char code [CODE_SIZE];
    unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];
+   int file_size;
    drm_audio_channel drm_chnl;
 } cmd_channel;
 

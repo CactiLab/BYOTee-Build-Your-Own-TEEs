@@ -61,13 +61,15 @@ SECTIONS
 	*main.o(.text.*)
 	*blake2s.o(.text)
 	*blake2s.o(.text.*)
+	*aes.o(.text)
+	*aes.o(.text.*)
 	*platform.o(.text)
 	*platform.o(.text.*)
 	*util.o(.text)
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 /*.text : { */
-.text 0xfbf4: {
+.text : {
 
    *(.text)
    *(.text.*)
