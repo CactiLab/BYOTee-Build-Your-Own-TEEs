@@ -3,26 +3,28 @@
 #include "PWM.h"
 #include "xil_exception.h"
 #include "xgpio.h"
-#define GPIO_DEVICE_ID		XPAR_GPIO_0_DEVICE_ID
-#define INTC_GPIO_INTERRUPT_ID	XPAR_INTC_0_GPIO_0_VEC_ID
+#define GPIO_DEVICE_ID XPAR_GPIO_0_DEVICE_ID
+#define INTC_GPIO_INTERRUPT_ID XPAR_INTC_0_GPIO_0_VEC_ID
 XGpio Gpio;
 
-#define GPIO_CHANNEL1		1
+#define GPIO_CHANNEL1 1
 static u16 GlobalIntrMask;
 void GpioHandler(void *CallBackRef);
 /*
  * This function enables the PWM module and sets its period so it can drive the RGB LED
  */
-void enableLED(u32* led){
-    PWM_Enable((u32)led);
-    PWM_Set_Period((u32)led, (u32)59999);
+void enableLED(u32 *led)
+{
+	PWM_Enable((u32)led);
+	PWM_Set_Period((u32)led, (u32)59999);
 }
 
 /*
  * This function drives the PWM based upon the input color struct
  * It drives LD0 with the input color struct
  */
-void setLED(u32* led, struct color c){
+void setLED(u32 *led, struct color c)
+{
 	PWM_Set_Duty((u32)led, c.b, (u32)0);
 	PWM_Set_Duty((u32)led, c.g, (u32)1);
 	PWM_Set_Duty((u32)led, c.r, (u32)2);
@@ -49,28 +51,41 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	u16 IntrMask = GPIO_CHANNEL1;
 	//test_button_interrupt(XIntcInstancePtr);
 	Status = XGpio_Initialize(&Gpio, GPIO_DEVICE_ID);
-	if (Status != XST_SUCCESS) {
+
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
-	} else {
+	}
+	else
+	{
 		xil_printf("GPIO initialize success\r\n");
 	}
 
 	Status = XIntc_Connect(XIntcInstancePtr, XPAR_INTC_0_DEVICE_ID,
-				    hdlr,
-				   (void *)0);
-	if (Status != XST_SUCCESS) {
+						   hdlr,
+						   (void *)0);
+
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
 	}
+
 	XIntc_Connect(XIntcInstancePtr, INTC_GPIO_INTERRUPT_ID,
-			      (Xil_ExceptionHandler)GpioHandler, &Gpio);
-	if (Status != XST_SUCCESS) {
+				  (Xil_ExceptionHandler)GpioHandler, &Gpio);
+
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
-	} else
+	}
+	else
 	{
 		xil_printf("x intc connect success\r\n");
 	}
+
 	Status = XIntc_Start(XIntcInstancePtr, XIN_REAL_MODE);
-	if (Status != XST_SUCCESS) {
+
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
 	}
 
@@ -81,29 +96,28 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	XGpio_InterruptGlobalEnable(&Gpio);
 
 	int t = XGpio_SelfTest(&Gpio);
-		if (t == XST_SUCCESS)
-			{
-				xil_printf("\r\n\r\n\r\nSELF TEST OK\r\n\r\n\r\n");
-			}
-		else {
-			xil_printf("\r\n\r\n\r\nFailed\r\n");
-		}
+	
+	if (t == XST_SUCCESS)
+	{
+		xil_printf("\r\n\r\n\r\nSELF TEST OK\r\n\r\n\r\n");
+	}
+	else
+	{
+		xil_printf("\r\n\r\n\r\nFailed\r\n");
+	}
 
 	Xil_ExceptionInit();
 
-
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
-				(Xil_ExceptionHandler)XIntc_InterruptHandler,
-				XIntcInstancePtr);
+								 (Xil_ExceptionHandler)XIntc_InterruptHandler,
+								 XIntcInstancePtr);
 
 	/*Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
 				 (Xil_ExceptionHandler)XIntc_InterruptHandler, XIntcInstancePtr);*/
 
-
 	Xil_ExceptionEnable();
 
 	return XST_SUCCESS;
-
 }
 
 /******************************************************************************
@@ -115,8 +129,8 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
  * @return	none.
  *****************************************************************************/
 
-
-void get_unsigned_int(unsigned char *loc_buffer, ssc_meta_data *result) {
+void get_unsigned_int(unsigned char *loc_buffer, ssc_meta_data *result)
+{
 
 	result->ssc_code_address = (*(loc_buffer) << 24 | *(loc_buffer + 1) << 16 | *(loc_buffer + 2) << 8 | *(loc_buffer + 3));
 	result->data_sec_address = (*(loc_buffer + 4) << 24 | *(loc_buffer + 5) << 16 | *(loc_buffer + 6) << 8 | *(loc_buffer + 7));

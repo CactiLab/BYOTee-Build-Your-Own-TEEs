@@ -20,48 +20,66 @@
 //AES SSC CONSTANTS
 #define ENC_DEC_DATA_SIZE 64
 // LED colors and controller
-struct color {
+struct color
+{
     u32 r;
     u32 g;
     u32 b;
 };
 
-enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT, EXECUTE};
-enum states   { STOPPED, WORKING, PLAYING, PAUSED };
+enum commands
+{
+    LOAD_CODE,
+    QUERY_DRM,
+    SSC_COMMAND,
+    EXIT,
+    EXECUTE
+};
 
+enum states
+{
+    STOPPED,
+    WORKING,
+    PLAYING,
+    PAUSED
+};
 
 // struct to interpret shared command channel
 
-typedef volatile struct __attribute__((__packed__)) {
-   char cmd;
-   char drm_state;
-   char padding[PADING_SZ];
-   char code [CODE_SIZE];
+typedef volatile struct __attribute__((__packed__))
+{
+    char cmd;
+    char drm_state;
+    char padding[PADING_SZ];
+    char code[CODE_SIZE];
 } cmd_channel;
 
 // store of internal state
 
-typedef struct {
-    char code [CODE_SIZE];
+typedef struct
+{
+    char code[CODE_SIZE];
     //char output[OUTPUT_size];
 } internal_state;
 
-typedef struct {
-    char data [DATA_SIZE];
+typedef struct
+{
+    char data[DATA_SIZE];
 } data_content;
 
-typedef struct {
-    char ro_data [RO_DATA_SIZE];
+typedef struct
+{
+    char ro_data[RO_DATA_SIZE];
 } ro_data_content;
 
-typedef struct {
-	unsigned int ssc_code_address;
-	unsigned int data_sec_address;
-	unsigned int ro_data_sec_address;
-	unsigned int sss_code_size;
-	unsigned int data_sec_size;
-	unsigned int ro_data_size;
+typedef struct
+{
+    unsigned int ssc_code_address;
+    unsigned int data_sec_address;
+    unsigned int ro_data_sec_address;
+    unsigned int sss_code_size;
+    unsigned int data_sec_size;
+    unsigned int ro_data_size;
 } ssc_meta_data;
 
 #endif /* SRC_CONSTANTS_H_ */
-
