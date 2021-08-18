@@ -50,6 +50,7 @@ int dummy_aes_ssc()
     Xil_MemCpy(str1, str2, 10);
     //memcmp(str1, str2, 10);
 }
+
 int main()
 {
     memcpy(received_data, (void *)cmd_chnl->enc_dec_data, ENC_DEC_DATA_SIZE);
@@ -74,6 +75,7 @@ int main()
     att_md.output_att_size = ENC_DEC_DATA_SIZE;
     memcpy(&att_md.att_output_data, received_data, ENC_DEC_DATA_SIZE);
 }
+
 void aes_dec_test()
 {
 #if defined(AES256)
@@ -100,6 +102,7 @@ void aes_dec_test()
 
     xil_printf("Decryption done writing to shared location \r\n");
 }
+
 void aes_enc_test()
 {
 #if defined(AES256)

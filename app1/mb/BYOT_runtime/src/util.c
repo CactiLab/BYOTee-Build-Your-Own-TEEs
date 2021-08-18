@@ -23,19 +23,18 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 {
 	int Status;
 
-
 	/*
 	 * Connect a device driver handler that will be called when an interrupt
 	 * for the device occurs, the device driver handler performs the
 	 * specific interrupt processing for the device.
 	 */
 	Status = XIntc_Connect(XIntcInstancePtr, XPAR_INTC_0_DEVICE_ID,
-				    hdlr,
-				   (void *)0);
-	if (Status != XST_SUCCESS) {
+						   hdlr,
+						   (void *)0);
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
 	}
-
 
 	/*
 	 * Start the interrupt controller such that interrupts are enabled for
@@ -44,10 +43,10 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	 * interrupt.
 	 */
 	Status = XIntc_Start(XIntcInstancePtr, XIN_REAL_MODE);
-	if (Status != XST_SUCCESS) {
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
 	}
-
 
 	/*
 	 * Enable the interrupt for the device
@@ -63,8 +62,8 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	 * Register the interrupt controller handler with the exception table.
 	 */
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
-				(Xil_ExceptionHandler)XIntc_InterruptHandler,
-				XIntcInstancePtr);
+								 (Xil_ExceptionHandler)XIntc_InterruptHandler,
+								 XIntcInstancePtr);
 
 	/*
 	 * Enable exceptions.
@@ -72,11 +71,10 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	Xil_ExceptionEnable();
 
 	return XST_SUCCESS;
-
 }
 
-void get_unsigned_int(unsigned char *loc_buffer, ssc_meta_data *result) {
-
+void get_unsigned_int(unsigned char *loc_buffer, ssc_meta_data *result)
+{
 	result->ssc_code_address = (*(loc_buffer) << 24 | *(loc_buffer + 1) << 16 | *(loc_buffer + 2) << 8 | *(loc_buffer + 3));
 	result->data_sec_address = (*(loc_buffer + 4) << 24 | *(loc_buffer + 5) << 16 | *(loc_buffer + 6) << 8 | *(loc_buffer + 7));
 	result->ro_data_sec_address = (*(loc_buffer + 8) << 24 | *(loc_buffer + 9) << 16 | *(loc_buffer + 10) << 8 | *(loc_buffer + 11));
