@@ -21,12 +21,12 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 {
 	int Status;
 	Status = XIntc_Connect(XIntcInstancePtr, XPAR_INTC_0_DEVICE_ID,
-				    hdlr,
-				   (void *)0);
-	if (Status != XST_SUCCESS) {
+						   hdlr,
+						   (void *)0);
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
 	}
-
 
 	/*
 	 * Start the interrupt controller such that interrupts are enabled for
@@ -35,10 +35,10 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	 * interrupt.
 	 */
 	Status = XIntc_Start(XIntcInstancePtr, XIN_REAL_MODE);
-	if (Status != XST_SUCCESS) {
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
 	}
-
 
 	/*
 	 * Enable the interrupt for the device
@@ -54,8 +54,8 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	 * Register the interrupt controller handler with the exception table.
 	 */
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
-				(Xil_ExceptionHandler)XIntc_InterruptHandler,
-				XIntcInstancePtr);
+								 (Xil_ExceptionHandler)XIntc_InterruptHandler,
+								 XIntcInstancePtr);
 
 	/*
 	 * Enable exceptions.
@@ -63,5 +63,4 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	Xil_ExceptionEnable();
 
 	return XST_SUCCESS;
-
 }
