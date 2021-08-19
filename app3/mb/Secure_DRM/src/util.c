@@ -11,10 +11,6 @@ void enableLED(u32 *led)
 	PWM_Set_Period((u32)led, (u32)59999);
 }
 
-/*
- * This function drives the PWM based upon the input color struct
- * It drives LD0 with the input color struct
- */
 void setLED(u32 *led, struct color c)
 {
 	PWM_Set_Duty((u32)led, c.b, (u32)0);
@@ -22,21 +18,6 @@ void setLED(u32 *led, struct color c)
 	PWM_Set_Duty((u32)led, c.r, (u32)2);
 }
 
-/******************************************************************************/
-/**
-*
-* This function connects the interrupt handler of the interrupt controller to
-* the processor.  This function is seperate to allow it to be customized for
-* each application.  Each processor or RTOS may require unique processing to
-* connect the interrupt handler.
-*
-* @param	None.
-*
-* @return	None.
-*
-* @note		None.
-*
-****************************************************************************/
 int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 {
 	int Status;
@@ -49,6 +30,7 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	Status = XIntc_Connect(XIntcInstancePtr, XPAR_INTC_0_DEVICE_ID,
 						   hdlr,
 						   (void *)0);
+						   
 	if (Status != XST_SUCCESS)
 	{
 		return XST_FAILURE;
@@ -61,6 +43,7 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	 * interrupt.
 	 */
 	Status = XIntc_Start(XIntcInstancePtr, XIN_REAL_MODE);
+
 	if (Status != XST_SUCCESS)
 	{
 		return XST_FAILURE;
@@ -91,14 +74,6 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	return XST_SUCCESS;
 }
 
-/******************************************************************************
- * Configure the I2S controller to transmit data, which will be read out from
- * the local memory vector (Mem)
- *
- * @param	u32NrSamples is the number of samples to play.
- *
- * @return	none.
- *****************************************************************************/
 u32 fnAudioPlay(XAxiDma AxiDma, u32 offset, u32 u32NrSamples)
 {
 	u32 status;
@@ -116,6 +91,7 @@ XStatus fnConfigDma(XAxiDma *AxiDma)
 	//Make sure the DMA hardware is present in the project
 	//Ensures that the DMA hardware has been loaded
 	pCfgPtr = XAxiDma_LookupConfig(XPAR_AXIDMA_0_DEVICE_ID);
+
 	if (!pCfgPtr)
 	{
 
@@ -147,11 +123,14 @@ XStatus fnConfigDma(XAxiDma *AxiDma)
 	return XST_SUCCESS;
 }
 
-int adjust_block_size(int data_size) {
+int adjust_block_size(int data_size)
+{
 	int remainder = data_size % BLAKE2S_BLOCKBYTES;
+
 	if (remainder != 0)
 	{
 		data_size += (BLAKE2S_BLOCKBYTES - remainder);
 	}
+
 	return data_size;
 }
