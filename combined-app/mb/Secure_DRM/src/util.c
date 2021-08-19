@@ -147,7 +147,8 @@ XStatus fnConfigDma(XAxiDma *AxiDma)
 	return XST_SUCCESS;
 }
 
-int adjust_block_size(int data_size) {
+int adjust_block_size(int data_size)
+{
 	int remainder = data_size % BLAKE2S_BLOCKBYTES;
 	if (remainder != 0)
 	{

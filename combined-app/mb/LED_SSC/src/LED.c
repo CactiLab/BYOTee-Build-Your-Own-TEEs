@@ -1,5 +1,4 @@
 
-
 #include <stdio.h>
 #include "platform.h"
 #include "xil_printf.h"
@@ -28,19 +27,21 @@ int dummy()
     usleep(500);
     init_platform();
     cleanup_platform();
-	memmove(str1, str2, 10);
-	strcpy(str1, str2);
-	if (!strcmp(str1, NULL))
-	{
-		*str1 = NULL;
-	}
-	Xil_MemCpy(str1, str2, 10);
+    memmove(str1, str2, 10);
+    strcpy(str1, str2);
+
+    if (!strcmp(str1, NULL))
+    {
+        *str1 = NULL;
+    }
+    Xil_MemCpy(str1, str2, 10);
 }
 
 int fw_add()
 {
     return 5 + 3;
 }
+
 int main()
 {
     u32 *led = (u32 *)XPAR_RGB_PWM_0_PWM_AXI_BASEADDR;

@@ -15,29 +15,40 @@
 #define PADING_SZ 2
 
 // LED colors and controller
-struct color {
+struct color
+{
     u32 r;
     u32 g;
     u32 b;
 };
 
-
-enum commands { LOAD_CODE, QUERY_DRM};
-enum states   { STOPPED, WORKING, PLAYING, PAUSED };
-
+enum commands
+{
+    LOAD_CODE,
+    QUERY_DRM
+};
+enum states
+{
+    STOPPED,
+    WORKING,
+    PLAYING,
+    PAUSED
+};
 
 // struct to interpret shared command channel
 
-typedef volatile struct __attribute__((__packed__)) {
-   char cmd;
-   char drm_state;
-   char padding[PADING_SZ];
-   char code [CODE_SIZE];
+typedef volatile struct __attribute__((__packed__))
+{
+    char cmd;
+    char drm_state;
+    char padding[PADING_SZ];
+    char code[CODE_SIZE];
 } cmd_channel;
 
 // store of internal state
 
-typedef struct {
-	 char code [CODE_SIZE];
+typedef struct
+{
+    char code[CODE_SIZE];
 } internal_state;
 #endif /* SRC_CONSTANTS_H_ */

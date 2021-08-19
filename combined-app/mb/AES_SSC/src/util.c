@@ -5,16 +5,18 @@
 /*
  * This function enables the PWM module and sets its period so it can drive the RGB LED
  */
-void enableLED(u32* led){
-    PWM_Enable((u32)led);
-    PWM_Set_Period((u32)led, (u32)59999);
+void enableLED(u32 *led)
+{
+	PWM_Enable((u32)led);
+	PWM_Set_Period((u32)led, (u32)59999);
 }
 
 /*
  * This function drives the PWM based upon the input color struct
  * It drives LD0 with the input color struct
  */
-void setLED(u32* led, struct color c){
+void setLED(u32 *led, struct color c)
+{
 	PWM_Set_Duty((u32)led, c.b, (u32)0);
 	PWM_Set_Duty((u32)led, c.g, (u32)1);
 	PWM_Set_Duty((u32)led, c.r, (u32)2);
@@ -39,19 +41,18 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 {
 	int Status;
 
-
 	/*
 	 * Connect a device driver handler that will be called when an interrupt
 	 * for the device occurs, the device driver handler performs the
 	 * specific interrupt processing for the device.
 	 */
 	Status = XIntc_Connect(XIntcInstancePtr, XPAR_INTC_0_DEVICE_ID,
-				    hdlr,
-				   (void *)0);
-	if (Status != XST_SUCCESS) {
+						   hdlr,
+						   (void *)0);
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
 	}
-
 
 	/*
 	 * Start the interrupt controller such that interrupts are enabled for
@@ -60,10 +61,10 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	 * interrupt.
 	 */
 	Status = XIntc_Start(XIntcInstancePtr, XIN_REAL_MODE);
-	if (Status != XST_SUCCESS) {
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
 	}
-
 
 	/*
 	 * Enable the interrupt for the device
@@ -79,8 +80,8 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	 * Register the interrupt controller handler with the exception table.
 	 */
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
-				(Xil_ExceptionHandler)XIntc_InterruptHandler,
-				XIntcInstancePtr);
+								 (Xil_ExceptionHandler)XIntc_InterruptHandler,
+								 XIntcInstancePtr);
 
 	/*
 	 * Enable exceptions.
@@ -88,7 +89,6 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	Xil_ExceptionEnable();
 
 	return XST_SUCCESS;
-
 }
 
 /******************************************************************************
@@ -103,10 +103,9 @@ u32 fnAudioPlay(XAxiDma AxiDma, u32 offset, u32 u32NrSamples)
 {
 	u32 status;
 
-	status = XAxiDma_SimpleTransfer(&AxiDma,(u32) (XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset), u32NrSamples, XAXIDMA_DMA_TO_DEVICE);
+	status = XAxiDma_SimpleTransfer(&AxiDma, (u32)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset), u32NrSamples, XAXIDMA_DMA_TO_DEVICE);
 
 	return status;
-
 }
 
 XStatus fnConfigDma(XAxiDma *AxiDma)
@@ -117,6 +116,7 @@ XStatus fnConfigDma(XAxiDma *AxiDma)
 	//Make sure the DMA hardware is present in the project
 	//Ensures that the DMA hardware has been loaded
 	pCfgPtr = XAxiDma_LookupConfig(XPAR_AXIDMA_0_DEVICE_ID);
+	
 	if (!pCfgPtr)
 	{
 
@@ -129,6 +129,7 @@ XStatus fnConfigDma(XAxiDma *AxiDma)
 	//Reads and sets all the available information
 	//about the DMA to the AxiDma variable
 	Status = XAxiDma_CfgInitialize(AxiDma, pCfgPtr);
+
 	if (Status != XST_SUCCESS)
 	{
 
@@ -138,7 +139,7 @@ XStatus fnConfigDma(XAxiDma *AxiDma)
 	}
 
 	//Ensures that the Scatter Gather mode is not active
-	if(XAxiDma_HasSg(AxiDma))
+	if (XAxiDma_HasSg(AxiDma))
 	{
 		xil_printf(MB_PROMPT "Device configured as SG mode\r\n");
 

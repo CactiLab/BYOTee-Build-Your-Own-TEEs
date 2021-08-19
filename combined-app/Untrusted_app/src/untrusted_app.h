@@ -1,7 +1,6 @@
 #ifndef SRC_UNTRUSTED_APP_H_
 #define SRC_UNTRUSTED_APP_H_
 
-
 // Untrusted_app constants
 #define USR_CMD_SZ 64
 
@@ -13,7 +12,7 @@
 #define MAX_USERS 64
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
-#define MAX_SONG_SZ (1<<25)
+#define MAX_SONG_SZ (1 << 25)
 #define PADING_SZ 1
 #define PACKAGING_SZ1 4
 #define PACKAGING_SZ2 32
@@ -29,12 +28,43 @@
 #define q_region_lookup(q, i) (q.regions + (i * REGION_NAME_SZ))
 #define q_user_lookup(q, i) (q.users + (i * USERNAME_SZ))
 
-enum commands { LOAD_CODE, QUERY_DRM, SSC_COMMAND, EXIT,  EXECUTE, PREEXEATT, POSTEXEATT};
-enum states   { STOPPED, WORKING, PLAYING, PAUSED };
-enum ssc_command {LOGIN, LOGOUT, QUERY, SHARE, PLAY, PAUSE, STOP, RESTART, DIGITAL_OUT };
-enum aes_command {ENC, DEC};
+enum commands
+{
+    LOAD_CODE,
+    QUERY_DRM,
+    SSC_COMMAND,
+    EXIT,
+    EXECUTE,
+    PREEXEATT,
+    POSTEXEATT
+};
+enum states
+{
+    STOPPED,
+    WORKING,
+    PLAYING,
+    PAUSED
+};
+enum ssc_command
+{
+    LOGIN,
+    LOGOUT,
+    QUERY,
+    SHARE,
+    PLAY,
+    PAUSE,
+    STOP,
+    RESTART,
+    DIGITAL_OUT
+};
+enum aes_command
+{
+    ENC,
+    DEC
+};
 
-typedef struct {
+typedef struct
+{
     int num_regions;
     int num_users;
     char owner[USERNAME_SZ];
@@ -42,7 +72,8 @@ typedef struct {
     char users[MAX_USERS * USERNAME_SZ];
 } query;
 
-typedef struct __attribute__((__packed__)) {
+typedef struct __attribute__((__packed__))
+{
     char md_size;
     char owner_id;
     char num_regions;
@@ -50,7 +81,8 @@ typedef struct __attribute__((__packed__)) {
     char buf[];
 } drm_md;
 
-typedef struct __attribute__((__packed__)) {
+typedef struct __attribute__((__packed__))
+{
     char packing1[4];
     int file_size;
     char packing2[32];
@@ -59,14 +91,16 @@ typedef struct __attribute__((__packed__)) {
 } song;
 
 // I/O Structure for Secure DRM SSC
-typedef struct __attribute__((__packed__)) {
+typedef struct __attribute__((__packed__))
+{
     char ssc_cmd;
     char drm_state;
     char login_status;
     char padding;
     char username[USERNAME_SZ];
-	char pin[MAX_PIN_SZ];
-    union {
+    char pin[MAX_PIN_SZ];
+    union
+    {
         song song;
         query query;
         char buf[MAX_SONG_SZ];
@@ -74,17 +108,18 @@ typedef struct __attribute__((__packed__)) {
 } drm_audio_channel;
 
 // I/O Structure for BYOT Runtime and Secure DRM SSC
-typedef volatile struct __attribute__((__packed__)) {
-   char cmd;
-   char drm_state;
-   char aes_cmd;
-   char padding[PADING_SZ];
-   unsigned int challenge_number;
-   unsigned char preExehash[MEASUREMENT_SIZE];
-   unsigned char postExehash[MEASUREMENT_SIZE];
-   char code [CODE_SIZE];
-   unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];
-   drm_audio_channel drm_chnl;
+typedef volatile struct __attribute__((__packed__))
+{
+    char cmd;
+    char drm_state;
+    char aes_cmd;
+    char padding[PADING_SZ];
+    unsigned int challenge_number;
+    unsigned char preExehash[MEASUREMENT_SIZE];
+    unsigned char postExehash[MEASUREMENT_SIZE];
+    char code[CODE_SIZE];
+    unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];
+    drm_audio_channel drm_chnl;
 } cmd_channel;
 
 /*typedef volatile struct __attribute__((__packed__)) {
@@ -92,4 +127,3 @@ typedef volatile struct __attribute__((__packed__)) {
 	int a2;
 }testing_channel;*/
 #endif /* SRC_UNTRUSTED_APP_H_ */
-
