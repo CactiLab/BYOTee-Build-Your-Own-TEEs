@@ -20,7 +20,7 @@ Issue Date: 20/12/2007
 
 #include "hmac.h"
 
-#ifdef SHA_1
+/*#ifdef SHA_1
 
 #define SHA1_TESTS 11
 
@@ -196,12 +196,12 @@ struct
     }
 };
 
-#endif
+#endif*/
 
-#ifdef SHA_256
+//#ifdef SHA_256
 
 /*  HMAC-SHA256 test vectors from draft-ietf-ipsec-ciph-sha-256-01.txt  */
-
+/*
 #define SHA256_TESTS 10
 
 struct
@@ -366,14 +366,14 @@ struct
  };
 
 #endif
-
-#define SHA2_TESTS   7
+*/
+#define SHA2_TESTS   1
 
  struct
 {   unsigned int key_len;
     unsigned int txt_len;
     unsigned int mac_len[4];
-    unsigned char key[140];
+    unsigned char key[20];
     unsigned char text[160];
     unsigned char r224[28];
     unsigned char r256[32];
@@ -382,9 +382,9 @@ struct
 } t_s2[SHA2_TESTS] =
 {
     {   20, 8, { 28, 32, 48, 64 },
-    { 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b,
-      0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b,
-      0x0b, 0x0b, 0x0b, 0x0b },
+    { 0x01, 0xab, 0xcb, 0xdb, 0x4b, 0x7b, 0xaa, 0xca,
+      0x8b, 0x8b, 0x35, 0xcb, 0x3b, 0x0c, 0x4b, 0xfb,
+      0x01, 0xee, 0xfc, 0xcc},
     { 0x48, 0x69, 0x20, 0x54, 0x68, 0x65, 0x72, 0x65 },
     { 0x89, 0x6f, 0xb1, 0x12, 0x8a, 0xbb, 0xdf, 0x19,
       0x68, 0x32, 0x10, 0x7c, 0xd4, 0x9d, 0xf3, 0x3f,
@@ -408,7 +408,8 @@ struct
       0x03, 0x8b, 0x27, 0x4e, 0xae, 0xa3, 0xf4, 0xe4,
       0xbe, 0x9d, 0x91, 0x4e, 0xeb, 0x61, 0xf1, 0x70,
       0x2e, 0x69, 0x6c, 0x20, 0x3a, 0x12, 0x68, 0x54}
-  },
+  }
+  /*,
     {   4, 28, { 28, 32, 48, 64 },
     { 0x4a, 0x65, 0x66, 0x65 },
     { 0x77, 0x68, 0x61, 0x74, 0x20, 0x64, 0x6f, 0x20,
@@ -630,7 +631,7 @@ struct
       0x0d, 0x5e, 0xeb, 0x55, 0xc3, 0xe4, 0xde, 0x15,
       0x13, 0x46, 0x76, 0xfb, 0x6d, 0xe0, 0x44, 0x60,
       0x65, 0xc9, 0x74, 0x40, 0xfa, 0x8c, 0x6a, 0x58 }
-  }
+  }*/
 };
 
 #include <stdio.h>
@@ -638,7 +639,7 @@ struct
 int main()
 {   unsigned int    i, j, k, key_len = 64;
     unsigned char   mac[HMAC_MAX_OUTPUT_SIZE];
-
+/*
 #ifdef SHA_1
     for(i = 0; i < SHA1_TESTS; ++i)
     {
@@ -800,7 +801,7 @@ int main()
         printf("\n");
     }
 #endif
-
+*/
 #ifdef SHA_512
     for(i = 0; i < SHA2_TESTS; ++i)
     {   hmac_ctx cx[1];
@@ -808,7 +809,6 @@ int main()
         hmac_sha_key(t_s2[i].key, t_s2[i].key_len / 2, cx);
         hmac_sha_key(t_s2[i].key + t_s2[i].key_len / 2,
                     t_s2[i].key_len - t_s2[i].key_len / 2, cx);
-
         hmac_sha_data(t_s2[i].text, t_s2[i].txt_len / 2, cx);
         hmac_sha_data(t_s2[i].text + t_s2[i].txt_len / 2,
                         t_s2[i].txt_len - t_s2[i].txt_len / 2, cx);
