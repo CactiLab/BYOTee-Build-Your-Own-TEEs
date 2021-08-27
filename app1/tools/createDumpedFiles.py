@@ -56,16 +56,16 @@ def main():
     final_data = struct.pack(">i",test_address) + struct.pack(">i",data_address) + struct.pack(">i",rodata_address) + struct.pack(">i",len(test_data)) + struct.pack(">i",len(data)) + struct.pack(">i",len(rodata))
     
     final_data = final_data + test_data + data + rodata
-    print("TEst section size: " + str(len(test_data)))
+    #print("TEst section size: " + str(len(test_data)))
     try:
         SSC_file.write(final_data)
     except:
         print("Write to file failed")
         raise
     SSC_file.close()
+    os.system("./auth_SSA SSC/AES_SSC")
     os.system("./encrypt_SSA SSC/AES_SSC")
     print ("\n" + SSC_dump_location + " --dumped file dumped at location -> SSC/")
-    #os.system(dump_command)
 
 if __name__ == '__main__':
     main()
