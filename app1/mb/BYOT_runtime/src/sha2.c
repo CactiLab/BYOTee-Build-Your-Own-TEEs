@@ -6,7 +6,6 @@
 
 #include "sha2.h"
 
-
 #if defined(__cplusplus)
 extern "C"
 {

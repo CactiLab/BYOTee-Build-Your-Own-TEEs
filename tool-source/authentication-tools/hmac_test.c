@@ -67,12 +67,12 @@ void generate_hamc_sha_512(char *fname)
         hmac_sha_end(mac, t_s2[i].mac_len, cx);
 
         printf("\n------------Begin HMAC-SHA512------------------------\n");
-        /*for(k = 0; k < t_s2[i].mac_len; k += 4)
+        for(k = 0; k < t_s2[i].mac_len; k += 4)
         {
             if(k % 16 == 0)
                 printf("\n");
             printf("0x%02x%02x%02x%02x ", mac[k], mac[k + 1], mac[k + 2], mac[k + 3]);
-        }*/
+        }
         printf("\n");
     }
 
