@@ -1,25 +1,3 @@
-/*
----------------------------------------------------------------------------
-Copyright (c) 1998-2010, Brian Gladman, Worcester, UK. All rights reserved.
-
-The redistribution and use of this software (with or without changes)
-is allowed without the payment of fees or royalties provided that:
-
-  source code distributions include the above copyright notice, this
-  list of conditions and the following disclaimer;
-
-  binary distributions include the above copyright notice, this list
-  of conditions and the following disclaimer in their documentation.
-
-This software is provided 'as is' with no explicit or implied warranties
-in respect of its operation, including, but not limited to, correctness
-and fitness for purpose.
----------------------------------------------------------------------------
-Issue Date: 20/12/2007
-
-This is an implementation of HMAC, the FIPS standard keyed hash function
-*/
-
 #ifndef _HMAC2_H
 #define _HMAC2_H
 
