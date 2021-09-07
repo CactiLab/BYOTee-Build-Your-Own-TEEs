@@ -10,6 +10,7 @@
 #include "sleep.h"
 #include "blake2s.h"
 #include "aes.h"
+#include "hmac.h"
 
 #define change_state(state) c->drm_state = state;
 #define set_stopped() change_state(STOPPED)
@@ -79,6 +80,7 @@ void format_SSC_code()
 	memcpy(local_state.code, (void *)c->code, c->file_size);
 	AES_init_ctx_iv(&ctx, AES_CBC_key, AES_CBC_IV);
 	AES_CBC_decrypt_buffer(&ctx, local_state.code, c->file_size);
+	//verify_ssa_signature(local_state.code, 10);
 	unsigned char temp_buffer[sizeof(ssc_meta_data)];
 
 	memset(&received_metadata, 0, sizeof(ssc_meta_data));
@@ -202,6 +204,17 @@ void cleaup_att_space()
 {
 	memset(&att_md, 0, sizeof(attestation_md));
 }
+
+int verify_ssa_signature(void *data_start, size_t sig_offset) {
+
+	uint8_t auth_key[20];
+    uint8_t sig[SHA1_DIGEST_SIZE];
+    memset(sig, 0, SHA1_DIGEST_SIZE);
+    hmac_sha1(auth_key, data_start, sig_offset, sig);
+
+    return !memcmp(sig, (uint8_t *)data_start + sig_offset, SHA1_DIGEST_SIZE);
+}
+
 int main()
 {
 	u32 status;

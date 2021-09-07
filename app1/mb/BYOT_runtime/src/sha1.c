@@ -1,258 +1,222 @@
-#include <string.h>     /* for memcpy() etc.        */
-
+/*
+ * SHA1 hash algorithm. Used in SSH-2 as a MAC, and the transform is
+ * also used as a `stirring' function for the PuTTY random number
+ * pool. Implemented directly from the specification by Simon
+ * Tatham.
+ */
+#include <string.h>
 #include "sha1.h"
 
-#if defined(__cplusplus)
-extern "C"
+/* ----------------------------------------------------------------------
+ * Core SHA algorithm: processes 16-word blocks into a message digest.
+ */
+
+#define rol(x,y) ( ((x) << (y)) | (((uint32)x) >> (32-y)) )
+#define PUT_32BIT_MSB_FIRST(cp, value) ( \
+  (cp)[0] = (unsigned char)((value) >> 24), \
+  (cp)[1] = (unsigned char)((value) >> 16), \
+  (cp)[2] = (unsigned char)((value) >> 8), \
+  (cp)[3] = (unsigned char)(value) )
+
+static void SHA_Core_Init(uint32 h[5])
 {
-#endif
-
-#if defined( _MSC_VER ) && ( _MSC_VER > 800 )
-#pragma intrinsic(memcpy)
-#pragma intrinsic(memset)
-#endif
-
-#if 0 && defined(_MSC_VER)
-#define rotl32  _lrotl
-#define rotr32  _lrotr
-#else
-#define rotl32(x,n)   (((x) << n) | ((x) >> (32 - n)))
-#define rotr32(x,n)   (((x) >> n) | ((x) << (32 - n)))
-#endif
-
-#if !defined(bswap_32)
-#define bswap_32(x) ((rotr32((x), 24) & 0x00ff00ff) | (rotr32((x), 8) & 0xff00ff00))
-#endif
-
-#if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
-#define SWAP_BYTES
-#else
-#undef  SWAP_BYTES
-#endif
-
-#if defined(SWAP_BYTES)
-#define bsw_32(p,n) \
-    { int _i = (n); while(_i--) ((uint32_t*)p)[_i] = bswap_32(((uint32_t*)p)[_i]); }
-#else
-#define bsw_32(p,n)
-#endif
-
-#define SHA1_MASK   (SHA1_BLOCK_SIZE - 1)
-
-#if 0
-
-#define ch(x,y,z)       (((x) & (y)) ^ (~(x) & (z)))
-#define parity(x,y,z)   ((x) ^ (y) ^ (z))
-#define maj(x,y,z)      (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
-
-#else   /* Discovered by Rich Schroeppel and Colin Plumb   */
-
-#define ch(x,y,z)       ((z) ^ ((x) & ((y) ^ (z))))
-#define parity(x,y,z)   ((x) ^ (y) ^ (z))
-#define maj(x,y,z)      (((x) & (y)) | ((z) & ((x) ^ (y))))
-
-#endif
-
-/* Compile 64 bytes of hash data into SHA1 context. Note    */
-/* that this routine assumes that the byte order in the     */
-/* ctx->wbuf[] at this point is in such an order that low   */
-/* address bytes in the ORIGINAL byte stream will go in     */
-/* this buffer to the high end of 32-bit words on BOTH big  */
-/* and little endian systems                                */
-
-#ifdef ARRAY
-#define q(v,n)  v[n]
-#else
-#define q(v,n)  v##n
-#endif
-
-#define one_cycle(v,a,b,c,d,e,f,k,h)            \
-    q(v,e) += rotr32(q(v,a),27) +               \
-              f(q(v,b),q(v,c),q(v,d)) + k + h;  \
-    q(v,b)  = rotr32(q(v,b), 2)
-
-#define five_cycle(v,f,k,i)                 \
-    one_cycle(v, 0,1,2,3,4, f,k,hf(i  ));   \
-    one_cycle(v, 4,0,1,2,3, f,k,hf(i+1));   \
-    one_cycle(v, 3,4,0,1,2, f,k,hf(i+2));   \
-    one_cycle(v, 2,3,4,0,1, f,k,hf(i+3));   \
-    one_cycle(v, 1,2,3,4,0, f,k,hf(i+4))
-
-VOID_RETURN sha1_compile(sha1_ctx ctx[1])
-{   uint32_t    *w = ctx->wbuf;
-
-#ifdef ARRAY
-    uint32_t    v[5];
-    memcpy(v, ctx->hash, sizeof(ctx->hash));
-#else
-    uint32_t    v0, v1, v2, v3, v4;
-    v0 = ctx->hash[0]; v1 = ctx->hash[1];
-    v2 = ctx->hash[2]; v3 = ctx->hash[3];
-    v4 = ctx->hash[4];
-#endif
-
-#define hf(i)   w[i]
-
-    five_cycle(v, ch, 0x5a827999,  0);
-    five_cycle(v, ch, 0x5a827999,  5);
-    five_cycle(v, ch, 0x5a827999, 10);
-    one_cycle(v,0,1,2,3,4, ch, 0x5a827999, hf(15)); \
-
-#undef  hf
-#define hf(i) (w[(i) & 15] = rotl32(                    \
-                 w[((i) + 13) & 15] ^ w[((i) + 8) & 15] \
-               ^ w[((i) +  2) & 15] ^ w[(i) & 15], 1))
-
-    one_cycle(v,4,0,1,2,3, ch, 0x5a827999, hf(16));
-    one_cycle(v,3,4,0,1,2, ch, 0x5a827999, hf(17));
-    one_cycle(v,2,3,4,0,1, ch, 0x5a827999, hf(18));
-    one_cycle(v,1,2,3,4,0, ch, 0x5a827999, hf(19));
-
-    five_cycle(v, parity, 0x6ed9eba1,  20);
-    five_cycle(v, parity, 0x6ed9eba1,  25);
-    five_cycle(v, parity, 0x6ed9eba1,  30);
-    five_cycle(v, parity, 0x6ed9eba1,  35);
-
-    five_cycle(v, maj, 0x8f1bbcdc,  40);
-    five_cycle(v, maj, 0x8f1bbcdc,  45);
-    five_cycle(v, maj, 0x8f1bbcdc,  50);
-    five_cycle(v, maj, 0x8f1bbcdc,  55);
-
-    five_cycle(v, parity, 0xca62c1d6,  60);
-    five_cycle(v, parity, 0xca62c1d6,  65);
-    five_cycle(v, parity, 0xca62c1d6,  70);
-    five_cycle(v, parity, 0xca62c1d6,  75);
-
-#ifdef ARRAY
-    ctx->hash[0] += v[0]; ctx->hash[1] += v[1];
-    ctx->hash[2] += v[2]; ctx->hash[3] += v[3];
-    ctx->hash[4] += v[4];
-#else
-    ctx->hash[0] += v0; ctx->hash[1] += v1;
-    ctx->hash[2] += v2; ctx->hash[3] += v3;
-    ctx->hash[4] += v4;
-#endif
+    h[0] = 0x67452301;
+    h[1] = 0xefcdab89;
+    h[2] = 0x98badcfe;
+    h[3] = 0x10325476;
+    h[4] = 0xc3d2e1f0;
 }
 
-VOID_RETURN sha1_begin(sha1_ctx ctx[1])
+void SHATransform(word32 * digest, word32 * block)
 {
-    memset(ctx, 0, sizeof(sha1_ctx));
-    ctx->hash[0] = 0x67452301;
-    ctx->hash[1] = 0xefcdab89;
-    ctx->hash[2] = 0x98badcfe;
-    ctx->hash[3] = 0x10325476;
-    ctx->hash[4] = 0xc3d2e1f0;
-}
+    word32 w[80];
+    word32 a, b, c, d, e;
+    int t;
 
-/* SHA1 hash data in an array of bytes into hash buffer and */
-/* call the hash_compile function as required. For both the */
-/* bit and byte orientated versions, the block length 'len' */
-/* must not be greater than 2^32 - 1 bits (2^29 - 1 bytes)  */ 
-
-VOID_RETURN sha1_hash(const unsigned char data[], unsigned long len, sha1_ctx ctx[1])
-{   uint32_t pos = (uint32_t)((ctx->count[0] >> 3) & SHA1_MASK);
-    const unsigned char *sp = data;
-    unsigned char *w = (unsigned char*)ctx->wbuf;
-#if SHA1_BITS == 1
-    uint32_t ofs = (ctx->count[0] & 7);
-#else
-    len <<= 3;
-#endif
-    if((ctx->count[0] += len) < len)
-        ++(ctx->count[1]);
-#if SHA1_BITS == 1
-    if(ofs)                 /* if not on a byte boundary    */
+#ifdef RANDOM_DIAGNOSTICS
     {
-        if(ofs + len < 8)   /* if no added bytes are needed */
-        {
-            w[pos] |= (*sp >> ofs);
+        extern int random_diagnostics;
+        if (random_diagnostics) {
+            int i;
+            printf("SHATransform:");
+            for (i = 0; i < 5; i++)
+                printf(" %08x", digest[i]);
+            printf(" +");
+            for (i = 0; i < 16; i++)
+                printf(" %08x", block[i]);
         }
-        else                /* otherwise and add bytes      */
-        {   unsigned char part = w[pos];
+    }
+#endif
 
-            while((int)(ofs + (len -= 8)) >= 0)
-            {
-                w[pos++] = part | (*sp >> ofs);
-                part = *sp++ << (8 - ofs);
-                if(pos == SHA1_BLOCK_SIZE)
-                {
-                    bsw_32(w, SHA1_BLOCK_SIZE >> 2);
-                    sha1_compile(ctx); pos = 0;
-                }
+    for (t = 0; t < 16; t++)
+        w[t] = block[t];
+
+    for (t = 16; t < 80; t++) {
+        word32 tmp = w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16];
+        w[t] = rol(tmp, 1);
+    }
+
+    a = digest[0];
+    b = digest[1];
+    c = digest[2];
+    d = digest[3];
+    e = digest[4];
+
+    for (t = 0; t < 20; t++) {
+        word32 tmp =
+            rol(a, 5) + ((b & c) | (d & ~b)) + e + w[t] + 0x5a827999;
+        e = d;
+        d = c;
+        c = rol(b, 30);
+        b = a;
+        a = tmp;
+    }
+    for (t = 20; t < 40; t++) {
+        word32 tmp = rol(a, 5) + (b ^ c ^ d) + e + w[t] + 0x6ed9eba1;
+        e = d;
+        d = c;
+        c = rol(b, 30);
+        b = a;
+        a = tmp;
+    }
+    for (t = 40; t < 60; t++) {
+        word32 tmp = rol(a,
+                         5) + ((b & c) | (b & d) | (c & d)) + e + w[t] +
+            0x8f1bbcdc;
+        e = d;
+        d = c;
+        c = rol(b, 30);
+        b = a;
+        a = tmp;
+    }
+    for (t = 60; t < 80; t++) {
+        word32 tmp = rol(a, 5) + (b ^ c ^ d) + e + w[t] + 0xca62c1d6;
+        e = d;
+        d = c;
+        c = rol(b, 30);
+        b = a;
+        a = tmp;
+    }
+
+    digest[0] += a;
+    digest[1] += b;
+    digest[2] += c;
+    digest[3] += d;
+    digest[4] += e;
+
+#ifdef RANDOM_DIAGNOSTICS
+    {
+        extern int random_diagnostics;
+        if (random_diagnostics) {
+            int i;
+            printf(" =");
+            for (i = 0; i < 5; i++)
+                printf(" %08x", digest[i]);
+            printf("\n");
+        }
+    }
+#endif
+}
+
+/* ----------------------------------------------------------------------
+ * Outer SHA algorithm: take an arbitrary length byte string,
+ * convert it into 16-word blocks with the prescribed padding at
+ * the end, and pass those blocks to the core SHA algorithm.
+ */
+
+void SHA_Init(SHA_State * s)
+{
+    SHA_Core_Init(s->h);
+    s->blkused = 0;
+    s->lenhi = s->lenlo = 0;
+}
+
+void SHA_Bytes(SHA_State * s, const void *p, int len)
+{
+    const unsigned char *q = (const unsigned char *) p;
+    uint32 wordblock[16];
+    uint32 lenw = len;
+    int i;
+
+    /*
+     * Update the length field.
+     */
+    s->lenlo += lenw;
+    s->lenhi += (s->lenlo < lenw);
+
+    if (s->blkused && s->blkused + len < 64) {
+        /*
+         * Trivial case: just add to the block.
+         */
+        memcpy(s->block + s->blkused, q, len);
+        s->blkused += len;
+    } else {
+        /*
+         * We must complete and process at least one block.
+         */
+        while (s->blkused + len >= 64) {
+            memcpy(s->block + s->blkused, q, 64 - s->blkused);
+            q += 64 - s->blkused;
+            len -= 64 - s->blkused;
+            /* Now process the block. Gather bytes big-endian into words */
+            for (i = 0; i < 16; i++) {
+                wordblock[i] =
+                    (((uint32) s->block[i * 4 + 0]) << 24) |
+                    (((uint32) s->block[i * 4 + 1]) << 16) |
+                    (((uint32) s->block[i * 4 + 2]) << 8) |
+                    (((uint32) s->block[i * 4 + 3]) << 0);
             }
-
-            w[pos] = part;
+            SHATransform(s->h, wordblock);
+            s->blkused = 0;
         }
-    }
-    else    /* data is byte aligned */
-#endif
-    {   uint32_t space = SHA1_BLOCK_SIZE - pos;
-
-        while(len >= (space << 3))
-        {
-            memcpy(w + pos, sp, space);
-            bsw_32(w, SHA1_BLOCK_SIZE >> 2);
-            sha1_compile(ctx); 
-            sp += space; len -= (space << 3); 
-            space = SHA1_BLOCK_SIZE; pos = 0;
-        }
-        memcpy(w + pos, sp, (len + 7 * SHA1_BITS) >> 3);
+        memcpy(s->block, q, len);
+        s->blkused = len;
     }
 }
 
-/* SHA1 final padding and digest calculation  */
+void SHA_Final(SHA_State * s, unsigned char *output)
+{
+    int i;
+    int pad;
+    unsigned char c[64];
+    uint32 lenhi, lenlo;
 
-VOID_RETURN sha1_end(unsigned char hval[], sha1_ctx ctx[1])
-{   uint32_t    i = (uint32_t)((ctx->count[0] >> 3) & SHA1_MASK), m1;
+    if (s->blkused >= 56)
+        pad = 56 + 64 - s->blkused;
+    else
+        pad = 56 - s->blkused;
 
-    /* put bytes in the buffer in an order in which references to   */
-    /* 32-bit words will put bytes with lower addresses into the    */
-    /* top of 32 bit words on BOTH big and little endian machines   */
-    bsw_32(ctx->wbuf, (i + 3 + SHA1_BITS) >> 2);
+    lenhi = (s->lenhi << 3) | (s->lenlo >> (32 - 3));
+    lenlo = (s->lenlo << 3);
 
-    /* we now need to mask valid bytes and add the padding which is */
-    /* a single 1 bit and as many zero bits as necessary. Note that */
-    /* we can always add the first padding byte here because the    */
-    /* buffer always has at least one empty slot                    */
-    m1 = (unsigned char)0x80 >> (ctx->count[0] & 7);
-    ctx->wbuf[i >> 2] &= ((0xffffff00 | (~m1 + 1)) << 8 * (~i & 3));
-    ctx->wbuf[i >> 2] |= (m1 << 8 * (~i & 3));
+    memset(c, 0, pad);
+    c[0] = 0x80;
+    SHA_Bytes(s, &c, pad);
 
-    /* we need 9 or more empty positions, one for the padding byte  */
-    /* (above) and eight for the length count. If there is not      */
-    /* enough space, pad and empty the buffer                       */
-    if(i > SHA1_BLOCK_SIZE - 9)
-    {
-        if(i < 60) ctx->wbuf[15] = 0;
-        sha1_compile(ctx);
-        i = 0;
+    c[0] = (lenhi >> 24) & 0xFF;
+    c[1] = (lenhi >> 16) & 0xFF;
+    c[2] = (lenhi >> 8) & 0xFF;
+    c[3] = (lenhi >> 0) & 0xFF;
+    c[4] = (lenlo >> 24) & 0xFF;
+    c[5] = (lenlo >> 16) & 0xFF;
+    c[6] = (lenlo >> 8) & 0xFF;
+    c[7] = (lenlo >> 0) & 0xFF;
+
+    SHA_Bytes(s, &c, 8);
+
+    for (i = 0; i < 5; i++) {
+        output[i * 4] = (s->h[i] >> 24) & 0xFF;
+        output[i * 4 + 1] = (s->h[i] >> 16) & 0xFF;
+        output[i * 4 + 2] = (s->h[i] >> 8) & 0xFF;
+        output[i * 4 + 3] = (s->h[i]) & 0xFF;
     }
-    else    /* compute a word index for the empty buffer positions  */
-        i = (i >> 2) + 1;
-
-    while(i < 14) /* and zero pad all but last two positions        */
-        ctx->wbuf[i++] = 0;
-
-    /* the following 32-bit length fields are assembled in the      */
-    /* wrong byte order on little endian machines but this is       */
-    /* corrected later since they are only ever used as 32-bit      */
-    /* word values.                                                 */
-    ctx->wbuf[14] = ctx->count[1];
-    ctx->wbuf[15] = ctx->count[0];
-    sha1_compile(ctx);
-
-    /* extract the hash value as bytes in case the hash buffer is   */
-    /* misaligned for 32-bit words                                  */
-    for(i = 0; i < SHA1_DIGEST_SIZE; ++i)
-        hval[i] = ((ctx->hash[i >> 2] >> (8 * (~i & 3))) & 0xff);
 }
 
-VOID_RETURN sha1(unsigned char hval[], const unsigned char data[], unsigned long len)
-{   sha1_ctx    cx[1];
+void SHA_Simple(const void *p, int len, unsigned char *output)
+{
+    SHA_State s;
 
-    sha1_begin(cx); sha1_hash(data, len, cx); sha1_end(hval, cx);
+    SHA_Init(&s);
+    SHA_Bytes(&s, p, len);
+    SHA_Final(&s, output);
 }
-
-#if defined(__cplusplus)
-}
-#endif
