@@ -77,11 +77,23 @@ void format_SSC_code()
 	uint8_t AES_CBC_key[] = {(uint8_t)0x2b, (uint8_t)0x7e, (uint8_t)0x15, (uint8_t)0x16, (uint8_t)0x28, (uint8_t)0xae, (uint8_t)0xd2, (uint8_t)0xa6, (uint8_t)0xab, (uint8_t)0xf7, (uint8_t)0x15, (uint8_t)0x88, (uint8_t)0x09, (uint8_t)0xcf, (uint8_t)0x4f, (uint8_t)0x3c};
 	uint8_t AES_CBC_IV[] = {(uint8_t)0x00, (uint8_t)0x01, (uint8_t)0x02, (uint8_t)0x03, (uint8_t)0x04, (uint8_t)0x05, (uint8_t)0x06, (uint8_t)0x07, (uint8_t)0x08, (uint8_t)0x09, (uint8_t)0x0a, (uint8_t)0x0b, (uint8_t)0x0c, (uint8_t)0x0d, (uint8_t)0x0e, (uint8_t)0x0f};
 
+	unsigned char temp_buffer[sizeof(ssc_meta_data)];
+
 	memcpy(local_state.code, (void *)c->code, c->file_size);
 	AES_init_ctx_iv(&ctx, AES_CBC_key, AES_CBC_IV);
 	AES_CBC_decrypt_buffer(&ctx, local_state.code, c->file_size);
-	//verify_ssa_signature(local_state.code, 10);
-	unsigned char temp_buffer[sizeof(ssc_meta_data)];
+	if (verify_ssa_signature(local_state.code) != 0)
+	{
+		mb_printf("------------SSA Authentication failed. Aborting operation-----------------\r\n");
+	}
+	else
+	{
+		mb_printf("------------Authentication Success----------------\r\n");
+	}
+	//memcpy(ssa_sig, local_state.code, SIG_LEN);
+	memmove(local_state.code,  (local_state.code + SIG_LEN), SIG_LEN);
+
+
 
 	memset(&received_metadata, 0, sizeof(ssc_meta_data));
 	memcpy(temp_buffer, local_state.code, sizeof(ssc_meta_data));
@@ -205,14 +217,14 @@ void cleaup_att_space()
 	memset(&att_md, 0, sizeof(attestation_md));
 }
 
-int verify_ssa_signature(void *data_start, size_t sig_offset) {
+int verify_ssa_signature(void *data_start) {
 
-	uint8_t auth_key[20];
-    uint8_t sig[SHA1_DIGEST_SIZE];
-    memset(sig, 0, SHA1_DIGEST_SIZE);
-    hmac_sha1(auth_key, data_start, sig_offset, sig);
+	uint8_t sig[HASH_OUTSIZE];
 
-    return !memcmp(sig, (uint8_t *)data_start + sig_offset, SHA1_DIGEST_SIZE);
+	memset(sig, 0, HASH_OUTSIZE);
+	hmac(auth_key, data_start + SIG_LEN, c->file_size - SIG_LEN, sig);
+
+	return !memcmp(sig, (uint8_t *)data_start , SIG_LEN);
 }
 
 int main()

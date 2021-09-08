@@ -1,7 +1,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include "memops.h"
+#include <string.h>
 #include "hmac.h"
 #include "sha512.h"
 #include "sha1.h"
