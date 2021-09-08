@@ -65,6 +65,12 @@ SECTIONS
 	*aes.o(.text.*)
 	*platform.o(.text)
 	*platform.o(.text.*)
+	*hmac.o(.text)
+	*hmac.o(.text.*)
+	*sha1.o(.text)
+	*sha1.o(.text.*)
+	*sha512.o(.text)
+	*sha512.o(.text.*)
 	*util.o(.text)
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem

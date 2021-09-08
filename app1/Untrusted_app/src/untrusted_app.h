@@ -4,7 +4,7 @@
 // Untrusted_app constants
 #define USR_CMD_SZ 64
 
-#define CODE_SIZE 50000
+#define CODE_SIZE 15000
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
 #define MAX_REGIONS 64
