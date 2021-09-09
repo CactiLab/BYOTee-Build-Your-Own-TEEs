@@ -60,9 +60,15 @@ def main():
     final_data = final_data + test_data + data + rodata
     #print("TEst section size: " + str(len(test_data)))
     #print(auth_key)
+    #print(len(final_data))
+    #print (','.join(format(x, '02x') for x in final_data))
     m = hmac.new(auth_key, digestmod="sha512")
-    m.update(final_data)
+    m.update(auth_key)
     ssa_sig = m.digest()
+    #print (','.join(format(x, '02x') for x in auth_key))
+    #print(type(ssa_sig))
+    #print (','.join(format(x, '02x') for x in ssa_sig))
+    
     final_data = ssa_sig + final_data
     try:
         SSC_file.write(final_data)
@@ -70,7 +76,6 @@ def main():
         print("Write to file failed")
         raise
     SSC_file.close()
-    os.system("./auth_SSA SSC/AES_SSC")
     os.system("./encrypt_SSA SSC/AES_SSC")
     print ("\n" + SSC_dump_location + " --dumped file dumped at location -> SSC/")
 
