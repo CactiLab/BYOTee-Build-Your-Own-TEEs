@@ -83,7 +83,7 @@ void format_SSC_code()
 	AES_init_ctx_iv(&ctx, AES_CBC_key, AES_CBC_IV);
 	AES_CBC_decrypt_buffer(&ctx, local_state.code, c->file_size);
 
-	if (verify_ssa_signature(local_state.code + SIG_LEN) != 0)
+	if (verify_ssa_signature(local_state.code[SIG_LEN]) != 0)
 	{
 		mb_printf("-----------!!SSA Authentication failed.!! Aborting operation-----------------\r\n");
 		return;
@@ -97,7 +97,6 @@ void format_SSC_code()
 	memcpy(ssc_data.data, (local_state.code + sizeof(ssc_meta_data) + received_metadata.sss_code_size + SIG_LEN), received_metadata.data_sec_size);
 	memcpy(ssc_ro_data.ro_data, (local_state.code + sizeof(ssc_meta_data) + received_metadata.sss_code_size + received_metadata.data_sec_size + SIG_LEN), received_metadata.ro_data_size);
 	memmove(local_state.code, (local_state.code + sizeof(ssc_meta_data) + SIG_LEN), received_metadata.sss_code_size);
-	//memset(local_state.code + received_metadata.sss_code_size, 0, CODE_SIZE - received_metadata.sss_code_size);
 }
 
 void load_code()
@@ -217,11 +216,8 @@ int verify_ssa_signature(void *data_start) {
 
 	memset(sig, 0, HASH_OUTSIZE);
 	hmac(auth_key, data_start, c->file_size - SIG_LEN, sig);
-	/*for ( int i = 0; i < HASH_OUTSIZE; i++)
-	{
-		xil_printf("%02x ", sig[i]);
-	}*/
-	return memcmp(sig, (uint8_t *)data_start , SIG_LEN);
+
+	return !memcmp(sig, (uint8_t *)data_start , SIG_LEN);
 }
 
 int main()

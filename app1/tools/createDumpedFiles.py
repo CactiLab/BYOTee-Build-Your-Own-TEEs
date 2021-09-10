@@ -58,15 +58,12 @@ def main():
     final_data = struct.pack(">i",test_address) + struct.pack(">i",data_address) + struct.pack(">i",rodata_address) + struct.pack(">i",len(test_data)) + struct.pack(">i",len(data)) + struct.pack(">i",len(rodata))
     
     final_data = final_data + test_data + data + rodata
-    #print("TEst section size: " + str(len(test_data)))
-    #print(auth_key)
-    #print(len(final_data))
     #print (','.join(format(x, '02x') for x in final_data))
     m = hmac.new(auth_key, digestmod="sha512")
-    m.update(auth_key)
+    m.update(final_data)
     ssa_sig = m.digest()
     #print (','.join(format(x, '02x') for x in auth_key))
-    #print(type(ssa_sig))
+
     #print (','.join(format(x, '02x') for x in ssa_sig))
     
     final_data = ssa_sig + final_data
