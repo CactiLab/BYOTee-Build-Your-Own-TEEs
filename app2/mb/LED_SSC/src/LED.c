@@ -47,5 +47,6 @@ int main()
     setLED(led, BLUE);
     usleep(1000);
     temp = temp + 1;
+
     return fw_add() + temp;
 }

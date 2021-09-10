@@ -178,7 +178,7 @@ int main()
 
 	// clear command channel
 	memset((void *)c, 0, sizeof(cmd_channel));
-
+	gpio_test();
 	// Handle commands forever
 	while (1)
 	{

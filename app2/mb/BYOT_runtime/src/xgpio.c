@@ -62,7 +62,6 @@
 
 #ifdef XPAR_INTC_0_DEVICE_ID
  #define INTC_DEVICE_ID	XPAR_INTC_0_DEVICE_ID
- //#define INTC_DEVICE_ID XPAR_INTC_0_GPIO_0_VEC_ID
  #define INTC		XIntc
  #define INTC_HANDLER	XIntc_InterruptHandler
 #else
@@ -84,12 +83,6 @@ int GpioSetupIntrSystem(INTC *IntcInstancePtr, XGpio *InstancePtr,
 void GpioDisableIntr(INTC *IntcInstancePtr, XGpio *InstancePtr,
 			u16 IntrId, u16 IntrMask);
 
-/************************** Variable Definitions *****************************/
-
-/*
- * The following are declared globally so they are zeroed and so they are
- * easily accessible from a debugger
- */
 XGpio Gpio; /* The Instance of the GPIO Driver */
 
 INTC Intc; /* The Instance of the Interrupt Controller Driver */
@@ -100,30 +93,15 @@ static u16 GlobalIntrMask; /* GPIO channel mask that is needed by
 
 static volatile u32 IntrFlag; /* Interrupt Handler Flag */
 
-/****************************************************************************/
-/**
-* This function is the main function of the GPIO example.  It is responsible
-* for initializing the GPIO device, setting up interrupts and providing a
-* foreground loop such that interrupt can occur in the background.
-*
-* @param	None.
-*
-* @return
-*		- XST_SUCCESS to indicate success.
-*		- XST_FAILURE to indicate failure.
-*
-* @note		None.
-*
-*****************************************************************************/
 #ifndef TESTAPP_GEN
-int test_button_interrupt(INTC *intcMain)
+int gpio_test(void)
 {
 	int Status;
 	u32 DataRead;
 
 	  print(" Press button to Generate Interrupt\r\n");
 
-	  Status = GpioIntrExample(intcMain, &Gpio,
+	  Status = GpioIntrExample(&Intc, &Gpio,
 				   GPIO_DEVICE_ID,
 				   INTC_GPIO_INTERRUPT_ID,
 				   GPIO_CHANNEL1, &DataRead);
@@ -142,30 +120,6 @@ int test_button_interrupt(INTC *intcMain)
 }
 #endif
 
-/******************************************************************************/
-/**
-*
-* This is the entry function from the TestAppGen tool generated application
-* which tests the interrupts when enabled in the GPIO
-*
-* @param	IntcInstancePtr is a reference to the Interrupt Controller
-*		driver Instance
-* @param	InstancePtr is a reference to the GPIO driver Instance
-* @param	DeviceId is the XPAR_<GPIO_instance>_DEVICE_ID value from
-*		xparameters.h
-* @param	IntrId is XPAR_<INTC_instance>_<GPIO_instance>_IP2INTC_IRPT_INTR
-*		value from xparameters.h
-* @param	IntrMask is the GPIO channel mask
-* @param	DataRead is the pointer where the data read from GPIO Input is
-*		returned
-*
-* @return
-*		- XST_SUCCESS if the Test is successful
-*		- XST_FAILURE if the test is not successful
-*
-* @note		None.
-*
-******************************************************************************/
 int GpioIntrExample(INTC *IntcInstancePtr, XGpio* InstancePtr, u16 DeviceId,
 			u16 IntrId, u16 IntrMask, u32 *DataRead)
 {
@@ -191,7 +145,7 @@ int GpioIntrExample(INTC *IntcInstancePtr, XGpio* InstancePtr, u16 DeviceId,
 		delay++;
 	}
 
-	//GpioDisableIntr(IntcInstancePtr, InstancePtr, IntrId, IntrMask);
+	GpioDisableIntr(IntcInstancePtr, InstancePtr, IntrId, IntrMask);
 
 	*DataRead = IntrFlag;
 
@@ -232,10 +186,10 @@ int GpioSetupIntrSystem(INTC *IntcInstancePtr, XGpio *InstancePtr,
 	 * Initialize the interrupt controller driver so that it's ready to use.
 	 * specify the device ID that was generated in xparameters.h
 	 */
-	/*Result = XIntc_Initialize(IntcInstancePtr, INTC_DEVICE_ID);
+	Result = XIntc_Initialize(IntcInstancePtr, INTC_DEVICE_ID);
 	if (Result != XST_SUCCESS) {
 		return Result;
-	}*/
+	}
 #endif /* TESTAPP_GEN */
 
 	/* Hook up interrupt service routine */
@@ -243,17 +197,17 @@ int GpioSetupIntrSystem(INTC *IntcInstancePtr, XGpio *InstancePtr,
 		      (Xil_ExceptionHandler)GpioHandler, InstancePtr);
 
 	/* Enable the interrupt vector at the interrupt controller */
-	//XIntc_Enable(IntcInstancePtr, IntrId);
+	XIntc_Enable(IntcInstancePtr, IntrId);
 
 #ifndef TESTAPP_GEN
 	/*
 	 * Start the interrupt controller such that interrupts are recognized
 	 * and handled by the processor
 	 */
-	//Result = XIntc_Start(IntcInstancePtr, XIN_REAL_MODE);
-	//if (Result != XST_SUCCESS) {
-	//	return Result;
-	//}
+	Result = XIntc_Start(IntcInstancePtr, XIN_REAL_MODE);
+	if (Result != XST_SUCCESS) {
+		return Result;
+	}
 #endif /* TESTAPP_GEN */
 
 #else /* !XPAR_INTC_0_DEVICE_ID */
@@ -305,21 +259,13 @@ int GpioSetupIntrSystem(INTC *IntcInstancePtr, XGpio *InstancePtr,
 	 * Initialize the exception table and register the interrupt
 	 * controller handler with the exception table
 	 */
-	int t = XGpio_SelfTest(InstancePtr);
-	if (t == XST_SUCCESS)
-		{
-			xil_printf("\r\n\r\n\r\nSELF TEST OK\r\n\r\n\r\n");
-		}
-	else {
-		xil_printf("\r\n\r\n\r\nFailed\r\n");
-	}
-	//Xil_ExceptionInit();
+	Xil_ExceptionInit();
 
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
 			 (Xil_ExceptionHandler)INTC_HANDLER, IntcInstancePtr);
 
 	/* Enable non-critical exceptions */
-	//Xil_ExceptionEnable();
+	Xil_ExceptionEnable();
 
 	return XST_SUCCESS;
 }
