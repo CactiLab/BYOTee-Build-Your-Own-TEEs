@@ -1,0 +1,5 @@
+proj/test/*
+proj/repo/*
+repo/*
+repo/cache/*
+src/*

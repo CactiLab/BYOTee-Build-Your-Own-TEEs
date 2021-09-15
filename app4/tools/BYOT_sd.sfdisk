@@ -1,0 +1,5 @@
+device: /dev/sdb
+unit: sectors
+
+/dev/sdb1 : start=        2048, size=     1048576, type=83, bootable
+/dev/sdb2 : start=     1050624, size=    14399488, type=83
