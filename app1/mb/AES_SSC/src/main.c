@@ -71,7 +71,7 @@ int main()
         xil_printf("SSC> Unrecognized command!!!\r\n");
         break;
     }
-
+    //memset(ptr, 0xff, 80);
     att_md.output_att_size = ENC_DEC_DATA_SIZE;
     memcpy(&att_md.att_output_data, received_data, ENC_DEC_DATA_SIZE);
 }
