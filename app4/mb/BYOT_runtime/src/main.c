@@ -110,8 +110,8 @@ void execute_SSC()
 	volatile bram_channel *bram_chnl = (bram_channel *) SHARED_BRAM_BASE;
 
 	mb_printf("Current value: %d", bram_chnl->input_available);
-	bram_chnl->input_available += 1;
-	usleep(1000);
+	bram_chnl->input_available = 1;
+	usleep(100000);
 	mb_printf("Written value: %d", bram_chnl->input_available);
 	/*if (ssc_module_loaded == 0)
 	{

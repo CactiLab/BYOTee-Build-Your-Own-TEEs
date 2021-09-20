@@ -5,7 +5,7 @@
 
 // shared DDR address
 #define SHARED_DDR_BASE (0x20000000 + 0x1CC00000)
-#define SHARED_BRAM_BASE (0x40001FFF)
+#define SHARED_BRAM_BASE (0x4B00000)
 
 // printing utility
 #define MB_PROMPT "\r\nBYOT_Runtime> "
