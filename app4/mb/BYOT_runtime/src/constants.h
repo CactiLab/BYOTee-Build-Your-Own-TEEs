@@ -5,16 +5,17 @@
 
 // shared DDR address
 #define SHARED_DDR_BASE (0x20000000 + 0x1CC00000)
-//#define SHARED_DDR_BASE2 (0x20000000 + 0x1CC00000 + 0xc358)
+#define SHARED_BRAM_BASE (0x40001FFF)
+
 // printing utility
 #define MB_PROMPT "\r\nBYOT_Runtime> "
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 
 // protocol constants
-#define CODE_SIZE 40000
-#define SSC_SIZE 50000
-#define DATA_SIZE 5000
-#define RO_DATA_SIZE 5000
+#define CODE_SIZE 100
+#define SSC_SIZE 15000
+#define DATA_SIZE 100
+#define RO_DATA_SIZE 100
 #define ATTESTION_CAP 3008
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
@@ -91,6 +92,12 @@ typedef struct
     unsigned int data_sec_size;
     unsigned int ro_data_size;
 } ssc_meta_data;
+
+typedef volatile struct __attribute__((__packed__))
+{
+	char input_available;
+	uint8_t input_data[ENC_DEC_DATA_SIZE];
+} bram_channel;
 
 typedef struct
 {

@@ -5,6 +5,7 @@
 
 // shared DDR address
 #define SHARED_DDR_BASE (0x20000000 + 0x1CC00000)
+#define SHARED_BRAM_BASE (0x40001FFF)
 
 // printing utility
 #define MB_PROMPT "\r\nBYOT_Runtime> "
@@ -64,6 +65,12 @@ typedef struct
     unsigned char att_input_data[ATTESTION_CAP];
     unsigned char att_output_data[ATTESTION_CAP];
 } attestation_md;
+
+typedef volatile struct __attribute__((__packed__))
+{
+	char input_available;
+	uint8_t input_data[ENC_DEC_DATA_SIZE];
+} bram_channel;
 
 uint8_t received_data[ENC_DEC_DATA_SIZE];
 #endif /* SRC_CONSTANTS_H_ */

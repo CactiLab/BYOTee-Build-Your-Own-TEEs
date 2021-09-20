@@ -107,7 +107,10 @@ void load_code()
 
 void execute_SSC()
 {
-	if (ssc_module_loaded == 0)
+	volatile bram_channel *bram_chnl = (bram_channel *) SHARED_BRAM_BASE;
+	bram_chnl->input_available = 1;
+	usleep(1000);
+	/*if (ssc_module_loaded == 0)
 	{
 		mb_printf("No SSC module present in BRAM\r\n");
 		return;
@@ -116,7 +119,7 @@ void execute_SSC()
 
 	((int (*)(void))local_state.code)();
 
-	mb_printf("Finished SSC code executed from BRAM\r\n");
+	mb_printf("Finished SSC code executed from BRAM\r\n");*/
 }
 
 void forward_to_ssc()

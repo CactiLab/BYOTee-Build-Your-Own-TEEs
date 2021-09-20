@@ -19,7 +19,6 @@ MEMORY
 {
    ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem : ORIGIN = 0x50, LENGTH = 0x1FFB0
    share_axi_bram_ctrl_0_Mem0 : ORIGIN = 0x4B00000, LENGTH = 0x2000
-   mb_dma_axi_bram_ctrl_0_Mem0 : ORIGIN = 0xC0000000, LENGTH = 0x8000
 }
 
 /* Specify the default entry point to the program */
@@ -56,19 +55,19 @@ SECTIONS
 	KEEP(*(.ssc.attestation.md))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.test : {
+/*.test : {
     *main.o(.text)
 	*main.o(.text.*)
 	*platform.o(.text)
 	*platform.o(.text.*)
 	*util.o(.text)
 	*util.o(.text.*)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem */
 /*.text : {  
 	*blake2s.o(.text)
 	*blake2s.o(.text.*)
 	*/
-.text 0xda5c: {
+.text : {
 
    *(.text)
    *(.text.*)
@@ -76,7 +75,7 @@ SECTIONS
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 
-.ssc.data.buffer 0x156cc + 0x3e8:
+.ssc.data.buffer :
 {
 	KEEP(*(.ssc.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
