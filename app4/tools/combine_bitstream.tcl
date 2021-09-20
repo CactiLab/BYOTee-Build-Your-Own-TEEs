@@ -19,9 +19,10 @@ set worksp "$dev_path/mb"
 set sw_mmi "$worksp/$proj_name/system_wrapper.mmi"
 set sw_bit "$worksp/$proj_name/system_wrapper.bit"
 set BYOT_elf "$worksp/BYOT_runtime/Debug/BYOT_runtime.elf"
+set SIG_elf "$worksp/Signature_SSC/Debug/Signature_SSC.elf"
 set output "$device_dir/download.bit"
 
-puts "\nCalling updatemem as follows:
+puts "\nCalling updatemem on CTEE1 as follows:
 updatemem -force -meminfo \
 $sw_mmi \
 -bit \
@@ -36,6 +37,23 @@ $sw_mmi \
 $sw_bit \
 -data $BYOT_elf \
 -proc system_i/microblaze_0 -out \
+$output
+
+puts "\nCalling updatemem on CTEE2 as follows:
+updatemem -force -meminfo \
+$sw_mmi \
+-bit \
+$sw_bit \
+-data $SIG_elf \
+-proc system_i/microblaze_1 -out \
+$output\n"
+
+exec updatemem -force -meminfo \
+$sw_mmi \
+-bit \
+$sw_bit \
+-data $SIG_elf \
+-proc system_i/microblaze_1 -out \
 $output
 
 puts "Created download.bit at: $output"
