@@ -43,7 +43,7 @@ puts "\nCalling updatemem on CTEE2 as follows:
 updatemem -force -meminfo \
 $sw_mmi \
 -bit \
-$sw_bit \
+$output \
 -data $SIG_elf \
 -proc system_i/microblaze_1 -out \
 $output\n"
@@ -51,7 +51,7 @@ $output\n"
 exec updatemem -force -meminfo \
 $sw_mmi \
 -bit \
-$sw_bit \
+$output \
 -data $SIG_elf \
 -proc system_i/microblaze_1 -out \
 $output

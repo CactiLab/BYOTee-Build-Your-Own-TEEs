@@ -108,8 +108,11 @@ void load_code()
 void execute_SSC()
 {
 	volatile bram_channel *bram_chnl = (bram_channel *) SHARED_BRAM_BASE;
-	bram_chnl->input_available = 1;
+
+	mb_printf("Current value: %d", bram_chnl->input_available);
+	bram_chnl->input_available += 1;
 	usleep(1000);
+	mb_printf("Written value: %d", bram_chnl->input_available);
 	/*if (ssc_module_loaded == 0)
 	{
 		mb_printf("No SSC module present in BRAM\r\n");
