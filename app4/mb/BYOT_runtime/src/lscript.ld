@@ -10,8 +10,8 @@
 /*                                                                 */
 /*******************************************************************/
 
-_STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x800;
-_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x800;
+_STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x1000;
+_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x600;
 
 /* Define Memories in the system */
 
@@ -55,19 +55,26 @@ SECTIONS
 	KEEP(*(.ssc.attestation.md))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-/*.test : {
+.test : {
     *main.o(.text)
 	*main.o(.text.*)
-	*platform.o(.text)
-	*platform.o(.text.*)
-	*util.o(.text)
-	*util.o(.text.*)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem */
-/*.text : {  
 	*blake2s.o(.text)
 	*blake2s.o(.text.*)
-	*/
-.text : {
+	*aes.o(.text)
+	*aes.o(.text.*)
+	*platform.o(.text)
+	*platform.o(.text.*)
+	*hmac.o(.text)
+	*hmac.o(.text.*)
+	*sha1.o(.text)
+	*sha1.o(.text.*)
+	*sha512.o(.text)
+	*sha512.o(.text.*)
+	*util.o(.text)
+	*util.o(.text.*)
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+
+.text 0x119d8: {
 
    *(.text)
    *(.text.*)

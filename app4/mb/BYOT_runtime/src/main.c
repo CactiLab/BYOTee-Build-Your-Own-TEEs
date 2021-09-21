@@ -9,7 +9,9 @@
 #include "constants.h"
 #include "sleep.h"
 #include "blake2s.h"
-#include "xil_io.h"
+#include "aes.h"
+#include "hmac.h"
+
 //////////////////////// GLOBALS ////////////////////////
 // LED colors and controller
 u32 *led = (u32 *)XPAR_RGB_PWM_0_PWM_AXI_BASEADDR;
@@ -44,6 +46,7 @@ uint8_t preExeResult[MEASUREMENT_SIZE];
 // shared variable between main thread and interrupt processing thread
 volatile static int InterruptProcessed = FALSE;
 static XIntc InterruptController;
+struct AES_ctx ctx;
 
 void myISR(void)
 {
@@ -81,14 +84,26 @@ void dummy()
 
 void format_SSC_code()
 {
-
+	uint8_t AES_CBC_key[] = {(uint8_t)0x2b, (uint8_t)0x7e, (uint8_t)0x15, (uint8_t)0x16, (uint8_t)0x28, (uint8_t)0xae, (uint8_t)0xd2, (uint8_t)0xa6, (uint8_t)0xab, (uint8_t)0xf7, (uint8_t)0x15, (uint8_t)0x88, (uint8_t)0x09, (uint8_t)0xcf, (uint8_t)0x4f, (uint8_t)0x3c};
+	uint8_t AES_CBC_IV[] = {(uint8_t)0x00, (uint8_t)0x01, (uint8_t)0x02, (uint8_t)0x03, (uint8_t)0x04, (uint8_t)0x05, (uint8_t)0x06, (uint8_t)0x07, (uint8_t)0x08, (uint8_t)0x09, (uint8_t)0x0a, (uint8_t)0x0b, (uint8_t)0x0c, (uint8_t)0x0d, (uint8_t)0x0e, (uint8_t)0x0f};
 	unsigned char temp_buffer[sizeof(ssc_meta_data)];
 
+	memcpy(local_state.code, (void *)c->code, c->file_size);
+
+	AES_init_ctx_iv(&ctx, AES_CBC_key, AES_CBC_IV);
+	AES_CBC_decrypt_buffer(&ctx, local_state.code, c->file_size);
+	mb_printf("Decryption DONE!!\r\n");
+	if (verify_ssa_signature(local_state.code[SIG_LEN]) != 0)
+	{
+		mb_printf("-----------!!SSA Authentication failed.!! Aborting operation-----------------\r\n");
+		return;
+	}
+	mb_printf("HMAC DONE!!\r\n");
 	memset(&received_metadata, 0, sizeof(ssc_meta_data));
+	memcpy(temp_buffer, local_state.code + SIG_LEN, sizeof(ssc_meta_data));
 
-	memcpy(temp_buffer, (void *)c->code, sizeof(ssc_meta_data));
 	get_unsigned_int(temp_buffer, &received_metadata);
-
+	mb_printf("Code: %d RO: %d DADA: %d \r\n",received_metadata.sss_code_size, received_metadata.ro_data_size, received_metadata.data_sec_size);
 	memcpy(local_state.code, ((void *)c->code + sizeof(ssc_meta_data)), received_metadata.sss_code_size);
 	memcpy(ssc_data.data, ((void *)c->code + sizeof(ssc_meta_data) + received_metadata.sss_code_size), received_metadata.data_sec_size);
 	memcpy(ssc_ro_data.ro_data, ((void *)c->code + sizeof(ssc_meta_data) + received_metadata.sss_code_size + received_metadata.data_sec_size), received_metadata.ro_data_size);
@@ -104,25 +119,12 @@ void load_code()
 
 void execute_SSC()
 {
-
-
-	/*int Status;
-	Status = BramExample(XPAR_SHARE_AXI_BRAM_CTRL_0_DEVICE_ID);
-
-	if (Status != XST_SUCCESS ) {
-		xil_printf("Bram Example Failed\r\n");
-		return XST_FAILURE;
-	}
-
-	xil_printf("Successfully ran Bram Example\r\n");*/
-	//return XST_SUCCESS;
-
-	volatile bram_channel *bram_chnl = (bram_channel *) SHARED_BRAM_BASE;
+	/*volatile bram_channel *bram_chnl = (bram_channel *) SHARED_BRAM_BASE;
 	uint8_t H_data[64] = {124, 73, 204, 35, 31, 248, 199, 135, 157, 91, 95, 40, 62, 136, 208, 25, 153, 121, 155, 100, 31, 67, 202, 205, 135, 118, 191, 117, 171, 144, 170, 188, 47, 139, 28, 64, 254, 159, 226, 14, 147, 17, 58, 224, 216, 14, 107, 172, 249, 70, 243, 62, 61, 127, 228, 33, 248, 189, 246, 212, 37, 187, 197, 169 };
 	bram_chnl->input_len = sizeof(H_data);
 
 	/* Notify CTEE2 to begin execution */
-	bram_chnl->input_available = 1;
+	/*bram_chnl->input_available = 1;
 
 	mb_printf("Current value: %d", bram_chnl->input_available);
 	usleep(100000);
@@ -135,8 +137,9 @@ void execute_SSC()
 	for (int i = 0; i < HASH_OUTPUT_SIZE; i++)
 	{
 		xil_printf("%x ", bram_chnl->output_data[i]);
-	}
-	/*if (ssc_module_loaded == 0)
+	}*/
+
+	if (ssc_module_loaded == 0)
 	{
 		mb_printf("No SSC module present in BRAM\r\n");
 		return;
@@ -145,7 +148,7 @@ void execute_SSC()
 
 	((int (*)(void))local_state.code)();
 
-	mb_printf("Finished SSC code executed from BRAM\r\n");*/
+	mb_printf("Finished SSC code executed from BRAM\r\n");
 }
 
 void forward_to_ssc()
@@ -179,15 +182,13 @@ int adjust_block_size(int data_size)
 
 void input_attestation(char flag)
 {
+	if (att_md.input_att_size == 0)
+		return;
 	int data_size = adjust_block_size(att_md.input_att_size + MEASUREMENT_SIZE);
-
-	if (att_md.input_att_size != 0)
-	{
-		//Input to SSC data attestation
-		memcpy(att_md.att_input_data + att_md.input_att_size, preExeResult, MEASUREMENT_SIZE);
-		//memset(att_md.att_input_data + att_md.input_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.input_att_size + MEASUREMENT_SIZE));
-		blake2s(preExeResult, att_md.att_input_data, data_size);
-	}
+	//Input to SSC data attestation
+	memcpy(att_md.att_input_data + att_md.input_att_size, preExeResult, MEASUREMENT_SIZE);
+	//memset(att_md.att_input_data + att_md.input_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.input_att_size + MEASUREMENT_SIZE));
+	blake2s(preExeResult, att_md.att_input_data, data_size);
 
 	if (flag == 1)
 		//copy the hash to DRAM
@@ -196,15 +197,14 @@ void input_attestation(char flag)
 
 void output_attestation()
 {
-	int data_size = adjust_block_size(att_md.output_att_size + MEASUREMENT_SIZE);
+	if (att_md.output_att_size == 0)
+		return;
 
-	if (att_md.output_att_size != 0)
-	{
-		//Input to SSC data attestation
-		memcpy(att_md.att_output_data + att_md.output_att_size, preExeResult, MEASUREMENT_SIZE);
-		//memset(att_md.att_output_data + att_md.output_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.output_att_size + MEASUREMENT_SIZE));
-		blake2s(preExeResult, att_md.att_output_data, data_size);
-	}
+	int data_size = adjust_block_size(att_md.output_att_size + MEASUREMENT_SIZE);
+	//Input to SSC data attestation
+	memcpy(att_md.att_output_data + att_md.output_att_size, preExeResult, MEASUREMENT_SIZE);
+	//memset(att_md.att_output_data + att_md.output_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.output_att_size + MEASUREMENT_SIZE));
+	blake2s(preExeResult, att_md.att_output_data, data_size);
 	//copy the hash to DRAM
 	memcpy((void *)&c->postExehash, &preExeResult, MEASUREMENT_SIZE);
 }
@@ -245,30 +245,12 @@ void cleaup_att_space()
 	memset(&att_md, 0, sizeof(attestation_md));
 }
 
-void concat_SSC_attst()
+int verify_ssa_signature(void *data_start)
 {
-	if (att_md.ssc_flag == 0)
-		return;
-
-	memcpy(att_md.att_input_data, preExeResult, MEASUREMENT_SIZE);
-	memcpy(att_md.att_input_data + MEASUREMENT_SIZE, att_md.ssc_measurement, MEASUREMENT_SIZE);
-
-	if (att_md.ssc_flag == 1)
-	{
-		blake2s((void *)&c->postExehash, att_md.att_input_data, 2 * MEASUREMENT_SIZE);
-	}
-	else
-	{
-		blake2s((void *)&c->preExehash, att_md.att_input_data, 2 * MEASUREMENT_SIZE);
-	}
-}
-void attestation_after_execution()
-{
-	input_attestation(1);
-	concat_SSC_attst();
-	postExeAtt();
-	concat_SSC_attst();
-	cleaup_att_space();
+	uint8_t sig[HASH_OUTSIZE];
+	memset(sig, 0, HASH_OUTSIZE);
+	hmac(auth_key, data_start, c->file_size - SIG_LEN, sig);
+	return !memcmp(sig, (uint8_t *)data_start , SIG_LEN);
 }
 int main()
 {
@@ -321,7 +303,9 @@ int main()
 			case SSC_COMMAND:
 				preExeAtt();
 				forward_to_ssc(); /*Executing SSC*/
-				attestation_after_execution();
+				input_attestation(1);
+				postExeAtt();
+				cleaup_att_space();
 				break;
 			case EXIT:
 				remove_ssc_module();

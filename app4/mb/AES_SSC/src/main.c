@@ -34,7 +34,7 @@ int dummy_aes_ssc()
     init_platform();
     cleanup_platform();
     memmove(str1, str2, 10);
-
+    microblaze_flush_cache_ext_range();
     if (!memcmp(str1, str2, 10))
     {
         aes_dec_test();
@@ -49,6 +49,9 @@ int dummy_aes_ssc()
     }
 
     Xil_MemCpy(str1, str2, 10);
+    microblaze_enable_interrupts();
+
+    microblaze_invalidate_dcache_range();
     //memcmp(str1, str2, 10);
 }
 
