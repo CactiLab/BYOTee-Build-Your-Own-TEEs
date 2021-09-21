@@ -3,17 +3,14 @@
 #include "xparameters.h"
 #include "xil_exception.h"
 #include "xstatus.h"
-#include "xaxidma.h"
 #include "xil_mem.h"
 #include "util.h"
 #include "xintc.h"
 #include "constants.h"
 #include "sleep.h"
 #include "blake2s.h"
-
+#include "xil_io.h"
 //////////////////////// GLOBALS ////////////////////////
-static XAxiDma sAxiDma;
-
 // LED colors and controller
 u32 *led = (u32 *)XPAR_RGB_PWM_0_PWM_AXI_BASEADDR;
 const struct color RED = {0x01ff, 0x0000, 0x0000};
@@ -125,6 +122,7 @@ void execute_SSC()
 	mb_printf("Current value: %d", bram_chnl->input_available);
 	bram_chnl->input_available = 1;
 	usleep(100000);
+
 	/*wait untill the CTEE2 finishes excution*/
 
 	/*while(bram_chnl->input_available == 1)
@@ -133,6 +131,9 @@ void execute_SSC()
 	}*/
 
 	mb_printf("Written value: %d", bram_chnl->input_available);
+
+	 Xil_Out32(0x04B01FFF, 0x55555555);
+	 xil_printf("\r\n Data in BRAM location 0 is: 0x%x",Xil_In32(0x04B01FFF));
 	/*if (ssc_module_loaded == 0)
 	{
 		mb_printf("No SSC module present in BRAM\r\n");
@@ -287,14 +288,6 @@ int main()
 
 	if (status != XST_SUCCESS)
 	{
-		return XST_FAILURE;
-	}
-
-	status = fnConfigDma(&sAxiDma);
-
-	if (status != XST_SUCCESS)
-	{
-		mb_printf("DMA configuration ERROR\r\n");
 		return XST_FAILURE;
 	}
 	// Start the LED

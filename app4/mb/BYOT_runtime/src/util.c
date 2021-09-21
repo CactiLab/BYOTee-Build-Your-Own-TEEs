@@ -66,52 +66,6 @@ int SetUpInterruptSystem(XIntc *XIntcInstancePtr, XInterruptHandler hdlr)
 	return XST_SUCCESS;
 }
 
-u32 fnAudioPlay(XAxiDma AxiDma, u32 offset, u32 u32NrSamples)
-{
-	u32 status;
-
-	status = XAxiDma_SimpleTransfer(&AxiDma, (u32)(XPAR_MB_DMA_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + offset), u32NrSamples, XAXIDMA_DMA_TO_DEVICE);
-
-	return status;
-}
-
-XStatus fnConfigDma(XAxiDma *AxiDma)
-{
-	int Status;
-	XAxiDma_Config *pCfgPtr;
-
-	//Make sure the DMA hardware is present in the project
-	//Ensures that the DMA hardware has been loaded
-	pCfgPtr = XAxiDma_LookupConfig(XPAR_AXIDMA_0_DEVICE_ID);
-
-	if (!pCfgPtr)
-	{
-
-		xil_printf(MB_PROMPT "No config found for %d\r\n", XPAR_AXIDMA_0_DEVICE_ID);
-
-		return XST_FAILURE;
-	}
-
-	Status = XAxiDma_CfgInitialize(AxiDma, pCfgPtr);
-	if (Status != XST_SUCCESS)
-	{
-
-		xil_printf(MB_PROMPT "Initialization failed %d\r\n");
-
-		return XST_FAILURE;
-	}
-
-	//Ensures that the Scatter Gather mode is not active
-	if (XAxiDma_HasSg(AxiDma))
-	{
-		xil_printf(MB_PROMPT "Device configured as SG mode\r\n");
-
-		return XST_FAILURE;
-	}
-
-	return XST_SUCCESS;
-}
-
 int BramExample(u16 DeviceId)
 {
 	int Status;
