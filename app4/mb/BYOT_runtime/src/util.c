@@ -1,10 +1,12 @@
 #include "util.h"
 #include "constants.h"
 #include "PWM.h"
-
+#include "xparameters.h"
+#include "xbram.h"
 /*
  * This function enables the PWM module and sets its period so it can drive the RGB LED
  */
+XBram Bram;	/* The Instance of the BRAM Driver */
 void enableLED(u32 *led)
 {
 	PWM_Enable((u32)led);
@@ -108,6 +110,50 @@ XStatus fnConfigDma(XAxiDma *AxiDma)
 	}
 
 	return XST_SUCCESS;
+}
+
+int BramExample(u16 DeviceId)
+{
+	int Status;
+	XBram_Config *ConfigPtr;
+
+	ConfigPtr = XBram_LookupConfig(DeviceId);
+	if (ConfigPtr == (XBram_Config *) NULL) {
+		return XST_FAILURE;
+	}
+
+	Status = XBram_CfgInitialize(&Bram, ConfigPtr,
+				     ConfigPtr->CtrlBaseAddress);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	InitializeECC(ConfigPtr, ConfigPtr->CtrlBaseAddress);
+
+	Status = XBram_SelfTest(&Bram, 0);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	return XST_SUCCESS;
+}
+
+void InitializeECC(XBram_Config *ConfigPtr, u32 EffectiveAddr)
+{
+	u32 Addr;
+	volatile u32 Data;
+
+	if (ConfigPtr->EccPresent &&
+	    ConfigPtr->EccOnOffRegister &&
+	    ConfigPtr->EccOnOffResetValue == 0 &&
+	    ConfigPtr->WriteAccess != 0) {
+		for (Addr = ConfigPtr->MemBaseAddress;
+		     Addr < ConfigPtr->MemHighAddress; Addr+=4) {
+			Data = XBram_In32(Addr);
+			XBram_Out32(Addr, Data);
+		}
+		XBram_WriteReg(EffectiveAddr, XBRAM_ECC_ON_OFF_OFFSET, 1);
+	}
 }
 
 void get_unsigned_int(unsigned char *loc_buffer, ssc_meta_data *result)

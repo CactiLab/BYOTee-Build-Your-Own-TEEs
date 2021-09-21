@@ -5,7 +5,7 @@
 
 // shared DDR address
 #define SHARED_DDR_BASE (0x20000000 + 0x1CC00000)
-#define SHARED_BRAM_BASE (0x4B00000)
+#define SHARED_BRAM_BASE (0x04B01FFF)
 
 // printing utility
 #define MB_PROMPT "\r\nBYOT_Runtime> "
@@ -23,6 +23,8 @@
 #define MEASUREMENT_SIZE 32
 //AES SSC CONSTANTS
 #define ENC_DEC_DATA_SIZE 64
+#define MAX_INPUT_DATA_SIZE 1024
+#define HASH_OUTPUT_SIZE 64
 // LED colors and controller
 struct color
 {
@@ -96,7 +98,9 @@ typedef struct
 typedef volatile struct __attribute__((__packed__))
 {
 	char input_available;
-	uint8_t input_data[ENC_DEC_DATA_SIZE];
+	uint8_t input_len;
+	uint8_t input_data[MAX_INPUT_DATA_SIZE];
+	uint8_t output_data [HASH_OUTPUT_SIZE];
 } bram_channel;
 
 typedef struct

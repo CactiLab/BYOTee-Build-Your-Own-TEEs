@@ -107,11 +107,31 @@ void load_code()
 
 void execute_SSC()
 {
+
+
+	int Status;
+	Status = BramExample(XPAR_SHARE_AXI_BRAM_CTRL_0_DEVICE_ID);
+
+	if (Status != XST_SUCCESS ) {
+		xil_printf("Bram Example Failed\r\n");
+		return XST_FAILURE;
+	}
+
+	xil_printf("Successfully ran Bram Example\r\n");
+	//return XST_SUCCESS;
+
 	volatile bram_channel *bram_chnl = (bram_channel *) SHARED_BRAM_BASE;
 
 	mb_printf("Current value: %d", bram_chnl->input_available);
 	bram_chnl->input_available = 1;
 	usleep(100000);
+	/*wait untill the CTEE2 finishes excution*/
+
+	/*while(bram_chnl->input_available == 1)
+	{
+		mb_printf("WAITING ON : %d \r\n",  bram_chnl->input_available);
+	}*/
+
 	mb_printf("Written value: %d", bram_chnl->input_available);
 	/*if (ssc_module_loaded == 0)
 	{
