@@ -72,13 +72,6 @@ int main()
 {
 	int Status;
 	Status = BramExample(XPAR_SHARE_AXI_BRAM_CTRL_1_DEVICE_ID);
-
-	if (Status != XST_SUCCESS ) {
-		xil_printf("Bram Example Failed\r\n");
-		return XST_FAILURE;
-	}
-
-	xil_printf("Successfully ran Bram Example\r\n");
 	while(1)
 	{
 		if (bram_chnl->input_available == 1)
