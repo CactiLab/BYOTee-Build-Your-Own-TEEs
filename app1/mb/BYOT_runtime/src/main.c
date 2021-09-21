@@ -185,7 +185,7 @@ void preExeAtt()
 	int data_size;
 
 	challenge_number = (c->challenge_number);
-	mb_printf("postExeAtt for challenge %d\r\n", challenge_number);
+	mb_printf("Attestation for challenge %d\r\n", challenge_number);
 	data_size = adjust_block_size(received_metadata.ro_data_size);
 	// hash the read only data section + input hash
 	blake2s(preExeResult, ssc_ro_data.ro_data, data_size);

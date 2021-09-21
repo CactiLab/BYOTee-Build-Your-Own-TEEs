@@ -103,10 +103,10 @@ void format_SSC_code()
 	memcpy(temp_buffer, local_state.code + SIG_LEN, sizeof(ssc_meta_data));
 
 	get_unsigned_int(temp_buffer, &received_metadata);
-	mb_printf("Code: %d RO: %d DADA: %d \r\n",received_metadata.sss_code_size, received_metadata.ro_data_size, received_metadata.data_sec_size);
-	memcpy(local_state.code, ((void *)c->code + sizeof(ssc_meta_data)), received_metadata.sss_code_size);
-	memcpy(ssc_data.data, ((void *)c->code + sizeof(ssc_meta_data) + received_metadata.sss_code_size), received_metadata.data_sec_size);
-	memcpy(ssc_ro_data.ro_data, ((void *)c->code + sizeof(ssc_meta_data) + received_metadata.sss_code_size + received_metadata.data_sec_size), received_metadata.ro_data_size);
+
+	memcpy(ssc_data.data, (local_state.code + sizeof(ssc_meta_data) + received_metadata.sss_code_size + SIG_LEN), received_metadata.data_sec_size);
+	memcpy(ssc_ro_data.ro_data, (local_state.code + sizeof(ssc_meta_data) + received_metadata.sss_code_size + received_metadata.data_sec_size + SIG_LEN), received_metadata.ro_data_size);
+	memmove(local_state.code, (local_state.code + sizeof(ssc_meta_data) + SIG_LEN), received_metadata.sss_code_size);
 }
 
 void load_code()
