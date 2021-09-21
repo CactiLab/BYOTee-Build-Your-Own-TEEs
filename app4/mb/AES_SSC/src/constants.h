@@ -12,12 +12,14 @@
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 
 // protocol constants
-#define CODE_SIZE 50000
+#define CODE_SIZE 15000
 #define PADING_SZ 1 + 68
 #define ATTESTION_CAP 2000
 //AES SSC CONSTANTS
 #define ENC_DEC_DATA_SIZE 64
 #define ENC_DEC_BLOCK_SIZE 16
+#define MAX_INPUT_DATA_SIZE 1024
+#define HASH_OUTPUT_SIZE 64
 
 enum commands
 {
@@ -69,7 +71,10 @@ typedef struct
 typedef volatile struct __attribute__((__packed__))
 {
 	char input_available;
-	uint8_t input_data[ENC_DEC_DATA_SIZE];
+	uint8_t input_len;
+	char padding[2];
+	uint8_t input_data[MAX_INPUT_DATA_SIZE];
+	uint8_t output_data [HASH_OUTPUT_SIZE];
 } bram_channel;
 
 uint8_t received_data[ENC_DEC_DATA_SIZE];

@@ -11,7 +11,7 @@
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 
 // protocol constants
-#define CODE_SIZE 50000
+#define CODE_SIZE 15000
 #define PADING_SZ 1 + 68
 #define ATTESTION_CAP 2000
 //AES SSC CONSTANTS

@@ -14,7 +14,7 @@
 // protocol constants
 #define CODE_SIZE 15000
 #define DATA_SIZE 2000
-#define RO_DATA_SIZE 2000
+#define RO_DATA_SIZE 2500
 #define ATTESTION_CAP 2000
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64

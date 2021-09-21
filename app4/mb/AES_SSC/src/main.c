@@ -54,7 +54,30 @@ int dummy_aes_ssc()
     microblaze_invalidate_dcache_range();
     //memcmp(str1, str2, 10);
 }
+void CTEE2_intercommunication()
+{
+	volatile bram_channel *bram_chnl = (bram_channel *) SHARED_BRAM_BASE;
+	uint8_t H_data[64] = {124, 73, 204, 35, 31, 248, 199, 135, 157, 91, 95, 40, 62, 136, 208, 25, 153, 121, 155, 100, 31, 67, 202, 205, 135, 118, 191, 117, 171, 144, 170, 188, 47, 139, 28, 64, 254, 159, 226, 14, 147, 17, 58, 224, 216, 14, 107, 172, 249, 70, 243, 62, 61, 127, 228, 33, 248, 189, 246, 212, 37, 187, 197, 169 };
+	bram_chnl->input_len = sizeof(H_data);
 
+	/* Notify CTEE2 to begin execution */
+	bram_chnl->input_available = 1;
+
+	mb_printf("Current value: %d", bram_chnl->input_available);
+	usleep(100000);
+
+	while(bram_chnl->input_available == 1)
+	{
+		mb_printf("WAITING ON : %d \r\n",  bram_chnl->input_available);
+	}
+
+	usleep(100000);
+	mb_printf("CTEE2 calculated Hash: \r\n");
+	for (int i = 0; i < HASH_OUTPUT_SIZE; i++)
+	{
+		xil_printf("%x ", bram_chnl->output_data[i]);
+	}
+}
 int main()
 {
     memcpy(received_data, (void *)cmd_chnl->enc_dec_data, ENC_DEC_DATA_SIZE);
@@ -78,6 +101,7 @@ int main()
     //memset(ptr, 0xff, 80);
     att_md.output_att_size = ENC_DEC_DATA_SIZE;
     memcpy(&att_md.att_output_data, received_data, ENC_DEC_DATA_SIZE);
+
 }
 
 void aes_dec_test()
