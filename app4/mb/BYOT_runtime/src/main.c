@@ -106,7 +106,7 @@ void execute_SSC()
 {
 
 
-	int Status;
+	/*int Status;
 	Status = BramExample(XPAR_SHARE_AXI_BRAM_CTRL_0_DEVICE_ID);
 
 	if (Status != XST_SUCCESS ) {
@@ -114,26 +114,32 @@ void execute_SSC()
 		return XST_FAILURE;
 	}
 
-	xil_printf("Successfully ran Bram Example\r\n");
+	xil_printf("Successfully ran Bram Example\r\n");*/
 	//return XST_SUCCESS;
 
 	volatile bram_channel *bram_chnl = (bram_channel *) SHARED_BRAM_BASE;
+	static const uint8_t data[64] = {124, 73, 204, 35, 31, 248, 199, 135, 157, 91, 95, 40, 62, 136, 208, 25, 153, 121, 155, 100, 31, 67, 202, 205, 135, 118, 191, 117, 171, 144, 170, 188, 47, 139, 28, 64, 254, 159, 226, 14, 147, 17, 58, 224, 216, 14, 107, 172, 249, 70, 243, 62, 61, 127, 228, 33, 248, 189, 246, 212, 37, 187, 197, 169 };
+	bram_chnl->input_len = sizeof(data);
+	mb_printf("Input data: \r\n");
+	for (int i = 0; i < HASH_OUTPUT_SIZE; i++)
+	{
+		xil_printf("%x ", bram_chnl->input_data[i]);
+	}
+	memcpy(bram_chnl->input_data, data, bram_chnl->input_len);
+	/* Notify CTEE2 to begin execution */
+	bram_chnl->input_available = 1;
 
 	mb_printf("Current value: %d", bram_chnl->input_available);
-	bram_chnl->input_available = 1;
 	usleep(100000);
-
-	/*wait untill the CTEE2 finishes excution*/
-
-	/*while(bram_chnl->input_available == 1)
+	while(bram_chnl->input_available == 1)
 	{
 		mb_printf("WAITING ON : %d \r\n",  bram_chnl->input_available);
-	}*/
-
-	mb_printf("Written value: %d", bram_chnl->input_available);
-
-	 Xil_Out32(0x04B01FFF, 0x55555555);
-	 xil_printf("\r\n Data in BRAM location 0 is: 0x%x",Xil_In32(0x04B01FFF));
+	}
+	mb_printf("CTEE calculated Hash: \r\n");
+	for (int i = 0; i < HASH_OUTPUT_SIZE; i++)
+	{
+		xil_printf("%x ", bram_chnl->output_data[i]);
+	}
 	/*if (ssc_module_loaded == 0)
 	{
 		mb_printf("No SSC module present in BRAM\r\n");
