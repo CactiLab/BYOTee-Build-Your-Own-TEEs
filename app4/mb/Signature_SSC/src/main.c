@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdint.h>
 #include "constants.h"
-#include "xparameters.h"
-#include "xbram.h"
 #include "hmac.h"
 
 volatile bram_channel *bram_chnl = (bram_channel *) SHARED_BRAM_BASE;
@@ -25,11 +23,9 @@ int main()
 	{
 		if (bram_chnl->input_available == 1)
 		{
-			bram_chnl->input_available = 0;
-			//generate_signature();
+			generate_signature();
 			usleep(1000);
-			//bram_chnl->input_available = 0;
-			//break;
+			bram_chnl->input_available = 0;
 		}
 
 

@@ -11,6 +11,7 @@ static const uint8_t auth_key[KEY_SIZE] = {124, 73, 204, 35, 31, 248, 199, 135, 
 typedef volatile struct __attribute__((__packed__))
 {
 	char input_available;
+	char padding[3];
 	uint8_t input_len;
 	uint8_t input_data[MAX_INPUT_DATA_SIZE];
 	uint8_t output_data [HASH_OUTPUT_SIZE];
