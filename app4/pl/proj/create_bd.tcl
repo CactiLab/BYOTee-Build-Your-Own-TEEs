@@ -58,7 +58,7 @@ set run_remote_bd_flow 1
 if { $run_remote_bd_flow == 1 } {
   # Set the reference directory for source file relative paths (by default 
   # the value is script directory path)
-  set origin_dir ./Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app4/pl/src/bd
+  set origin_dir ./src/bd
 
   # Use origin directory path location variable, if specified in the tcl shell
   if { [info exists ::origin_dir_loc] } {
@@ -1500,5 +1500,3 @@ HDL_ATTRIBUTE.DEBUG {true} \
 ##################################################################
 
 create_root_design ""
-
-
