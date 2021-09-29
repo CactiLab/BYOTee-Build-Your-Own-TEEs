@@ -57,7 +57,7 @@ SECTIONS
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 .test : {
-    *main.o(.text)
+   *main.o(.text)
 	*main.o(.text.*)
 	*blake2s.o(.text)
 	*blake2s.o(.text.*)

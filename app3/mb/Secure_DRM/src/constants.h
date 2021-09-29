@@ -11,11 +11,11 @@
 #define MAX_SONG_SZ (1 << 25)
 #define CHUNK_SZ 16000
 #define FIFO_CAP 4096 * 4
-#define CODE_SIZE 40000
+#define CODE_SIZE 22000
 #define SSC_SIZE 50000
 #define ATTESTION_CAP 3008
-#define SAXI_DMA_POINTER_ADDRESS 0x00018f48
-#define INTERRUPT_POINTER_ADDRESS 0x0001969c
+#define SAXI_DMA_POINTER_ADDRESS 0x0001E090
+#define INTERRUPT_POINTER_ADDRESS 0x0001E7e8
 #define PREVIEW_TIME_SEC 30
 #define PADING_SZ 2 + 68
 #define PADING_SZ2 64
@@ -123,6 +123,7 @@ typedef volatile struct __attribute__((__packed__))
     char padding[PADING_SZ];
     char code[SSC_SIZE];
     char enc_padding[PADING_SZ2];
+    char file_size_padding[PACKAGING_SZ1];
     drm_audio_channel audio_data;
 } drm_channel;
 

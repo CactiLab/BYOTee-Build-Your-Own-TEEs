@@ -11,10 +11,10 @@
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)
 
 // protocol constants
-#define CODE_SIZE 40000
+#define CODE_SIZE 22000
 #define SSC_SIZE 50000
-#define DATA_SIZE 5000
-#define RO_DATA_SIZE 5000
+#define DATA_SIZE 4000
+#define RO_DATA_SIZE 4000
 #define ATTESTION_CAP 3008
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
@@ -22,6 +22,10 @@
 #define MEASUREMENT_SIZE 32
 //AES SSC CONSTANTS
 #define ENC_DEC_DATA_SIZE 64
+#define SIG_LEN 64
+#define AUTH_KEY_SIZE 64
+
+static const uint8_t auth_key[AUTH_KEY_SIZE] = {124, 73, 204, 35, 31, 248, 199, 135, 157, 91, 95, 40, 62, 136, 208, 25, 153, 121, 155, 100, 31, 67, 202, 205, 135, 118, 191, 117, 171, 144, 170, 188, 47, 139, 28, 64, 254, 159, 226, 14, 147, 17, 58, 224, 216, 14, 107, 172, 249, 70, 243, 62, 61, 127, 228, 33, 248, 189, 246, 212, 37, 187, 197, 169 };
 // LED colors and controller
 struct color
 {
@@ -61,6 +65,7 @@ typedef volatile struct __attribute__((__packed__))
     unsigned char postExehash[MEASUREMENT_SIZE];
     char code[SSC_SIZE];
     uint8_t enc_dec_data[ENC_DEC_DATA_SIZE];
+    int file_size;
     //drm_audio_channel drm_chnl;
 } cmd_channel;
 

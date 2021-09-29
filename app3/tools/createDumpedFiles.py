@@ -56,7 +56,9 @@ def main():
     data_address = 0x13ed4
     rodata_address = 0x144cc
     final_data = struct.pack(">i",test_address) + struct.pack(">i",data_address) + struct.pack(">i",rodata_address) + struct.pack(">i",len(test_data)) + struct.pack(">i",len(data)) + struct.pack(">i",len(rodata))
-    
+    print("Code Size: " + str(len(test_data)))
+    print("data Size: " + str(len(data)))
+    print("ro-data Size: " + str(len(rodata)))
     final_data = final_data + test_data + data + rodata
     #print (','.join(format(x, '02x') for x in final_data))
     m = hmac.new(auth_key, digestmod="sha512")
@@ -73,7 +75,7 @@ def main():
         print("Write to file failed")
         raise
     SSC_file.close()
-    os.system("./encrypt_SSA SSC/AES_SSC")
+    os.system("./encrypt_SSA SSC/Secure_DRM")
     print ("\n" + SSC_dump_location + " --dumped file dumped at location -> SSC/")
 
 if __name__ == '__main__':
