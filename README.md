@@ -39,7 +39,7 @@ In the hardware deisgn of the application CTEE is constructed with a micrbolze p
 * `app4/` - Contains an example of **Distributed Applications**. In this application the there are two CTEEs implemented in the FPGA side. Both of the CTEEs are configured with its own BRAMs. And for secure communication between the CTEEs one 32KB BRAM is shared.
 The PS application here talks to the CTEE-1 through the SEB. The SSA-4 here is loaded to the CTEE-4 statically with `update-MEM` tool. Although SSAs on the CTEE-1 are loaded dynamically.
 * `CTEE-HS-generation/` - Contains a tool to generate the CTEE hardware configurations. The input file is in json format and it output tcl files to build the CTEE hardware design.
-*`Evaluations/` - Contains the evaluation source code of the BYOT. It incldues implementated applications performance evaluation source code, embench-iot benchmark application source code, cold-boot-attack on DRAM and BRAM source code. Note to evaluate on the MicroBlaze processor we also added a AXI timer IP in the hardware design, the tcl scripts are also added under this directory.
+* `Evaluations/` - Contains the evaluation source code of the BYOT. It incldues implementated applications performance evaluation source code, embench-iot benchmark application source code, cold-boot-attack on DRAM and BRAM source code. Note to evaluate on the MicroBlaze processor we also added a AXI timer IP in the hardware design, the tcl scripts are also added under this directory.
 ## Notes
 * To build and execute each application, go to the application directories and follow the **getting started** file instructions.
  <!--- 
