@@ -32,7 +32,7 @@
 								<option id="xilinx.gnu.mb.compiler.inferred.usele.1187999616" name="Produce little endian code (-mlittle-endian)" superClass="xilinx.gnu.mb.compiler.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.1371178199" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../Signature_SSC_bsp/microblaze_1/include"/>
-									<listOptionValue builtIn="false" value="/home/tomal/Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app4/mb/Signature_SSC/src"/>
+									<listOptionValue builtIn="false" value="/home/tomal/Desktop/temp/BYOT_code/code-build-your-own-TEE/app4/mb/Signature_SSC/src"/>
 								</option>
 								<option id="xilinx.gnu.compiler.dircategory.includes.698352220" name="Include Paths" superClass="xilinx.gnu.compiler.dircategory.includes" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Signature_SSC_bsp/microblaze_0/include}&quot;"/>

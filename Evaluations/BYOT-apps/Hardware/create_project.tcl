@@ -27,10 +27,10 @@
 #
 # 3. The following remote source files that were added to the original project:-
 #
-#    "/home/tomal/Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app3/pl/src/bd/system/system.bd"
-#    "/home/tomal/Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app3/pl/src/bd/system/hdl/system_wrapper.vhd"
-#    "/home/tomal/Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app3/pl/src/hdl/i2s_output.vhd"
-#    "/home/tomal/Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app3/pl/src/constraints/Cora-Z7-Master.xdc"
+#    "../code-build-your-own-TEE/app3/pl/src/bd/system/system.bd"
+#    "../code-build-your-own-TEE/app3/pl/src/bd/system/hdl/system_wrapper.vhd"
+#    "../code-build-your-own-TEE/app3/pl/src/hdl/i2s_output.vhd"
+#    "../code-build-your-own-TEE/app3/pl/src/constraints/Cora-Z7-Master.xdc"
 #
 #*****************************************************************************************
 
@@ -115,7 +115,7 @@ set obj [current_project]
 set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "dsa.num_compute_units" -value "60" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
-set_property -name "ip_output_repo" -value "/home/tomal/Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app3/pl/repo/cache" -objects $obj
+set_property -name "ip_output_repo" -value "repo/cache" -objects $obj
 set_property -name "part" -value "xc7z007sclg400-1" -objects $obj
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj

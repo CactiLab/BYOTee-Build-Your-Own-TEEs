@@ -27,10 +27,10 @@
 #
 # 3. The following remote source files that were added to the original project:-
 #
-#    "/home/tomal/Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app4/pl/src/bd/system/system.bd"
-#    "/home/tomal/Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app4/pl/src/bd/system/hdl/system_wrapper.vhd"
-#    "/home/tomal/Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app4/pl/src/hdl/i2s_output.vhd"
-#    "/home/tomal/Desktop/cacti_lab/BYOT_code/code-build-your-own-TEE/app4/pl/src/constraints/Cora-Z7-Master.xdc"
+#    "/../pl/src/bd/system/system.bd"
+#    "../pl/src/bd/system/hdl/system_wrapper.vhd"
+#    "../code-build-your-own-TEE/app4/pl/src/hdl/i2s_output.vhd"
+#    "../code-build-your-own-TEE/app4/pl/src/constraints/Cora-Z7-Master.xdc"
 #
 #*****************************************************************************************
 

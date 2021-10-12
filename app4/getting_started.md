@@ -1,5 +1,5 @@
 <!-- 
-# CactiLab-BYOT Getting Started
+# BYOT Getting Started
 
 Below is the overview of how to set up the reference implementation BYOT framework for FPGA SoCs.
 
@@ -10,7 +10,7 @@ Please note: if any step fails, it is highly unlikely that the process will get 
 
 1. Clone the BYOT repository using ssh or https 
 ```bash
-git clone git@github.com:CactiLab/code-build-your-own-TEE.git --recursive
+git clone .. --recursive
 ``` 
 
 
