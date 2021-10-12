@@ -1,4 +1,4 @@
-# BYOT Getting Started
+# BYOTee Getting Started
 
 Below is the overview of how to set up the reference implementation BYOT framework for FPGA SoCs.
 
