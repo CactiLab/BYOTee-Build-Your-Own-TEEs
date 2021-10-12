@@ -1,4 +1,4 @@
-# CactiLab-BYOT Getting Started
+# BYOT Getting Started
 
 Below is the overview of how to set up the reference implementation BYOT framework for FPGA SoCs.
 
@@ -21,7 +21,7 @@ information about these tools will be discussed when building the reference desi
 ```bash
 git clone git@github.com:CactiLab/code-build-your-own-TEE.git
 ``` 
-## CactiLab-BYOT Example Code
+## BYOT Example Code
 
 This repository contains three example reference system for BYOT System Design. 
 
@@ -36,8 +36,10 @@ The LED peripheral and the button peripheral in this case is included in the har
 * `app3/` - Contains an example of **Peripheral, PS and CTEE Interacting Applications**. In this application the PS side continuously interact with the application in the CTEE. The CTEE SSC application is a digital medial player application.
 The audio files are stored in the SD card. The PS application sends the file from SD card to the CTEE SSC application.
 In the hardware deisgn of the application CTEE is constructed with a micrbolze processor with its BRAM, and axi dma, SPI module, peripherals.
+* `app4/` - Contains an example of **Distributed Applications**. In this application the there are two CTEEs implemented in the FPGA side. Both of the CTEEs are configured with its own BRAMs. And for secure communication between the CTEEs one 32KB BRAM is shared.
+The PS application here talks to the CTEE-1 through the SEB. The SSA-4 here is loaded to the CTEE-4 statically with `update-MEM` tool. Although SSAs on the CTEE-1 are loaded dynamically.
 * `CTEE-HS-generation/` - Contains a tool to generate the CTEE hardware configurations. The input file is in json format and it output tcl files to build the CTEE hardware design.
-
+*`Evaluations/` - Contains the evaluation source code of the BYOT. It incldues implementated applications performance evaluation source code, embench-iot benchmark application source code, cold-boot-attack on DRAM and BRAM source code. Note to evaluate on the MicroBlaze processor we also added a AXI timer IP in the hardware design, the tcl scripts are also added under this directory.
 ## Notes
 * To build and execute each application, go to the application directories and follow the **getting started** file instructions.
  <!--- 
