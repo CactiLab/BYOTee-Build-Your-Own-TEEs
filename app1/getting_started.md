@@ -1,4 +1,4 @@
-<!--# CactiLab-BYOT Getting Started
+<!--#BYOT Getting Started
 
 Below is the overview of how to set up the reference implementation BYOT framework for FPGA SoCs.
 

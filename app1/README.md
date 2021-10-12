@@ -1,4 +1,4 @@
-# CactiLab-BYOT Example Code
+# BYOT Example Code
 
 This repository contains an example reference system for BYOT System Design. 
 

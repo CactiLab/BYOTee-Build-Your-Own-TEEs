@@ -27,9 +27,9 @@
 #
 # 3. The following remote source files that were added to the original project:-
 #
-#    "/home/tomal/Desktop/cacti_lab/BYOT/AES_version/code-build-your-own-TEE/pl/src/bd/system/hdl/system_wrapper.vhd"
-#    "/home/tomal/Desktop/cacti_lab/BYOT/AES_version/code-build-your-own-TEE/pl/src/hdl/i2s_output.vhd"
-#    "/home/tomal/Desktop/cacti_lab/BYOT/AES_version/code-build-your-own-TEE/pl/src/constraints/Cora-Z7-Master.xdc"
+#    "../pl/src/bd/system/hdl/system_wrapper.vhd"
+#    "../pl/src/hdl/i2s_output.vhd"
+#    "../AES_version/code-build-your-own-TEE/pl/src/constraints/Cora-Z7-Master.xdc"
 #
 #*****************************************************************************************
 
