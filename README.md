@@ -1,6 +1,6 @@
 # BYOTee Getting Started
 
-Below is the overview of how to set up the reference implementation BYOT framework for FPGA SoCs.
+Below is the overview of how to set up the reference implementation BYOTee framework for FPGA SoCs.
 
 Please note: if any step fails, it is highly unlikely that the process will get back on track by continuing to future steps.
 ## Download Xilinx Tools
@@ -17,13 +17,13 @@ information about these tools will be discussed when building the reference desi
 ## Cloning Repository
 
 
-1. Clone the BYOT repository using ssh or https 
+1. Clone the BYOTee repository using ssh or https 
 ```bash
 git clone git@github.com:CactiLab/code-build-your-own-TEE.git
 ``` 
-## BYOT Example Code
+## BYOTee Example Code
 
-This repository contains three example reference system for BYOT System Design. 
+This repository contains three example reference system for BYOTee System Design. 
 
 ## Project structure
 The example code is structured as follows
