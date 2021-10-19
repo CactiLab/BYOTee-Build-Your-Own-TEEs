@@ -73,7 +73,7 @@ def main():
         print("Write to file failed")
         raise
     SSC_file.close()
-    os.system("./encrypt_SSA SSC/Fraction-SSA")
+    os.system("./encrypt_SSA SSC/Frac-SSA")
     print ("\n" + SSC_dump_location + " --dumped file dumped at location -> SSC/")
 
 if __name__ == '__main__':
