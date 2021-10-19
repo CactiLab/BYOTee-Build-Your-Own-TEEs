@@ -14,9 +14,6 @@
 #define ECB 1
 
 
-static void phex(uint8_t *str);
-static void test_encrypt_ecb_verbose(void);
-
 volatile cmd_channel *cmd_chnl = (cmd_channel *)SHARED_DDR_BASE;
 
 attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;

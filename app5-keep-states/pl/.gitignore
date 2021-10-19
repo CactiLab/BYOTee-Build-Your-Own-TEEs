@@ -3,3 +3,4 @@ proj/repo/*
 repo/*
 repo/cache/*
 src/*
+*.txt
