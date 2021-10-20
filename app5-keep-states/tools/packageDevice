@@ -20,7 +20,6 @@ def build_system(bif, outpath, bitstream_path, secure=False):
     """
 
     print("Building %s" % outpath)
-
     with open(bif, 'r') as f:
         data = f.read()
     data = data.replace("BITSTREAM_GOES_HERE", bitstream_path)

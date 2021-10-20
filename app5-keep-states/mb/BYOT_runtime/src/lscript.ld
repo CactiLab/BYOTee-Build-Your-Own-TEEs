@@ -255,6 +255,10 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    __stack = _stack;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
+.ssa.reserved.stack 0x17000:
+{
+	KEEP(*(.ssa.reserved.stack))
+} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 _end = .;
 }

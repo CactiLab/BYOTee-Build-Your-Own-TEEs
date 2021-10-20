@@ -97,7 +97,8 @@ def main():
     opt_proj_name = args.proj_name
     path_to_proj_tcl = dev_path_pl + "/proj/create_project.tcl"
     path_to_bits_tcl = dev_path_pl + "/proj/gen_bitstream.tcl"
-    bif_outpath = dev_path_mb + "/BOOT.bin"
+    bif_outpath = dev_path_mb + "../../BOOT.bin"
+    #print("TOMAL :" + str(bif_outpath))
     run_dir = os.getcwd()
 
     if opt_proj_name:

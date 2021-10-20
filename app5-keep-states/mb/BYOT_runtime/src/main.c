@@ -26,6 +26,7 @@ internal_state __attribute__((section(".ssc.code.buffer"))) local_state;
 data_content __attribute__((section(".ssc.data.buffer"))) ssc_data;
 ro_data_content __attribute__((section(".ssc.ro.data.buffer"))) ssc_ro_data;
 attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
+ssa_stack __attribute__((section(".ssa.reserved.stack"))) ssa_stack_instance;
 ssc_meta_data received_metadata;
 
 char ssc_module_loaded = 0;
