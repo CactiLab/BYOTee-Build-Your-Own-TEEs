@@ -58,10 +58,10 @@ enum ssc_command
     DIGITAL_OUT
 };
 
-enum aes_command
+enum frac_command
 {
-    ENC,
-    DEC
+    zero,
+	one
 };
 
 typedef struct

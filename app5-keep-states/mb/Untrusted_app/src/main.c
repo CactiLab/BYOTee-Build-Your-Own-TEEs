@@ -28,7 +28,7 @@ void specify_ssc_command(int cmd)
     memcpy((void *)&c->drm_chnl.ssc_cmd, &cmd, 1);
 }
 
-void specify_aes_ssc_command(int cmd)
+void specify_frac_ssa_command(int cmd)
 {
     memcpy((void *)&c->frac_cmd, &cmd, 1);
 }
@@ -208,7 +208,7 @@ void encrypt_SSC()
 
     printf("\n");
 
-    specify_aes_ssc_command(ENC);
+   // specify_aes_ssc_command(ENC);
     send_command(SSC_COMMAND);
 
     while (c->drm_state == STOPPED)
@@ -241,7 +241,7 @@ void decrypt_SSC()
     }
     printf("\n");
 
-    specify_aes_ssc_command(DEC);
+    //specify_aes_ssc_command(DEC);
     send_command(SSC_COMMAND);
 
     while (c->drm_state == STOPPED)
@@ -548,6 +548,14 @@ void print_measurement()
     }
     printf("\r\n");
 }
+void stop_state(){
+	specify_frac_ssa_command(zero);
+	send_command(SSC_COMMAND);
+}
+void load_state(){
+	specify_frac_ssa_command(one);
+	send_command(SSC_COMMAND);
+}
 int main(int argc, char **argv)
 {
     int mem;
@@ -617,6 +625,14 @@ int main(int argc, char **argv)
         {
             share_song(arg1, arg2);
         }
+        else if (!strncmp(cmd, "resume_ssa", sizeof("resume_ssa")))
+		{
+        	load_state();
+		}
+        else if (!strncmp(cmd, "stop_ssa", sizeof("stop_ssa")))
+		{
+        	stop_state(arg1, arg2);
+		}
         else if (!strncmp(cmd, "play", sizeof("play")))
         {
             // break if exit was commanded in play loop
