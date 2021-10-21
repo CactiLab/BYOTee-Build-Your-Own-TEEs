@@ -58,7 +58,6 @@ void dummy()
 {
 	char *str1 = NULL, *str2;
 	
-	memmove(str1, str2, 10);
 	strncpy(str1, str2, 10);
 
 	if (!strncmp(str1, NULL, 10))
@@ -69,6 +68,7 @@ void dummy()
 	if (!memcmp(str1, str2, 10))
 	{
 		format_SSC_code();
+		__mulsi3();
 	}
 	Xil_MemCpy(str1, str2, 10);
 }

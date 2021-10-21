@@ -15,7 +15,8 @@
 
 
 volatile cmd_channel *cmd_chnl = (cmd_channel *)SHARED_DDR_BASE;
-
+int prev_calulated_value = 1;
+int result = 1;
 attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
 
 int dummy_for_Frac_SSA()
@@ -29,7 +30,7 @@ int dummy_for_Frac_SSA()
     init_platform();
     cleanup_platform();
     memmove(str1, str2, 10);
-
+    memcpy(str1, str2,10);
     if (!memcmp(str1, str2, 10))
     {
 
@@ -49,6 +50,23 @@ int dummy_for_Frac_SSA()
 
 int main()
 {
-    xil_printf("!!!!!!!!!!Chet!!!!!!!\r\n");
+    xil_printf("!!!!!!!!!!I will keep States!!!!!!!\r\n");
+    for (int i = prev_calulated_value; i < 12; i ++)
+    {
+    	if (i != 1)
+    	{
+    		mb_printf("Invoking previous state\r\n");
+    	}
+    	if (cmd_chnl->factorial == 0)
+    	{
+    		mb_printf("Stop execution");
+    		return;
+    	}
+    	else {
+    		mb_printf("Iterating over %d\r\n", i);
+    		result = result * i;
+    	}
+    	usleep(500);
+    }
 }
 

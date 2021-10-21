@@ -13,6 +13,7 @@
 // protocol constants
 #define CODE_SIZE 15000
 #define PADING_SZ 1 + 68
+#define PADING_F_SZ 4
 #define ATTESTION_CAP 2000
 //AES SSC CONSTANTS
 #define ENC_DEC_DATA_SIZE 64
@@ -54,6 +55,8 @@ typedef volatile struct __attribute__((__packed__))
     char aes_cmd;
     char padding[PADING_SZ];
     char code[CODE_SIZE];
+    char file_paddng[PADING_F_SZ];
+    int factorial;
     uint8_t enc_dec_data[ENC_DEC_DATA_SIZE];
 } cmd_channel;
 
