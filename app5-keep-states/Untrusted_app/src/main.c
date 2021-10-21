@@ -30,7 +30,7 @@ void specify_ssc_command(int cmd)
 
 void specify_aes_ssc_command(int cmd)
 {
-    memcpy((void *)&c->aes_cmd, &cmd, 1);
+    memcpy((void *)&c->frac_cmd, &cmd, 1);
 }
 
 void parse_input(char *input, char **cmd, char **arg1, char **arg2)

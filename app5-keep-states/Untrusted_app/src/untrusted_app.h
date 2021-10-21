@@ -113,7 +113,7 @@ typedef volatile struct __attribute__((__packed__))
 {
     char cmd;
     char drm_state;
-    char aes_cmd;
+    char frac_cmd;
     char padding[PADING_SZ];
     unsigned int challenge_number;
     unsigned char preExehash[MEASUREMENT_SIZE];
@@ -121,6 +121,7 @@ typedef volatile struct __attribute__((__packed__))
     char code[CODE_SIZE];
     unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];
     int file_size;
+    int factorial;
     drm_audio_channel drm_chnl;
 } cmd_channel;
 
