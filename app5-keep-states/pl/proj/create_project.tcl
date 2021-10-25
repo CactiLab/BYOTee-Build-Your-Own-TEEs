@@ -190,7 +190,6 @@ set obj [get_filesets sim_1]
 set obj [get_filesets sim_1]
 set_property -name "top" -value "system_wrapper" -objects $obj
 
-
 # Create 'synth_1' run (if not found)
 if {[string equal [get_runs -quiet synth_1] ""]} {
     create_run -name synth_1 -part xc7z007sclg400-1 -flow {Vivado Synthesis 2017} -strategy "Vivado Synthesis Defaults" -report_strategy {No Reports} -constrset constrs_1

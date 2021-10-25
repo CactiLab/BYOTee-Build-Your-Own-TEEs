@@ -102,10 +102,15 @@ void format_SSC_code()
 
 void load_code()
 {
-	remove_ssc_module();
+	int val = 0;
+	__asm__("lwi r0, r0, 10;"
+			: "=r"(val)
+			);
+	xil_printf("val %d\r\n", val);
+	/*remove_ssc_module();
 	mb_printf("Reading code & data modules\r\n");
 	format_SSC_code();
-	mb_printf("SSC Code & data loaded to BRAM\r\n");
+	mb_printf("SSC Code & data loaded to BRAM\r\n");*/
 }
 
 void execute_SSC()

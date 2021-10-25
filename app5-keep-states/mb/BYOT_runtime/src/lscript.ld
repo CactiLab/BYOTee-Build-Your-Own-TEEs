@@ -75,8 +75,8 @@ SECTIONS
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 /*.text : { */
-.text 0x1114c + 12: {
-
+/*.text 0x1114c + 12: { */
+.text : {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
