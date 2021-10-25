@@ -131,7 +131,7 @@ xilinx.com:ip:mdm:3.2\
 xilinx.com:ip:microblaze:10.0\
 xilinx.com:ip:processing_system7:5.5\
 xilinx.com:ip:proc_sys_reset:5.0\
-xilinx.com:ip:axi_gpio:2.0\
+xilinx.com:ip:xadc_wiz:3.3\
 xilinx.com:ip:xlconcat:2.1\
 xilinx.com:ip:xlconstant:1.1\
 "
@@ -199,16 +199,17 @@ proc create_root_design { parentCell } {
   # Create interface ports
   set DDR [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 DDR ]
   set FIXED_IO [ create_bd_intf_port -mode Master -vlnv xilinx.com:display_processing_system7:fixedio_rtl:1.0 FIXED_IO ]
-  set vaux0 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux0 ]	
-  set vaux1 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux1 ]	
-  set vaux5 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux5 ]	
-  set vaux6 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux6 ]	
-  set vaux8 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux8 ]	
-  set vaux9 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux9 ]	
-  set vaux12 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux12 ]	
-  set vaux13 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux13 ]	
-  set vaux15 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux15 ]	
+  set vaux0 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux0 ]
+  set vaux1 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux1 ]
+  set vaux5 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux5 ]
+  set vaux6 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux6 ]
+  set vaux8 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux8 ]
+  set vaux9 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux9 ]
+  set vaux12 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux12 ]
+  set vaux13 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux13 ]
+  set vaux15 [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vaux15 ]
   set vp_vn [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 vp_vn ]
+
   # Create ports
 
   # Create instance: axi_intc_0, and set properties
@@ -1180,34 +1181,35 @@ proc create_root_design { parentCell } {
   # Create instance: rst_ps7_0_100M, and set properties
   set rst_ps7_0_100M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ps7_0_100M ]
 
-  # Create instance: xadc_wiz_0, and set properties	
-  set xadc_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xadc_wiz:3.3 xadc_wiz_0 ]	
-  set_property -dict [ list \	
-   CONFIG.CHANNEL_ENABLE_VAUXP0_VAUXN0 {true} \	
-   CONFIG.CHANNEL_ENABLE_VAUXP12_VAUXN12 {true} \	
-   CONFIG.CHANNEL_ENABLE_VAUXP13_VAUXN13 {true} \	
-   CONFIG.CHANNEL_ENABLE_VAUXP15_VAUXN15 {true} \	
-   CONFIG.CHANNEL_ENABLE_VAUXP1_VAUXN1 {true} \	
-   CONFIG.CHANNEL_ENABLE_VAUXP5_VAUXN5 {true} \	
-   CONFIG.CHANNEL_ENABLE_VAUXP6_VAUXN6 {true} \	
-   CONFIG.CHANNEL_ENABLE_VAUXP8_VAUXN8 {true} \	
-   CONFIG.CHANNEL_ENABLE_VAUXP9_VAUXN9 {true} \	
-   CONFIG.CHANNEL_ENABLE_VP_VN {true} \	
-   CONFIG.EXTERNAL_MUX_CHANNEL {VP_VN} \	
-   CONFIG.SEQUENCER_MODE {Continuous} \	
-   CONFIG.SINGLE_CHANNEL_SELECTION {TEMPERATURE} \	
-   CONFIG.XADC_STARUP_SELECTION {channel_sequencer} \	
- ] $xadc_wiz_0	
-  set_property -dict [ list \	
-   CONFIG.DATA_WIDTH {32} \	
-   CONFIG.ADDR_WIDTH {11} \	
-   CONFIG.READ_WRITE_MODE {READ_WRITE} \	
-   CONFIG.HAS_WSTRB {1} \	
-   CONFIG.HAS_BRESP {1} \	
-   CONFIG.HAS_RRESP {1} \	
-   CONFIG.NUM_READ_OUTSTANDING {1} \	
-   CONFIG.NUM_WRITE_OUTSTANDING {1} \	
- ] [get_bd_intf_pins /xadc_wiz_0/s_axi_lite]	
+  # Create instance: xadc_wiz_0, and set properties
+  set xadc_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xadc_wiz:3.3 xadc_wiz_0 ]
+  set_property -dict [ list \
+   CONFIG.CHANNEL_ENABLE_VAUXP0_VAUXN0 {true} \
+   CONFIG.CHANNEL_ENABLE_VAUXP12_VAUXN12 {true} \
+   CONFIG.CHANNEL_ENABLE_VAUXP13_VAUXN13 {true} \
+   CONFIG.CHANNEL_ENABLE_VAUXP15_VAUXN15 {true} \
+   CONFIG.CHANNEL_ENABLE_VAUXP1_VAUXN1 {true} \
+   CONFIG.CHANNEL_ENABLE_VAUXP5_VAUXN5 {true} \
+   CONFIG.CHANNEL_ENABLE_VAUXP6_VAUXN6 {true} \
+   CONFIG.CHANNEL_ENABLE_VAUXP8_VAUXN8 {true} \
+   CONFIG.CHANNEL_ENABLE_VAUXP9_VAUXN9 {true} \
+   CONFIG.CHANNEL_ENABLE_VP_VN {true} \
+   CONFIG.EXTERNAL_MUX_CHANNEL {VP_VN} \
+   CONFIG.SEQUENCER_MODE {Continuous} \
+   CONFIG.SINGLE_CHANNEL_SELECTION {TEMPERATURE} \
+   CONFIG.XADC_STARUP_SELECTION {channel_sequencer} \
+ ] $xadc_wiz_0
+ 
+  set_property -dict [ list \
+   CONFIG.DATA_WIDTH {32} \
+   CONFIG.ADDR_WIDTH {11} \
+   CONFIG.READ_WRITE_MODE {READ_WRITE} \
+   CONFIG.HAS_WSTRB {1} \
+   CONFIG.HAS_BRESP {1} \
+   CONFIG.HAS_RRESP {1} \
+   CONFIG.NUM_READ_OUTSTANDING {1} \
+   CONFIG.NUM_WRITE_OUTSTANDING {1} \
+ ] [get_bd_intf_pins /xadc_wiz_0/s_axi_lite]
 
   # Create instance: xlconcat_2, and set properties
   set xlconcat_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_2 ]
@@ -1230,15 +1232,15 @@ proc create_root_design { parentCell } {
   # Create interface connections
   connect_bd_intf_net -intf_net Conn [get_bd_intf_pins ins_lmb_bram_if_cntlr_0/SLMB] [get_bd_intf_pins ins_lmb_v10_0/LMB_Sl_0]
   connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins data_lmb_bram_if_cntlr_1/SLMB] [get_bd_intf_pins data_lmb_v10_1/LMB_Sl_0]
-  connect_bd_intf_net -intf_net Vaux0_0_1 [get_bd_intf_ports vaux0] [get_bd_intf_pins xadc_wiz_0/Vaux0]	
-  connect_bd_intf_net -intf_net Vaux12_0_1 [get_bd_intf_ports vaux12] [get_bd_intf_pins xadc_wiz_0/Vaux12]	
-  connect_bd_intf_net -intf_net Vaux13_0_1 [get_bd_intf_ports vaux13] [get_bd_intf_pins xadc_wiz_0/Vaux13]	
-  connect_bd_intf_net -intf_net Vaux15_0_1 [get_bd_intf_ports vaux15] [get_bd_intf_pins xadc_wiz_0/Vaux15]	
-  connect_bd_intf_net -intf_net Vaux1_0_1 [get_bd_intf_ports vaux1] [get_bd_intf_pins xadc_wiz_0/Vaux1]	
-  connect_bd_intf_net -intf_net Vaux5_0_1 [get_bd_intf_ports vaux5] [get_bd_intf_pins xadc_wiz_0/Vaux5]	
-  connect_bd_intf_net -intf_net Vaux6_0_1 [get_bd_intf_ports vaux6] [get_bd_intf_pins xadc_wiz_0/Vaux6]	
-  connect_bd_intf_net -intf_net Vaux8_0_1 [get_bd_intf_ports vaux8] [get_bd_intf_pins xadc_wiz_0/Vaux8]	
-  connect_bd_intf_net -intf_net Vaux9_0_1 [get_bd_intf_ports vaux9] [get_bd_intf_pins xadc_wiz_0/Vaux9]	
+  connect_bd_intf_net -intf_net Vaux0_0_1 [get_bd_intf_ports vaux0] [get_bd_intf_pins xadc_wiz_0/Vaux0]
+  connect_bd_intf_net -intf_net Vaux12_0_1 [get_bd_intf_ports vaux12] [get_bd_intf_pins xadc_wiz_0/Vaux12]
+  connect_bd_intf_net -intf_net Vaux13_0_1 [get_bd_intf_ports vaux13] [get_bd_intf_pins xadc_wiz_0/Vaux13]
+  connect_bd_intf_net -intf_net Vaux15_0_1 [get_bd_intf_ports vaux15] [get_bd_intf_pins xadc_wiz_0/Vaux15]
+  connect_bd_intf_net -intf_net Vaux1_0_1 [get_bd_intf_ports vaux1] [get_bd_intf_pins xadc_wiz_0/Vaux1]
+  connect_bd_intf_net -intf_net Vaux5_0_1 [get_bd_intf_ports vaux5] [get_bd_intf_pins xadc_wiz_0/Vaux5]
+  connect_bd_intf_net -intf_net Vaux6_0_1 [get_bd_intf_ports vaux6] [get_bd_intf_pins xadc_wiz_0/Vaux6]
+  connect_bd_intf_net -intf_net Vaux8_0_1 [get_bd_intf_ports vaux8] [get_bd_intf_pins xadc_wiz_0/Vaux8]
+  connect_bd_intf_net -intf_net Vaux9_0_1 [get_bd_intf_ports vaux9] [get_bd_intf_pins xadc_wiz_0/Vaux9]
   connect_bd_intf_net -intf_net Vp_Vn_0_1 [get_bd_intf_ports vp_vn] [get_bd_intf_pins xadc_wiz_0/Vp_Vn]
   connect_bd_intf_net -intf_net axi_intc_0_interrupt [get_bd_intf_pins axi_intc_0/interrupt] [get_bd_intf_pins microblaze_0/INTERRUPT]
   connect_bd_intf_net -intf_net data_lmb_bram_if_cntlr_1_BRAM_PORT [get_bd_intf_pins blk_mem_gen_0/BRAM_PORTB] [get_bd_intf_pins data_lmb_bram_if_cntlr_1/BRAM_PORT]
