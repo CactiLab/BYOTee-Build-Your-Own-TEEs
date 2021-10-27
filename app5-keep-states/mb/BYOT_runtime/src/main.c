@@ -102,17 +102,22 @@ void format_SSC_code()
 
 void load_code()
 {
-	int val = 0;
-	__asm__("lwi r0, r0, 10;"
-			: "=r"(val)
-			);
-	xil_printf("val %d\r\n", val);
+	int r0 = 0, r1 = 0, r2 = 0, r3 = 0, r4 = 0, r5 = 0, r6 = 0, r7 = 0, r8 = 0, r9 = 0, r10 = 0;
+	asm volatile ("lwi r0, r0, 10;"
+					"lwi %0, r0, 0;"
+					: "=r"(r0));
+	xil_printf("val %d\r\n", r0);
 	/*remove_ssc_module();
 	mb_printf("Reading code & data modules\r\n");
 	format_SSC_code();
 	mb_printf("SSC Code & data loaded to BRAM\r\n");*/
 }
-
+void copy_state_data(){
+	memcpy((void *)c->state_chnl.code, local_state.code, MAX_CODE_REGION);
+	memcpy((void *)c->state_chnl.data, ssc_data.data, MAX_DATA_REGION);
+	memcpy((void *)c->state_chnl.rodata, ssc_ro_data.ro_data, MAX_RODATA_REGION);
+	memcpy((void *)c->state_chnl.stack, ssa_stack_instance.code, MAX_STACK_REGION);
+}
 void execute_SSC()
 {
 	if (ssc_module_loaded == 0)
