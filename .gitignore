@@ -11,3 +11,4 @@ BOOT.bin
 *.log
 *.jou
 *.mk
+*.sdk
