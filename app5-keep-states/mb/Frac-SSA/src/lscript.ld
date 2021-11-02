@@ -20,7 +20,7 @@ MEMORY
    ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem : ORIGIN = 0x50, LENGTH = 0x1FFB0
    share_axi_bram_ctrl_0_Mem0 : ORIGIN = 0x4B00000, LENGTH = 0x2000
    mb_dma_axi_bram_ctrl_0_Mem0 : ORIGIN = 0xC0000000, LENGTH = 0x8000
-   ssa_stack_Mem0 : ORIGIN = 0x17000, LENGTH = 0x400
+   ssa_stack_Mem0 : ORIGIN = 0x175f0, LENGTH = 0x400
 }
 
 /* Specify the default entry point to the program */
@@ -62,13 +62,13 @@ SECTIONS
 	KEEP(*(.ssc.attestation.md))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0x1114c + 12: {
+.text 0x113ac: {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.data 0x13f8c: {
+.data 0x141e0 + 0x500: {
    . = ALIGN(4);
    __data_start = .;
    *(.data)
@@ -77,7 +77,7 @@ SECTIONS
    __data_end = .;
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.init 0x14898: {
+.init 0x14aec + 0x500: {
    KEEP (*(.init))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
@@ -107,7 +107,7 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.rodata 0x14904: {
+.rodata 0x14b58 + 0x500: {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)

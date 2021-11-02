@@ -43,7 +43,7 @@ int dummy_for_Frac_SSA()
     {
         *str1 = NULL;
     }
-
+    __mulsi3();
     Xil_MemCpy(str1, str2, 10);
     //memcmp(str1, str2, 10);
 }
@@ -51,11 +51,12 @@ int dummy_for_Frac_SSA()
 int main()
 {
     xil_printf("!!!!!!!!!!I will keep States!!!!!!!\r\n");
-    for (int i = prev_calulated_value; i < 12; i ++)
+    for (int i = 0; i < 10000; i++)
     {
-    	if (i != 1)
+    	/*if (i != 1)
     	{
     		mb_printf("Invoking previous state\r\n");
+    		return;
     	}
     	if (cmd_chnl->factorial == 0)
     	{
@@ -65,8 +66,9 @@ int main()
     	else {
     		mb_printf("Iterating over %d\r\n", i);
     		result = result * i;
-    	}
-    	usleep(500);
+    	}*/
+    	//xil_printf("Printing value 0x%x\r\n", i);
+    	usleep(10000);
     }
 }
 

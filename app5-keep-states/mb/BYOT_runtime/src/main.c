@@ -102,6 +102,13 @@ void format_SSC_code()
 
 void load_code()
 {
+	remove_ssc_module();
+	mb_printf("Reading code & data modules\r\n");
+	format_SSC_code();
+	mb_printf("SSC Code & data loaded to BRAM\r\n");
+}
+void get_register_values()
+{
 	xil_printf("Checking microblaze assembly\r\n");
 	unsigned int register_values[32];
 	/*register_values[0] asm("r0");
@@ -116,84 +123,72 @@ void load_code()
 		register int temp asm([p]);
 		register_values[0] = temp;
 	}*/
-	register int r0 asm("r0");
+	register unsigned int r0 asm("r0");
 	register_values[0] = r0;
-	register int r1 asm("r1");
+	register unsigned int r1 asm("r1");
 	register_values[1] = r1;
-	register int r2 asm("r2");
+	register unsigned int r2 asm("r2");
 	register_values[2] = r2;
-	register int r3 asm("r3");
+	register unsigned int r3 asm("r3");
 	register_values[3] = r3;
-	register int r4 asm("r4");
+	register unsigned int r4 asm("r4");
 	register_values[4] = r4;
-	register int r5 asm("r5");
+	register unsigned int r5 asm("r5");
 	register_values[5] = r5;
-	register int r6 asm("r6");
+	register unsigned int r6 asm("r6");
 	register_values[6] = r6;
-	register int r7 asm("r7");
+	register unsigned int r7 asm("r7");
 	register_values[7] = r7;
-	register int r8 asm("r8");
+	register unsigned int r8 asm("r8");
 	register_values[8] = r8;
-	register int r9 asm("r9");
+	register unsigned int r9 asm("r9");
 	register_values[9] = r9;
-	register int r10 asm("r10");
+	register unsigned int r10 asm("r10");
 	register_values[10] = r10;
-	register int r11 asm("r11");
+	register unsigned int r11 asm("r11");
 	register_values[11] = r11;
-	register int r12 asm("r12");
+	register unsigned int r12 asm("r12");
 	register_values[12] = r12;
-	register int r13 asm("r13");
+	register unsigned int r13 asm("r13");
 	register_values[13] = r13;
-	register int r14 asm("r14");
+	register unsigned int r14 asm("r14");
 	register_values[14] = r14;
-	register int r15 asm("r15");
+	register unsigned int r15 asm("r15");
 	register_values[15] = r15;
-	register int r16 asm("r16");
+	register unsigned int r16 asm("r16");
 	register_values[16] = r16;
-	register int r17 asm("r17");
+	register unsigned int r17 asm("r17");
 	register_values[17] = r17;
-	register int r18 asm("r18");
+	register unsigned int r18 asm("r18");
 	register_values[18] = r18;
-	register int r19 asm("r19");
+	register unsigned int r19 asm("r19");
 	register_values[19] = r19;
-	register int r20 asm("r20");
+	register unsigned int r20 asm("r20");
 	register_values[20] = r20;
-	register int r21 asm("r21");
+	register unsigned int r21 asm("r21");
 	register_values[21] = r21;
-	register int r22 asm("r22");
+	register unsigned int r22 asm("r22");
 	register_values[22] = r22;
-	register int r23 asm("r23");
+	register unsigned int r23 asm("r23");
 	register_values[23] = r23;
-	register int r24 asm("r24");
+	register unsigned int r24 asm("r24");
 	register_values[24] = r24;
-	register int r25 asm("r25");
+	register unsigned int r25 asm("r25");
 	register_values[25] = r25;
-	register int r26 asm("r26");
+	register unsigned int r26 asm("r26");
 	register_values[26] = r26;
-	register int r27 asm("r27");
+	register unsigned int r27 asm("r27");
 	register_values[27] = r27;
-	register int r28 asm("r28");
+	register unsigned int r28 asm("r28");
 	register_values[28] = r28;
-	register int r29 asm("r29");
+	register unsigned int r29 asm("r29");
 	register_values[29] = r29;
-	register int r30 asm("r30");
+	register unsigned int r30 asm("r30");
 	register_values[30] = r30;
-	/*special purpose registers */
-	//asm volatile ("mfs r0, PC;");
-	//asm volatile ("MFS r0, MSR;");
-	//asm volatile ("MFS r0, EAR;");
-	//asm volatile ("MFS r0, ESR;");
-	//asm volatile ("MFS r0, FSR;");
-	//asm volatile ("MFS r0, BTR;");
-	//asm volatile ("MFS r0, EDR;");
-	//asm volatile ("MFS r0, PID;");
-	//asm volatile ("MFS r0, ZPR;");
-	/*register int r31 asm("r31");
-	register_values[31] = r31;*/
-	/*remove_ssc_module();
-	mb_printf("Reading code & data modules\r\n");
-	format_SSC_code();
-	mb_printf("SSC Code & data loaded to BRAM\r\n");*/
+
+	/*Get PC */
+	asm volatile ("mfs r28, rpc;");
+	register unsigned int pc asm("r28");
 }
 void copy_state_data(){
 	memcpy((void *)c->state_chnl.code, local_state.code, MAX_CODE_REGION);
