@@ -45,6 +45,7 @@ void myISR(void)
 	if (c->cmd == SAVE)
 	{
 		get_register_values();
+		main_helper();
 	}
 }
 
@@ -313,7 +314,40 @@ int verify_ssa_signature(void *data_start) {
 
 	return !memcmp(sig, (uint8_t *)data_start , SIG_LEN);
 }
-
+void main_helper()
+{
+	InterruptProcessed = FALSE;
+	set_working();
+	// c->cmd is set by the Untrusted_app player
+	switch (c->cmd)
+	{
+	case LOAD_CODE:
+		load_code();
+		ssc_module_loaded = 1;
+		break;
+	case QUERY_DRM:
+		query_BYOT_runtime();
+		break;
+	case SSC_COMMAND:
+		preExeAtt();
+		forward_to_ssc(); /*Executing SSC*/
+		input_attestation(1);
+		postExeAtt();
+		cleaup_att_space();
+		break;
+	case EXIT:
+		remove_ssc_module();
+		ssc_module_loaded = 0;
+		break;
+	case EXECUTE:
+		execute_SSC();
+		break;
+	default:
+		break;
+	}
+	usleep(1000);
+	set_stopped();
+}
 int main()
 {
 	u32 status;
@@ -349,38 +383,7 @@ int main()
 		// wait for interrupt to start
 		if (InterruptProcessed)
 		{
-			InterruptProcessed = FALSE;
-			set_working();
-
-			// c->cmd is set by the Untrusted_app player
-			switch (c->cmd)
-			{
-			case LOAD_CODE:
-				load_code();
-				ssc_module_loaded = 1;
-				break;
-			case QUERY_DRM:
-				query_BYOT_runtime();
-				break;
-			case SSC_COMMAND:
-				preExeAtt();
-				forward_to_ssc(); /*Executing SSC*/
-				input_attestation(1);
-				postExeAtt();
-				cleaup_att_space();
-				break;
-			case EXIT:
-				remove_ssc_module();
-				ssc_module_loaded = 0;
-				break;
-			case EXECUTE:
-				execute_SSC();
-				break;
-			default:
-				break;
-			}
-			usleep(1000);
-			set_stopped();
+			main_helper();
 		}
 	}
 

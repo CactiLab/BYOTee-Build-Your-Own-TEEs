@@ -549,12 +549,10 @@ void print_measurement()
     printf("\r\n");
 }
 void stop_state(){
-	specify_frac_ssa_command(SAVE);
-	send_command(SSC_COMMAND);
+	send_command(SAVE);
 }
 void load_state(){
-	specify_frac_ssa_command(RELOAD);
-	send_command(SSC_COMMAND);
+	send_command(RELOAD);
 }
 int main(int argc, char **argv)
 {
