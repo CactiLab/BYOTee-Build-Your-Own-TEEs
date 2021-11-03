@@ -38,7 +38,9 @@ enum commands
     QUERY_DRM,
     SSC_COMMAND,
     EXIT,
-    EXECUTE
+    EXECUTE,
+	SAVE,
+	RELOAD
 };
 
 enum states
@@ -60,12 +62,6 @@ enum ssc_command
     STOP,
     RESTART,
     DIGITAL_OUT
-};
-
-enum frac_command
-{
-    zero,
-	one
 };
 
 typedef struct

@@ -41,6 +41,11 @@ struct AES_ctx ctx;
 void myISR(void)
 {
 	InterruptProcessed = TRUE;
+
+	if (c->cmd == SAVE)
+	{
+		get_register_values();
+	}
 }
 
 //////////////////////// MAIN ////////////////////////

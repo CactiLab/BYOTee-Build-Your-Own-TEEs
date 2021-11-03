@@ -12,3 +12,4 @@ BOOT.bin
 *.jou
 *.mk
 *.sdk
+*/Debug/*

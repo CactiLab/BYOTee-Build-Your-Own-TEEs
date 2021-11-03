@@ -174,8 +174,8 @@ void execute_SSC()
     while (c->drm_state == STOPPED)
         continue; // wait for DRM to start working
 
-    while (c->drm_state == WORKING)
-        continue; // wait for DRM to dump file
+    /*while (c->drm_state == WORKING)
+        continue; // wait for DRM to dump file*/
 
     mp_printf("Finished Executing SSC file\r\n");
 }
@@ -549,11 +549,11 @@ void print_measurement()
     printf("\r\n");
 }
 void stop_state(){
-	specify_frac_ssa_command(zero);
+	specify_frac_ssa_command(SAVE);
 	send_command(SSC_COMMAND);
 }
 void load_state(){
-	specify_frac_ssa_command(one);
+	specify_frac_ssa_command(RELOAD);
 	send_command(SSC_COMMAND);
 }
 int main(int argc, char **argv)
@@ -625,13 +625,13 @@ int main(int argc, char **argv)
         {
             share_song(arg1, arg2);
         }
-        else if (!strncmp(cmd, "resume_ssa", sizeof("resume_ssa")))
+        else if (!strncmp(cmd, "save", sizeof("save")))
+        {
+        	stop_state();
+        }
+        else if (!strncmp(cmd, "reload", sizeof("reload")))
 		{
         	load_state();
-		}
-        else if (!strncmp(cmd, "stop_ssa", sizeof("stop_ssa")))
-		{
-        	stop_state(arg1, arg2);
 		}
         else if (!strncmp(cmd, "play", sizeof("play")))
         {

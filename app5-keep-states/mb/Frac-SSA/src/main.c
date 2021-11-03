@@ -67,7 +67,7 @@ int main()
     		mb_printf("Iterating over %d\r\n", i);
     		result = result * i;
     	}*/
-    	//xil_printf("Printing value 0x%x\r\n", i);
+    	xil_printf("Printing value 0x%x\r\n", i);
     	usleep(10000);
     }
 }
