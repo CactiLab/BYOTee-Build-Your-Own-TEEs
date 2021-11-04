@@ -51,16 +51,27 @@ void myISR(void)
 	if (c->cmd == RELOAD)
 	{
 		RELOAD_SSA();
+		set_stopped();
 	}
 }
 void RELOAD_SSA()
 {
-	memset(&c->state_chnl, 0 , MAX_CODE_REGION + MAX_DATA_REGION + MAX_RODATA_REGION + MAX_STACK_REGION + 4 * 32);
+	memset(local_state.code, 0 , MAX_CODE_REGION);
+	memset(ssc_data.data, 0 , MAX_DATA_REGION);
+	memset(ssc_ro_data.ro_data, 0 , MAX_RODATA_REGION);
+	memset(ssa_stack_instance.code, 0 , MAX_STACK_REGION);
+
 	memcpy(local_state.code, (void *)c->state_chnl.code, MAX_CODE_REGION);
 	memcpy(ssc_data.data, (void *)c->state_chnl.data, MAX_DATA_REGION);
 	memcpy(ssc_ro_data.ro_data, (void *)c->state_chnl.rodata, MAX_RODATA_REGION);
 	memcpy(ssa_stack_instance.code, (void *)c->state_chnl.stack, MAX_STACK_REGION);
-	asm volatile ("lwi r12, r11, 13" : "=r"(register_values[1]));
+	//asm volatile ("lwi r12, r11, 13" : "=r"(register_values[1]));
+	asm volatile ("addi r12, r12, 69");
+	//xil_printf("%d\r\n", register_values[1]);
+	int z = 0;
+	asm volatile ("add r12, r12, %0": :"r" (register_values[1]));
+	asm volatile ("add r3, %0, %1": :"r" (z), "r" (register_values[3]));
+	asm volatile ("add r4, %0, %1": :"r" (z), "r" (register_values[4]));
 }
 //////////////////////// MAIN ////////////////////////
 void query_BYOT_runtime()

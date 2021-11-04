@@ -550,9 +550,15 @@ void print_measurement()
 }
 void stop_state(){
 	send_command(SAVE);
+	while (c->drm_state == STOPPED)
+		continue; // wait for DRM to start working
+	mp_printf("Finished SAVE\r\n");
 }
 void load_state(){
 	send_command(RELOAD);
+	while (c->drm_state == STOPPED)
+			continue; // wait for DRM to start working
+	mp_printf("Finished reload\r\n");
 }
 int main(int argc, char **argv)
 {

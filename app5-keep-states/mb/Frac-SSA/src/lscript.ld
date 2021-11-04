@@ -62,7 +62,7 @@ SECTIONS
 	KEEP(*(.ssc.attestation.md))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0x115f0: {
+.text 0x115fc + 0x200: {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
