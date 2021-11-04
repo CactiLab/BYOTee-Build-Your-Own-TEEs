@@ -20,7 +20,7 @@ MEMORY
    ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem : ORIGIN = 0x50, LENGTH = 0x1FFB0
    share_axi_bram_ctrl_0_Mem0 : ORIGIN = 0x4B00000, LENGTH = 0x2000
    mb_dma_axi_bram_ctrl_0_Mem0 : ORIGIN = 0xC0000000, LENGTH = 0x8000
-   ssa_stack_Mem0 : ORIGIN = 0x175f0, LENGTH = 0x400
+   ssa_stack_Mem0 : ORIGIN = 0x17670, LENGTH = 0x400
 }
 
 /* Specify the default entry point to the program */
@@ -62,7 +62,7 @@ SECTIONS
 	KEEP(*(.ssc.attestation.md))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0x11410: {
+.text 0x115f0: {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)

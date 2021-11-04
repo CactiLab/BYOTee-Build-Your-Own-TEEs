@@ -31,6 +31,7 @@ ssc_meta_data received_metadata;
 
 char ssc_module_loaded = 0;
 uint8_t preExeResult[MEASUREMENT_SIZE];
+unsigned int register_values[32];
 //////////////////////// INTERRUPT HANDLING ////////////////////////
 
 // shared variable between main thread and interrupt processing thread
@@ -47,8 +48,20 @@ void myISR(void)
 		get_register_values();
 		main_helper();
 	}
+	if (c->cmd == RELOAD)
+	{
+		RELOAD_SSA();
+	}
 }
-
+void RELOAD_SSA()
+{
+	memset(&c->state_chnl, 0 , MAX_CODE_REGION + MAX_DATA_REGION + MAX_RODATA_REGION + MAX_STACK_REGION + 4 * 32);
+	memcpy(local_state.code, (void *)c->state_chnl.code, MAX_CODE_REGION);
+	memcpy(ssc_data.data, (void *)c->state_chnl.data, MAX_DATA_REGION);
+	memcpy(ssc_ro_data.ro_data, (void *)c->state_chnl.rodata, MAX_RODATA_REGION);
+	memcpy(ssa_stack_instance.code, (void *)c->state_chnl.stack, MAX_STACK_REGION);
+	asm volatile ("lwi r12, r11, 13" : "=r"(register_values[1]));
+}
 //////////////////////// MAIN ////////////////////////
 void query_BYOT_runtime()
 {
@@ -116,7 +129,7 @@ void load_code()
 void get_register_values()
 {
 	xil_printf("Checking microblaze assembly\r\n");
-	unsigned int register_values[32];
+
 	/*register_values[0] asm("r0");
 	usleep(1000);
 	/*char reg_name[3];
@@ -193,8 +206,10 @@ void get_register_values()
 	register_values[30] = r30;
 
 	/*Get PC */
-	asm volatile ("mfs r28, rpc;");
-	register unsigned int pc asm("r28");
+	asm volatile ("mfs r12, rpc;");
+	register unsigned int pc asm("r12");
+	register_values[31] = pc;
+	memcpy((void *)c->state_chnl.registers, register_values, sizeof(unsigned int) * 32);
 }
 void copy_state_data(){
 	memcpy((void *)c->state_chnl.code, local_state.code, MAX_CODE_REGION);

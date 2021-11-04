@@ -30,7 +30,6 @@
 #define MAX_DATA_REGION 4000
 #define MAX_RODATA_REGION 4000
 #define MAX_STACK_REGION 4000
-#define MAX_REGISTER_INFO 2048
 #define MAX_CODE_REGION 15000
 enum commands
 {
@@ -114,7 +113,7 @@ typedef struct __attribute__((__packed__))
 	char data[MAX_DATA_REGION];
 	char rodata[MAX_RODATA_REGION];
 	char stack[MAX_STACK_REGION];
-	char registers[MAX_REGISTER_INFO];
+	unsigned int registers [32];
 } state_channel;
 // I/O Structure for BYOT Runtime and Secure DRM SSC
 typedef volatile struct __attribute__((__packed__))

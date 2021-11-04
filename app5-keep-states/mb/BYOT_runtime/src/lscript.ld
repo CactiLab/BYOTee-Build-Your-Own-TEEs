@@ -255,7 +255,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 /*.ssa.reserved.stack 0x17000:*/
-.ssa.reserved.stack 0x175f0:
+.ssa.reserved.stack 0x17670:
 {
 	KEEP(*(.ssa.reserved.stack))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
