@@ -552,6 +552,8 @@ void stop_state(){
 	send_command(SAVE);
 	while (c->drm_state == STOPPED)
 		continue; // wait for DRM to start working
+	while (c->drm_state == WORKING)
+	        continue; // wait for DRM to dump file
 	mp_printf("Finished SAVE\r\n");
 }
 void load_state(){
