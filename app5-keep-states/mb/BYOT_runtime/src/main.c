@@ -48,12 +48,15 @@ void myISR(void)
 		get_register_values();
 		copy_state_data();
 		//main_helper();
-		int jump = 0x694c, z = 0;
+		int jump = 0x6940, z = 0;
 		asm volatile ("add r14, %0, %1": :"r" (z), "r" (jump));
+		register unsigned int r1 asm("r1");
+		register_values[1] = r1;
 		set_stopped();
 	}
 	if (c->cmd == RELOAD)
 	{
+		set_working();
 		RELOAD_SSA();
 		set_stopped();
 	}
@@ -63,12 +66,12 @@ void RELOAD_SSA()
 	memset(local_state.code, 0 , MAX_CODE_REGION);
 	memset(ssc_data.data, 0 , MAX_DATA_REGION);
 	memset(ssc_ro_data.ro_data, 0 , MAX_RODATA_REGION);
-	memset(ssa_stack_instance.code, 0 , MAX_STACK_REGION);
+	memset(ssa_stack_instance.scode, 0 , MAX_STACK_REGION);
 
-	memcpy(local_state.code, (void *)c->state_chnl.code, MAX_CODE_REGION);
-	memcpy(ssc_data.data, (void *)c->state_chnl.data, MAX_DATA_REGION);
-	memcpy(ssc_ro_data.ro_data, (void *)c->state_chnl.rodata, MAX_RODATA_REGION);
-	memcpy(ssa_stack_instance.code, (void *)c->state_chnl.stack, MAX_STACK_REGION);
+	memcpy(local_state.code, (void *)c->code, MAX_CODE_REGION);
+	memcpy(ssc_data.data, (void *)c->state_chnl.data_reg, MAX_DATA_REGION);
+	memcpy(ssc_ro_data.ro_data, (void *)c->state_chnl.rodata_reg, MAX_RODATA_REGION);
+	memcpy(ssa_stack_instance.scode, (void *)c->state_chnl.stack_reg, MAX_STACK_REGION);
 	//asm volatile ("lwi r12, r11, 13" : "=r"(register_values[1]));
 	//asm volatile ("addi r12, r12, 69");
 	//xil_printf("%d\r\n", register_values[1]);
@@ -160,8 +163,6 @@ void get_register_values()
 	}*/
 	register unsigned int r0 asm("r0");
 	register_values[0] = r0;
-	register unsigned int r1 asm("r1");
-	register_values[1] = r1;
 	register unsigned int r2 asm("r2");
 	register_values[2] = r2;
 	register unsigned int r3 asm("r3");
@@ -228,10 +229,10 @@ void get_register_values()
 	memcpy((void *)c->state_chnl.registers, register_values, sizeof(unsigned int) * 32);
 }
 void copy_state_data(){
-	memcpy((void *)c->state_chnl.code, local_state.code, MAX_CODE_REGION);
-	memcpy((void *)c->state_chnl.data, ssc_data.data, MAX_DATA_REGION);
-	memcpy((void *)c->state_chnl.rodata, ssc_ro_data.ro_data, MAX_RODATA_REGION);
-	memcpy((void *)c->state_chnl.stack, ssa_stack_instance.code, MAX_STACK_REGION);
+	memcpy((void *)c->code, local_state.code, MAX_CODE_REGION);
+	memcpy((void *)c->state_chnl.data_reg, ssc_data.data, MAX_DATA_REGION);
+	memcpy((void *)c->state_chnl.rodata_reg, ssc_ro_data.ro_data, MAX_RODATA_REGION);
+	memcpy((void *)c->state_chnl.stack_reg, ssa_stack_instance.scode, MAX_STACK_REGION);
 }
 void execute_SSC()
 {

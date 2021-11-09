@@ -560,7 +560,9 @@ void load_state(){
 	send_command(RELOAD);
 	while (c->drm_state == STOPPED)
 			continue; // wait for DRM to start working
-	mp_printf("Finished reload\r\n");
+	while (c->drm_state == WORKING)
+		        continue; // wait for DRM to dump file
+	mp_printf("Finished reload, SSA execution should resume.\r\n");
 }
 int main(int argc, char **argv)
 {

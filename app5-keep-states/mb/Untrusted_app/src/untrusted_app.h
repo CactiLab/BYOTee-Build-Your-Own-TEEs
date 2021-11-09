@@ -27,9 +27,9 @@
 #define print_prompt_msg(...) printf(USER_PROMPT, __VA_ARGS__)
 #define q_region_lookup(q, i) (q.regions + (i * REGION_NAME_SZ))
 #define q_user_lookup(q, i) (q.users + (i * USERNAME_SZ))
-#define MAX_DATA_REGION 4000
-#define MAX_RODATA_REGION 4000
-#define MAX_STACK_REGION 4000
+#define MAX_DATA_REGION 2000
+#define MAX_RODATA_REGION 2000
+#define MAX_STACK_REGION 1024
 #define MAX_CODE_REGION 15000
 enum commands
 {
@@ -109,10 +109,10 @@ typedef struct __attribute__((__packed__))
 
 typedef struct __attribute__((__packed__))
 {
-	char code[MAX_CODE_REGION];
-	char data[MAX_DATA_REGION];
-	char rodata[MAX_RODATA_REGION];
-	char stack[MAX_STACK_REGION];
+	//char code_reg[MAX_CODE_REGION];
+	char data_reg[MAX_DATA_REGION];
+	char rodata_reg[MAX_RODATA_REGION];
+	char stack_reg[MAX_STACK_REGION];
 	unsigned int registers [32];
 } state_channel;
 // I/O Structure for BYOT Runtime and Secure DRM SSC
@@ -129,8 +129,8 @@ typedef volatile struct __attribute__((__packed__))
     unsigned char enc_dec_data[ENC_DEC_DATA_SIZE];
     int file_size;
     int factorial;
-    drm_audio_channel drm_chnl;
     state_channel sate_chnl;
+    drm_audio_channel drm_chnl;
 } cmd_channel;
 
 #endif /* SRC_UNTRUSTED_APP_H_ */

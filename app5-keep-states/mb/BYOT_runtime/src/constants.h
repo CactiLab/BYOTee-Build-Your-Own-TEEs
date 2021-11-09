@@ -23,10 +23,9 @@
 #define ENC_DEC_DATA_SIZE 64
 #define SIG_LEN 64
 #define AUTH_KEY_SIZE 64
-#define SSA_STACK_SIZE 1024
-#define MAX_DATA_REGION 4000
-#define MAX_RODATA_REGION 4000
-#define MAX_STACK_REGION 4000
+#define MAX_DATA_REGION 2000
+#define MAX_RODATA_REGION 2000
+#define MAX_STACK_REGION 1024
 #define MAX_CODE_REGION 15000
 static const uint8_t auth_key[AUTH_KEY_SIZE] = {124, 73, 204, 35, 31, 248, 199, 135, 157, 91, 95, 40, 62, 136, 208, 25, 153, 121, 155, 100, 31, 67, 202, 205, 135, 118, 191, 117, 171, 144, 170, 188, 47, 139, 28, 64, 254, 159, 226, 14, 147, 17, 58, 224, 216, 14, 107, 172, 249, 70, 243, 62, 61, 127, 228, 33, 248, 189, 246, 212, 37, 187, 197, 169 };
 enum commands
@@ -51,10 +50,10 @@ unsigned int challenge_number;
 
 typedef struct __attribute__((__packed__))
 {
-	char code[MAX_CODE_REGION];
-	char data[MAX_DATA_REGION];
-	char rodata[MAX_RODATA_REGION];
-	char stack[MAX_STACK_REGION];
+	//char code[MAX_CODE_REGION];
+	char data_reg[MAX_DATA_REGION];
+	char rodata_reg[MAX_RODATA_REGION];
+	char stack_reg[MAX_STACK_REGION];
 	unsigned int registers [32];
 } state_channel;
 // struct to interpret shared command channel
@@ -92,7 +91,7 @@ typedef struct
 
 typedef struct
 {
-	char code[SSA_STACK_SIZE];
+	char scode[MAX_STACK_REGION];
 } ssa_stack;
 
 typedef struct
