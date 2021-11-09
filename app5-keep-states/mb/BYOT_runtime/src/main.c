@@ -46,7 +46,9 @@ void myISR(void)
 	if (c->cmd == SAVE)
 	{
 		get_register_values();
-		main_helper();
+		//main_helper();
+		int jump = 0x6944, z = 0;
+		asm volatile ("add r14, %0, %1": :"r" (z), "r" (jump));
 	}
 	if (c->cmd == RELOAD)
 	{
