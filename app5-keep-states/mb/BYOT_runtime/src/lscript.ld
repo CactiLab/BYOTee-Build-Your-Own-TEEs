@@ -75,14 +75,14 @@ SECTIONS
 	*util.o(.text.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
-.text 0x115fc + 0x200: { 
+.text 0x115fc + 0x300: { 
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 
-.ssc.data.buffer 0x141e0 + 0x500:
+.ssc.data.buffer 0x141e0 + 0x600:
 {
 	KEEP(*(.ssc.data.buffer))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
@@ -255,7 +255,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
 
 /*.ssa.reserved.stack 0x17000:*/
-.ssa.reserved.stack 0x17670:
+.ssa.reserved.stack 0x17800:
 {
 	KEEP(*(.ssa.reserved.stack))
 } > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem

@@ -48,15 +48,20 @@ void myISR(void)
 		get_register_values();
 		copy_state_data();
 		//main_helper();
-		int jump = 0x6940, z = 0;
-		asm volatile ("add r14, %0, %1": :"r" (z), "r" (jump));
+		int jump = 0x6b5c, z = 0;
 		register unsigned int r1 asm("r1");
 		register_values[1] = r1;
+		register unsigned int r14 asm("r14");
+				register_values[14] = r14;
+		asm volatile ("add r14, %0, %1": :"r" (z), "r" (jump));
+		asm volatile ("add r15, %0, %1": :"r" (z), "r" (register_values[15]));
 		set_stopped();
 	}
 	if (c->cmd == RELOAD)
 	{
 		set_working();
+		//int z = 0;
+		//asm volatile ("add r14, %0, %1": :"r" (z), "r" (register_values[14]));
 		RELOAD_SSA();
 		set_stopped();
 	}
@@ -77,6 +82,35 @@ void RELOAD_SSA()
 	//xil_printf("%d\r\n", register_values[1]);
 	int z = 0;
 	asm volatile ("add r14, %0, %1": :"r" (z), "r" (register_values[14]));
+	asm volatile ("add r0, %0, %1": :"r" (z), "r" (register_values[0]));
+	asm volatile ("add r1, %0, %1": :"r" (z), "r" (register_values[1]));
+	asm volatile ("add r2, %0, %1": :"r" (z), "r" (register_values[2]));
+	asm volatile ("add r3, %0, %1": :"r" (z), "r" (register_values[3]));
+	asm volatile ("add r4, %0, %1": :"r" (z), "r" (register_values[4]));
+	asm volatile ("add r5, %0, %1": :"r" (z), "r" (register_values[5]));
+	asm volatile ("add r6, %0, %1": :"r" (z), "r" (register_values[6]));
+	asm volatile ("add r7, %0, %1": :"r" (z), "r" (register_values[7]));
+	asm volatile ("add r8, %0, %1": :"r" (z), "r" (register_values[8]));
+	asm volatile ("add r9, %0, %1": :"r" (z), "r" (register_values[9]));
+	asm volatile ("add r10, %0, %1": :"r" (z), "r" (register_values[10]));
+	asm volatile ("add r11, %0, %1": :"r" (z), "r" (register_values[11]));
+	asm volatile ("add r12, %0, %1": :"r" (z), "r" (register_values[12]));
+	asm volatile ("add r13, %0, %1": :"r" (z), "r" (register_values[13]));
+	asm volatile ("add r16, %0, %1": :"r" (z), "r" (register_values[16]));
+	asm volatile ("add r17, %0, %1": :"r" (z), "r" (register_values[17]));
+	asm volatile ("add r18, %0, %1": :"r" (z), "r" (register_values[18]));
+	asm volatile ("add r19, %0, %1": :"r" (z), "r" (register_values[19]));
+	asm volatile ("add r20, %0, %1": :"r" (z), "r" (register_values[20]));
+	asm volatile ("add r21, %0, %1": :"r" (z), "r" (register_values[21]));
+	asm volatile ("add r22, %0, %1": :"r" (z), "r" (register_values[22]));
+	asm volatile ("add r23, %0, %1": :"r" (z), "r" (register_values[23]));
+	asm volatile ("add r24, %0, %1": :"r" (z), "r" (register_values[24]));
+	asm volatile ("add r25, %0, %1": :"r" (z), "r" (register_values[25]));
+	asm volatile ("add r26, %0, %1": :"r" (z), "r" (register_values[26]));
+	asm volatile ("add r27, %0, %1": :"r" (z), "r" (register_values[27]));
+	asm volatile ("add r28, %0, %1": :"r" (z), "r" (register_values[28]));
+	asm volatile ("add r29, %0, %1": :"r" (z), "r" (register_values[29]));
+	asm volatile ("add r30, %0, %1": :"r" (z), "r" (register_values[30]));
 	//asm volatile ("add r12, r12, %0": :"r" (register_values[1]));
 	//asm volatile ("add r3, %0, %1": :"r" (z), "r" (register_values[3]));
 	//asm volatile ("add r4, %0, %1": :"r" (z), "r" (register_values[4]));
@@ -187,8 +221,6 @@ void get_register_values()
 	register_values[12] = r12;
 	register unsigned int r13 asm("r13");
 	register_values[13] = r13;
-	register unsigned int r14 asm("r14");
-	register_values[14] = r14;
 	register unsigned int r15 asm("r15");
 	register_values[15] = r15;
 	register unsigned int r16 asm("r16");
