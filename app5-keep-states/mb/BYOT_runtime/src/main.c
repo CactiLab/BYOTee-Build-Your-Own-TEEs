@@ -44,25 +44,92 @@ void myISR(void)
 	InterruptProcessed = TRUE;
 
 	if (c->cmd == SAVE)
-	{	set_working();
-		get_register_values();
-		copy_state_data();
-		//main_helper();
-		int jump = 0x6b5c, z = 0;
+	{
+		register unsigned int r15 asm("r15");
+		register_values[15] = r15;
 		register unsigned int r1 asm("r1");
 		register_values[1] = r1;
 		register unsigned int r14 asm("r14");
-				register_values[14] = r14;
+		register_values[14] = r14;
+		register unsigned int r0 asm("r0");
+		register_values[0] = r0;
+		register unsigned int r2 asm("r2");
+		register_values[2] = r2;
+		register unsigned int r3 asm("r3");
+		register_values[3] = r3;
+		register unsigned int r4 asm("r4");
+		register_values[4] = r4;
+		register unsigned int r5 asm("r5");
+		register_values[5] = r5;
+		register unsigned int r6 asm("r6");
+		register_values[6] = r6;
+		register unsigned int r7 asm("r7");
+		register_values[7] = r7;
+		register unsigned int r8 asm("r8");
+		register_values[8] = r8;
+		register unsigned int r9 asm("r9");
+		register_values[9] = r9;
+		register unsigned int r10 asm("r10");
+		register_values[10] = r10;
+		register unsigned int r11 asm("r11");
+		register_values[11] = r11;
+		register unsigned int r12 asm("r12");
+		register_values[12] = r12;
+		register unsigned int r13 asm("r13");
+		register_values[13] = r13;
+		register unsigned int r16 asm("r16");
+		register_values[16] = r16;
+		register unsigned int r17 asm("r17");
+		register_values[17] = r17;
+		register unsigned int r18 asm("r18");
+		register_values[18] = r18;
+		register unsigned int r19 asm("r19");
+		register_values[19] = r19;
+		register unsigned int r20 asm("r20");
+		register_values[20] = r20;
+		register unsigned int r21 asm("r21");
+		register_values[21] = r21;
+		register unsigned int r22 asm("r22");
+		register_values[22] = r22;
+		register unsigned int r23 asm("r23");
+		register_values[23] = r23;
+		register unsigned int r24 asm("r24");
+		register_values[24] = r24;
+		register unsigned int r25 asm("r25");
+		register_values[25] = r25;
+		register unsigned int r26 asm("r26");
+		register_values[26] = r26;
+		register unsigned int r27 asm("r27");
+		register_values[27] = r27;
+		register unsigned int r28 asm("r28");
+		register_values[28] = r28;
+		register unsigned int r29 asm("r29");
+		register_values[29] = r29;
+		register unsigned int r30 asm("r30");
+		register_values[30] = r30;
+
+		/*Get PC */
+		asm volatile ("mfs r12, rpc;");
+		register unsigned int pc asm("r12");
+		register_values[31] = pc;
+		memcpy((void *)c->state_chnl.registers, register_values, sizeof(unsigned int) * 32);
+		set_working();
+		get_register_values();
+		copy_state_data();
+		//main_helper();
+		int jump = 0x6b80, z = 0;
+
 		asm volatile ("add r14, %0, %1": :"r" (z), "r" (jump));
-		asm volatile ("add r15, %0, %1": :"r" (z), "r" (register_values[15]));
+
 		set_stopped();
 	}
 	if (c->cmd == RELOAD)
 	{
 		set_working();
-		//int z = 0;
-		//asm volatile ("add r14, %0, %1": :"r" (z), "r" (register_values[14]));
-		RELOAD_SSA();
+		int z = 0;
+		asm volatile ("add r14, %0, %1": :"r" (z), "r" (register_values[14]));
+		asm volatile ("add r1, %0, %1": :"r" (z), "r" (register_values[1]));
+		//RELOAD_SSA();
 		set_stopped();
 	}
 }
@@ -82,6 +149,7 @@ void RELOAD_SSA()
 	//xil_printf("%d\r\n", register_values[1]);
 	int z = 0;
 	asm volatile ("add r14, %0, %1": :"r" (z), "r" (register_values[14]));
+	asm volatile ("add r15, %0, %1": :"r" (z), "r" (register_values[15]));
 	asm volatile ("add r0, %0, %1": :"r" (z), "r" (register_values[0]));
 	asm volatile ("add r1, %0, %1": :"r" (z), "r" (register_values[1]));
 	asm volatile ("add r2, %0, %1": :"r" (z), "r" (register_values[2]));
@@ -195,70 +263,7 @@ void get_register_values()
 		register int temp asm([p]);
 		register_values[0] = temp;
 	}*/
-	register unsigned int r0 asm("r0");
-	register_values[0] = r0;
-	register unsigned int r2 asm("r2");
-	register_values[2] = r2;
-	register unsigned int r3 asm("r3");
-	register_values[3] = r3;
-	register unsigned int r4 asm("r4");
-	register_values[4] = r4;
-	register unsigned int r5 asm("r5");
-	register_values[5] = r5;
-	register unsigned int r6 asm("r6");
-	register_values[6] = r6;
-	register unsigned int r7 asm("r7");
-	register_values[7] = r7;
-	register unsigned int r8 asm("r8");
-	register_values[8] = r8;
-	register unsigned int r9 asm("r9");
-	register_values[9] = r9;
-	register unsigned int r10 asm("r10");
-	register_values[10] = r10;
-	register unsigned int r11 asm("r11");
-	register_values[11] = r11;
-	register unsigned int r12 asm("r12");
-	register_values[12] = r12;
-	register unsigned int r13 asm("r13");
-	register_values[13] = r13;
-	register unsigned int r15 asm("r15");
-	register_values[15] = r15;
-	register unsigned int r16 asm("r16");
-	register_values[16] = r16;
-	register unsigned int r17 asm("r17");
-	register_values[17] = r17;
-	register unsigned int r18 asm("r18");
-	register_values[18] = r18;
-	register unsigned int r19 asm("r19");
-	register_values[19] = r19;
-	register unsigned int r20 asm("r20");
-	register_values[20] = r20;
-	register unsigned int r21 asm("r21");
-	register_values[21] = r21;
-	register unsigned int r22 asm("r22");
-	register_values[22] = r22;
-	register unsigned int r23 asm("r23");
-	register_values[23] = r23;
-	register unsigned int r24 asm("r24");
-	register_values[24] = r24;
-	register unsigned int r25 asm("r25");
-	register_values[25] = r25;
-	register unsigned int r26 asm("r26");
-	register_values[26] = r26;
-	register unsigned int r27 asm("r27");
-	register_values[27] = r27;
-	register unsigned int r28 asm("r28");
-	register_values[28] = r28;
-	register unsigned int r29 asm("r29");
-	register_values[29] = r29;
-	register unsigned int r30 asm("r30");
-	register_values[30] = r30;
 
-	/*Get PC */
-	asm volatile ("mfs r12, rpc;");
-	register unsigned int pc asm("r12");
-	register_values[31] = pc;
-	memcpy((void *)c->state_chnl.registers, register_values, sizeof(unsigned int) * 32);
 }
 void copy_state_data(){
 	memcpy((void *)c->code, local_state.code, MAX_CODE_REGION);
