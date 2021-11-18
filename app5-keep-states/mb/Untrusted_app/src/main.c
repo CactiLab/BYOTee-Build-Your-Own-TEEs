@@ -548,6 +548,42 @@ void print_measurement()
     }
     printf("\r\n");
 }
+void export_state()
+{
+	char fname[64];
+	int written = 0, wrote, length = MAX_CODE_REGION + MAX_DATA_REGION + MAX_RODATA_REGION + MAX_STACK_REGION;
+	sprintf(fname, "%s.out", "state");
+	int fd = open(fname, O_WRONLY | O_CREAT | O_TRUNC);
+
+	if (fd == -1)
+	{
+		mp_printf("Failed to open file! Error = %d\r\n", errno);
+		return;
+	}
+
+	// write song dump to file
+	mp_printf("Writing encrypted state data to file '%s' (%dB)\r\n", fname, length);
+
+	while (written < length)
+	{
+		wrote = write(fd, (char *)&c->sate_chnl + written, length - written);
+
+		if (wrote == -1)
+		{
+			mp_printf("Error in writing file! Error = %d \r\n", errno);
+			return;
+		}
+		written += wrote;
+	}
+	close(fd);
+	mp_printf("Finished writing file\r\n");
+}
+
+void import_state()
+{
+	load_file("state.out", (char *)&c->sate_chnl);
+}
+
 void stop_state(){
 	send_command(SAVE);
 	while (c->drm_state == STOPPED)
@@ -555,6 +591,7 @@ void stop_state(){
 	while (c->drm_state == WORKING)
 	        continue; // wait for DRM to dump file
 	mp_printf("Finished SAVE\r\n");
+	// export_state();
 }
 void load_state(){
 	send_command(RELOAD);
@@ -563,6 +600,7 @@ void load_state(){
 	while (c->drm_state == WORKING)
 		        continue; // wait for DRM to dump file
 	mp_printf("Finished reload, SSA execution should resume.\r\n");
+	//import_state();
 }
 int main(int argc, char **argv)
 {

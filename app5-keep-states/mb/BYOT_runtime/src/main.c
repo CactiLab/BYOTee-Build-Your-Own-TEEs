@@ -117,7 +117,7 @@ void myISR(void)
 		get_register_values();
 		copy_state_data();
 		//main_helper();
-		int jump = 0x6b80, z = 0;
+		int jump = 0x6b90, z = 0;
 
 		asm volatile ("add r14, %0, %1": :"r" (z), "r" (jump));
 
@@ -129,6 +129,7 @@ void myISR(void)
 		int z = 0;
 		asm volatile ("add r14, %0, %1": :"r" (z), "r" (register_values[14]));
 		asm volatile ("add r1, %0, %1": :"r" (z), "r" (register_values[1]));
+		asm volatile ("add r15, %0, %1": :"r" (z), "r" (register_values[15]));
 		//RELOAD_SSA();
 		set_stopped();
 	}
