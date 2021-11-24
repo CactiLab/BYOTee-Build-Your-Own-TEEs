@@ -114,7 +114,6 @@ void myISR(void)
 		register_values[31] = pc;
 		memcpy((void *)c->state_chnl.registers, register_values, sizeof(unsigned int) * 32);
 		set_working();
-		get_register_values();
 		copy_state_data();
 		//main_helper();
 		int jump = 0x6b90, z = 0;
@@ -145,9 +144,7 @@ void RELOAD_SSA()
 	memcpy(ssc_data.data, (void *)c->state_chnl.data_reg, MAX_DATA_REGION);
 	memcpy(ssc_ro_data.ro_data, (void *)c->state_chnl.rodata_reg, MAX_RODATA_REGION);
 	memcpy(ssa_stack_instance.scode, (void *)c->state_chnl.stack_reg, MAX_STACK_REGION);
-	//asm volatile ("lwi r12, r11, 13" : "=r"(register_values[1]));
-	//asm volatile ("addi r12, r12, 69");
-	//xil_printf("%d\r\n", register_values[1]);
+
 	int z = 0;
 	asm volatile ("add r14, %0, %1": :"r" (z), "r" (register_values[14]));
 	asm volatile ("add r15, %0, %1": :"r" (z), "r" (register_values[15]));
@@ -180,9 +177,6 @@ void RELOAD_SSA()
 	asm volatile ("add r28, %0, %1": :"r" (z), "r" (register_values[28]));
 	asm volatile ("add r29, %0, %1": :"r" (z), "r" (register_values[29]));
 	asm volatile ("add r30, %0, %1": :"r" (z), "r" (register_values[30]));
-	//asm volatile ("add r12, r12, %0": :"r" (register_values[1]));
-	//asm volatile ("add r3, %0, %1": :"r" (z), "r" (register_values[3]));
-	//asm volatile ("add r4, %0, %1": :"r" (z), "r" (register_values[4]));
 }
 //////////////////////// MAIN ////////////////////////
 void query_BYOT_runtime()
@@ -247,24 +241,6 @@ void load_code()
 	mb_printf("Reading code & data modules\r\n");
 	format_SSC_code();
 	mb_printf("SSC Code & data loaded to BRAM\r\n");
-}
-void get_register_values()
-{
-	xil_printf("Checking microblaze assembly\r\n");
-
-	/*register_values[0] asm("r0");
-	usleep(1000);
-	/*char reg_name[3];
-	reg_name[0] = 'r';
-	reg_name[2] = '\0';
-	char *p = reg_name;
-	for (int i = 0; i < 9; i ++)
-	{
-		reg_name[1] = i + '0';
-		register int temp asm([p]);
-		register_values[0] = temp;
-	}*/
-
 }
 void copy_state_data(){
 	memcpy((void *)c->code, local_state.code, MAX_CODE_REGION);
