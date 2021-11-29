@@ -116,7 +116,7 @@ void myISR(void)
 		set_working();
 		copy_state_data();
 		//main_helper();
-		int jump = 0x6b90, z = 0;
+		int jump = 0x6b2c, z = 0;
 
 		asm volatile ("add r14, %0, %1": :"r" (z), "r" (jump));
 
@@ -126,11 +126,11 @@ void myISR(void)
 	{
 		set_working();
 		int z = 0;
+		RELOAD_SSA();
+		set_stopped();
 		asm volatile ("add r14, %0, %1": :"r" (z), "r" (register_values[14]));
 		asm volatile ("add r1, %0, %1": :"r" (z), "r" (register_values[1]));
 		asm volatile ("add r15, %0, %1": :"r" (z), "r" (register_values[15]));
-		//RELOAD_SSA();
-		set_stopped();
 	}
 }
 void RELOAD_SSA()
@@ -146,10 +146,10 @@ void RELOAD_SSA()
 	memcpy(ssa_stack_instance.scode, (void *)c->state_chnl.stack_reg, MAX_STACK_REGION);
 
 	int z = 0;
-	asm volatile ("add r14, %0, %1": :"r" (z), "r" (register_values[14]));
-	asm volatile ("add r15, %0, %1": :"r" (z), "r" (register_values[15]));
+	//asm volatile ("add r14, %0, %1": :"r" (z), "r" (register_values[14]));
+	//asm volatile ("add r15, %0, %1": :"r" (z), "r" (register_values[15]));
 	asm volatile ("add r0, %0, %1": :"r" (z), "r" (register_values[0]));
-	asm volatile ("add r1, %0, %1": :"r" (z), "r" (register_values[1]));
+	//asm volatile ("add r1, %0, %1": :"r" (z), "r" (register_values[1]));
 	asm volatile ("add r2, %0, %1": :"r" (z), "r" (register_values[2]));
 	asm volatile ("add r3, %0, %1": :"r" (z), "r" (register_values[3]));
 	asm volatile ("add r4, %0, %1": :"r" (z), "r" (register_values[4]));
@@ -241,6 +241,7 @@ void load_code()
 	mb_printf("Reading code & data modules\r\n");
 	format_SSC_code();
 	mb_printf("SSC Code & data loaded to BRAM\r\n");
+	mb_printf("Testing CP \r\n");
 }
 void copy_state_data(){
 	memcpy((void *)c->code, local_state.code, MAX_CODE_REGION);
