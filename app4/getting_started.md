@@ -1,36 +1,4 @@
-<!-- 
-# BYOT Getting Started
-
-Below is the overview of how to set up the reference implementation BYOT framework for FPGA SoCs.
-
-Please note: if any step fails, it is highly unlikely that the process will get back on track by continuing to future steps.
-
-## Cloning Repository
-
-
-1. Clone the BYOT repository using ssh or https 
-```bash
-git clone .. --recursive
-``` 
-
-
-## Download Xilinx Tools
-We require using the two main Xilinx tools for the development of your
-design: Vivado and the Xilinx Software Development Kit (SDK). Vivado is used to create the
-Programmable Logic design. For the reference design, this includes the Xilinx MicroBlaze, a soft
-microprocessor core. Applications for the MicroBlaze can be written using the Xilinx SDK. More
-information about these tools will be discussed when building the reference design.
-
- 1. [Go to the Xilinx website](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)
- 2. Download the 2017.4 version -> All OS Installer Single-File Download
- 3. Login or create a Xilinx account. Note: you can use your college email and location as your "corporation"
- 4. Place the downloaded zip file into the root directory of your project - Vagrant will install it on the VM
-
---->
 ## Building the Reference Design
-This section assumes that you have a Vagrant development
-environment running as described in the `vagrant` folder, and that you have read through all of the
-`README` files in each subdirectory.
 
 To build the reference design for the first time, follow these steps:
 1. Open a terminal and `cd` to the `tools` directory.

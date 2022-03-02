@@ -1,18 +1,20 @@
-# BYOTee Getting Started
+# Project Description
+This repository contains the demo implementation of BYOTee. It's a framework which implements multiple physically separated TEEs on-demand using SoC FPGAs. The framework is designed for FPGAs from all vendors. For our demo implementation, we used a Xilinx FPGA SoC: https://digilent.com/shop/cora-z7-zynq-7000-single-core-and-dual-core-options-for-arm-fpga-soc-development/
 
-Below is the overview of how to set up the reference implementation BYOTee framework for FPGA SoCs.
+Please find the details of our work at: 
 
-Please note: if any step fails, it is highly unlikely that the process will get back on track by continuing to future steps.
-## Download Xilinx Tools
-We require using the two main Xilinx tools for the development of your
-design: Vivado and the Xilinx Software Development Kit (SDK). Vivado is used to create the
-Programmable Logic design. For the reference design, this includes the Xilinx MicroBlaze, a soft
-microprocessor core. Applications for the MicroBlaze can be written using the Xilinx SDK. More
-information about these tools will be discussed when building the reference design.
+Hardware and Software requirements to reproduce our work:
 
- 1. [Go to the Xilinx website](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)
- 2. Download the 2017.4 version -> All OS Installer Single-File Download
- 3. Login or create a Xilinx account. Note: you can use your college email and location as your "corporation"
+* [Cora Z7s: Zynq-7000 development board](https://digilent.com/shop/cora-z7-zynq-7000-single-core-and-dual-core-options-for-arm-fpga-soc-development/)
+* Xilinx Software Development Kit (XSDK 2017.04)
+* Xilinx FPGA synthesis tool (Vivado 2017.04)
+* A Host computer (The framework was tested on Ubuntu 20.04 and 18.04, but should work for other OS too)
+
+The description below represents the steps to clone the repository, a short description of repository structure, and lastly, instructions to set up development tools.
+
+## Notes
+* After setting up the development tools, to build and execute each application, go to the application directories and follow the **getting started** file instructions.
+
 
 ## Cloning Repository
 
@@ -21,12 +23,9 @@ information about these tools will be discussed when building the reference desi
 ```bash
 git clone git@github.com:CactiLab/code-build-your-own-TEE.git
 ``` 
-## BYOTee Example Code
-
-This repository contains three example reference system for BYOTee System Design. 
 
 ## Project structure
-The example code is structured as follows
+In our implementation we develop four demo applications. The example code is structured as follows:
 * `app1/` - Contains an example of **Computational applications**. In this application the PS side sends a 64 bit data to the CTEE softcore(Microblaze). The CTEE SSC outputs AES encryption/decryption depending on the commands provided by the PS untrusted application.
 In the hardware deisgn of the application CTEE is constructed with a micrbolze processor with its BRAM.
 No peripherals are connected to the microblaze.
@@ -40,8 +39,19 @@ In the hardware deisgn of the application CTEE is constructed with a micrbolze p
 The PS application here talks to the CTEE-1 through the SEB. The SSA-4 here is loaded to the CTEE-4 statically with `update-MEM` tool. Although SSAs on the CTEE-1 are loaded dynamically.
 * `CTEE-HS-generation/` - Contains a tool to generate the CTEE hardware configurations. The input file is in json format and it output tcl files to build the CTEE hardware design.
 * `Evaluations/` - Contains the evaluation source code of the BYOT. It incldues implementated applications performance evaluation source code, embench-iot benchmark application source code, cold-boot-attack on DRAM and BRAM source code. Note to evaluate on the MicroBlaze processor we also added a AXI timer IP in the hardware design, the tcl scripts are also added under this directory.
-## Notes
-* To build and execute each application, go to the application directories and follow the **getting started** file instructions.
+
+## Setting up Software development & Synthesis tools
+We require using the two main Xilinx tools for the development of your
+design: Vivado and the Xilinx Software Development Kit (SDK). Vivado is used to create the
+Programmable Logic design. For the reference design, this includes the Xilinx MicroBlaze, a soft
+microprocessor core. Applications for the MicroBlaze can be written using the Xilinx SDK. More
+information about these tools will be discussed when building the reference design.
+
+ 1. [Go to the Xilinx website](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)
+ 2. Download the 2017.4 version -> All OS Installer Single-File Download
+ 3. Login or create a Xilinx account. Note: you can use your college email and location as your "corporation"
+
+
  <!--- 
  * `boot-image/` - Contains a stock FSBL, `image.ub`, and `u-boot.elf` for booting the project on the board. The stock FSBL is only provided for the purposes of making the `miPod.bin`, since `bootgen` requires you provide a bootloader when creating a `.bin` image.
  * `mb/` - Contains BYOT runtime and example SSC running on the soft-core MicroBlaze. See [BYOT README](mb/README.md)
