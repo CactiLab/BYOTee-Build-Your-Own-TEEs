@@ -98,11 +98,8 @@ if { $::argc > 0 } {
   }
 }
 
-# Set the directory path for the original project from where this script was exported
-set orig_proj_dir "[file normalize "$origin_dir/../../../../../Performance/code-build-your-own-TEE/app1/pl/proj/test"]"
-
 # Create project
-create_project ${project_name} ./${project_name} -part xc7z007sclg400-1
+create_project ${project_name} ./proj/${project_name} -part xc7z007sclg400-1
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
@@ -129,7 +126,7 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 
 # Set IP repository paths
 set obj [get_filesets sources_1]
-set_property "ip_repo_paths" "[file normalize "$origin_dir/../../../../../code-build-your-own-TEE/app3/pl/repo"]" $obj
+set_property "ip_repo_paths" "[file normalize "$origin_dir/repo"]" $obj
 
 # Rebuild user ip_repo's index before adding any source files
 update_ip_catalog -rebuild
@@ -137,19 +134,18 @@ update_ip_catalog -rebuild
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- "[file normalize "$origin_dir/../../../../../code-build-your-own-TEE/app3/pl/src/bd/system/system.bd"]"\
- "[file normalize "$origin_dir/../../../../../code-build-your-own-TEE/app3/pl/src/bd/system/hdl/system_wrapper.vhd"]"\
- "[file normalize "$origin_dir/../../../../../code-build-your-own-TEE/app3/pl/src/hdl/i2s_output.vhd"]"\
+ "[file normalize "$origin_dir/src/hdl/i2s_output.vhd"]"\
+ "[file normalize "$origin_dir/src/bd/system/hdl/system_wrapper.vhd"]"\
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/../../../../../code-build-your-own-TEE/app3/pl/src/bd/system/hdl/system_wrapper.vhd"
+set file "$origin_dir/src/hdl/i2s_output.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
-set file "$origin_dir/../../../../../code-build-your-own-TEE/app3/pl/src/hdl/i2s_output.vhd"
+set file "$origin_dir/src/bd/system/hdl/system_wrapper.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
@@ -171,16 +167,16 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 set obj [get_filesets constrs_1]
 
 # Add/Import constrs file and set constrs file properties
-set file "[file normalize "$origin_dir/../../../../../code-build-your-own-TEE/app3/pl/src/constraints/Cora-Z7-Master.xdc"]"
+set file "[file normalize "$origin_dir/src/constraints/Cora-Z7-Master.xdc"]"
 set file_added [add_files -norecurse -fileset $obj $file]
-set file "$origin_dir/../../../../../code-build-your-own-TEE/app3/pl/src/constraints/Cora-Z7-Master.xdc"
+set file "$origin_dir/src/constraints/Cora-Z7-Master.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property -name "file_type" -value "XDC" -objects $file_obj
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
-set_property -name "target_constrs_file" -value "[file normalize "$origin_dir/../../../../../code-build-your-own-TEE/app3/pl/src/constraints/Cora-Z7-Master.xdc"]" -objects $obj
+set_property -name "target_constrs_file" -value "[file normalize "$origin_dir/src/constraints/Cora-Z7-Master.xdc"]" -objects $obj
 
 # Create 'sim_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sim_1] ""]} {
@@ -416,5 +412,7 @@ set_property -name "steps.write_bitstream.args.verbose" -value "0" -objects $obj
 
 # set the current impl run
 current_run -implementation [get_runs impl_1]
+
+source $origin_dir/proj/create_bd.tcl
 
 puts "INFO: Project created:$project_name"
