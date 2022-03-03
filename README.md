@@ -51,6 +51,13 @@ information about these tools will be discussed when building the reference desi
  2. Download the 2017.4 version -> All OS Installer Single-File Download
  3. Login or create a Xilinx account. Note: you can use your college email and location as your "corporation"
 
+## Source Vivado and XSDK
+The Vivado and Xilinx tools needs to be sourced in your bashrc file, as the build tools will invoke the tools from command line. Please follow the below commands and replace **user_name** with your user name.
+```bash
+echo "source /opt/Xilinx/Vivado/2017.4/settings64.sh" >> /home/user_name/.bashrc
+echo "source /opt/Xilinx/SDK/2017.4/settings64.sh" >> /home/user_name/.bashrc
+source /home/user_name/.bashrc
+```
 
  <!--- 
  * `boot-image/` - Contains a stock FSBL, `image.ub`, and `u-boot.elf` for booting the project on the board. The stock FSBL is only provided for the purposes of making the `miPod.bin`, since `bootgen` requires you provide a bootloader when creating a `.bin` image.
