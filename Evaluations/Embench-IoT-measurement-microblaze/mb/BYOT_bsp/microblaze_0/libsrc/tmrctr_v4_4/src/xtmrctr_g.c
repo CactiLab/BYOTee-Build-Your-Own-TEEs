@@ -33,7 +33,24 @@
 *
 
 * 
-* Description: Exception Handling Header for MicroBlaze Processor
+* Description: Driver configuration
 *
 *******************************************************************/
+
+#include "xparameters.h"
+#include "xtmrctr.h"
+
+/*
+* The configuration table for devices
+*/
+
+XTmrCtr_Config XTmrCtr_ConfigTable[XPAR_XTMRCTR_NUM_INSTANCES] =
+{
+	{
+		XPAR_AXI_TIMER_0_DEVICE_ID,
+		XPAR_AXI_TIMER_0_BASEADDR,
+		XPAR_AXI_TIMER_0_CLOCK_FREQ_HZ
+	}
+};
+
 
