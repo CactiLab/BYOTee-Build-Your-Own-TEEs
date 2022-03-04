@@ -45,7 +45,7 @@ def main():
     parser.add_argument("bitstream", help="The path to your bitstream")
     parser.add_argument("--secure",
                         action="store_true",
-                        help="If present, encrypt and authenticate the partitions with hardware keys. This will be done by MITRE and does not need to be done in your reference design.")
+                        help="If present, encrypt and authenticate the partitions with hardware keys.")
     args = parser.parse_args()
 
     # verify bif exists
