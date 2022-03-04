@@ -7,7 +7,7 @@
 #include "xintc.h"
 #include "constants.h"
 #include "sleep.h"
-#include "blake2s.h"
+//#include "blake2s.h"
 #include "aes.h"
 #include "hmac.h"
 #include "xtmrctr.h"
@@ -41,7 +41,244 @@ uint8_t preExeResult[MEASUREMENT_SIZE];
 volatile static int InterruptProcessed = FALSE;
 static XIntc InterruptController;
 struct AES_ctx ctx;
-//uint8_t AES_BLOCK_BUFFER [ENC_DEC_DATA_SIZE];
+
+/* BEEBS ud benchmark
+
+   This version, copyright (C) 2014-2019 Embecosm Limited and University of
+   Bristol
+
+   Contributor James Pallister <james.pallister@bristol.ac.uk>
+   Contributor Jeremy Bennett <jeremy.bennett@embecosm.com>
+
+   This file is part of Embench and was formerly part of the Bristol/Embecosm
+   Embedded Benchmark Suite.
+
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
+/* MDH WCET BENCHMARK SUITE. */
+
+
+/*************************************************************************/
+/*                                                                       */
+/*   SNU-RT Benchmark Suite for Worst Case Timing Analysis               */
+/*   =====================================================               */
+/*                              Collected and Modified by S.-S. Lim      */
+/*                                           sslim@archi.snu.ac.kr       */
+/*                                         Real-Time Research Group      */
+/*                                        Seoul National University      */
+/*                                                                       */
+/*                                                                       */
+/*        < Features > - restrictions for our experimental environment   */
+/*                                                                       */
+/*          1. Completely structured.                                    */
+/*               - There are no unconditional jumps.                     */
+/*               - There are no exit from loop bodies.                   */
+/*                 (There are no 'break' or 'return' in loop bodies)     */
+/*          2. No 'switch' statements.                                   */
+/*          3. No 'do..while' statements.                                */
+/*          4. Expressions are restricted.                               */
+/*               - There are no multiple expressions joined by 'or',     */
+/*                'and' operations.                                      */
+/*          5. No library calls.                                         */
+/*               - All the functions needed are implemented in the       */
+/*                 source file.                                          */
+/*                                                                       */
+/*                                                                       */
+/*************************************************************************/
+/*                                                                       */
+/*  FILE: ludcmp.c                                                       */
+/*  SOURCE : Turbo C Programming for Engineering                         */
+/*                                                                       */
+/*  DESCRIPTION :                                                        */
+/*                                                                       */
+/*     Simultaneous linear equations by LU decomposition.                */
+/*     The arrays a[][] and b[] are input and the array x[] is output    */
+/*     row vector.                                                       */
+/*     The variable n is the number of equations.                        */
+/*     The input arrays are initialized in function main.                */
+/*                                                                       */
+/*                                                                       */
+/*  REMARK :                                                             */
+/*                                                                       */
+/*  EXECUTION TIME :                                                     */
+/*                                                                       */
+/*                                                                       */
+/*************************************************************************/
+
+/*************************************************************************
+ *  This file:
+ *
+ *  - Name changed to "ud.c"
+ *  - Modified for use with Uppsala/Paderborn tool
+ *    : doubles changed to int
+ *    : some tests removed
+ *  - Program is much more linear, all loops will run to end
+ *  - Purpose: test the effect of conditional flows
+ *
+ *************************************************************************/
+
+
+
+
+
+
+/*
+** Benchmark Suite for Real-Time Applications, by Sung-Soo Lim
+**
+**    III-4. ludcmp.c : Simultaneous Linear Equations by LU Decomposition
+**                 (from the book C Programming for EEs by Hyun Soon Ahn)
+*/
+
+#include <string.h>
+
+/* This scale factor will be changed to equalise the runtime of the
+   benchmarks. */
+#define LOCAL_SCALE_FACTOR 1478
+
+
+long int a[20][20], b[20], x[20];
+
+int ludcmp(int nmax, int n);
+
+
+/*  static double fabs(double n) */
+/*  { */
+/*    double f; */
+
+/*    if (n >= 0) f = n; */
+/*    else f = -n; */
+/*    return f; */
+/*  } */
+
+/* Write to CHKERR from BENCHMARK to ensure calls are not optimised away.  */
+volatile int chkerr;
+
+
+int
+verify_benchmark (int res)
+{
+  long int x_ref[20] =
+    { 0L, 0L, 1L, 1L, 1L, 2L, 0L, 0L, 0L, 0L,
+      0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L
+    };
+
+  return (0 == memcmp (x, x_ref, 20 * sizeof (x[0]))) && (0 == res);
+}
+
+
+void
+initialise_benchmark (void)
+{
+}
+
+
+static int benchmark_body (int  rpt);
+
+void
+warm_caches (int  heat)
+{
+  int  res = benchmark_body (heat);
+
+  return;
+}
+#define CPU_MHZ 1
+
+int
+benchmark (void)
+{
+  return benchmark_body (LOCAL_SCALE_FACTOR * CPU_MHZ);
+
+}
+
+
+static int __attribute__ ((noinline))
+benchmark_body (int rpt)
+{
+  int  k;
+
+  for (k = 0; k < rpt; k++)
+    {
+      int      i, j, nmax = 20, n = 5;
+      long int /* eps, */ w;
+
+      /* eps = 1.0e-6; */
+
+      /* Init loop */
+      for(i = 0; i <= n; i++)
+	{
+	  w = 0.0;              /* data to fill in cells */
+	  for(j = 0; j <= n; j++)
+	    {
+	      a[i][j] = (i + 1) + (j + 1);
+	      if(i == j)            /* only once per loop pass */
+		a[i][j] *= 2.0;
+	      w += a[i][j];
+	    }
+	  b[i] = w;
+	}
+
+      /*  chkerr = ludcmp(nmax, n, eps); */
+      chkerr = ludcmp(nmax,n);
+    }
+
+  return chkerr;
+}
+
+int ludcmp(int nmax, int n)
+{
+  int i, j, k;
+  long w, y[100];
+
+  /* if(n > 99 || eps <= 0.0) return(999); */
+  for(i = 0; i < n; i++)
+    {
+      /* if(fabs(a[i][i]) <= eps) return(1); */
+      for(j = i+1; j <= n; j++) /* triangular loop vs. i */
+        {
+          w = a[j][i];
+          if(i != 0)            /* sub-loop is conditional, done
+                                   all iterations except first of the
+                                   OUTER loop */
+            for(k = 0; k < i; k++)
+              w -= a[j][k] * a[k][i];
+          a[j][i] = w / a[i][i];
+        }
+      for(j = i+1; j <= n; j++) /* triangular loop vs. i */
+        {
+          w = a[i+1][j];
+          for(k = 0; k <= i; k++) /* triangular loop vs. i */
+            w -= a[i+1][k] * a[k][j];
+          a[i+1][j] = w;
+        }
+    }
+  y[0] = b[0];
+  for(i = 1; i <= n; i++)       /* iterates n times */
+    {
+      w = b[i];
+      for(j = 0; j < i; j++)    /* triangular sub loop */
+        w -= a[i][j] * y[j];
+      y[i] = w;
+    }
+  x[n] = y[n] / a[n][n];
+  for(i = n-1; i >= 0; i--)     /* iterates n times */
+    {
+      w = y[i];
+      for(j = i+1; j <= n; j++) /* triangular sub loop */
+        w -= a[i][j] * x[j];
+      x[i] = w / a[i][i] ;
+    }
+  return(0);
+}
+
+
+/*
+   Local Variables:
+   mode: C
+   c-file-style: "gnu"
+   End:
+*/
+
+
 
 void myISR(void)
 {
@@ -87,10 +324,8 @@ void format_SSC_code()
 
 	memcpy(local_state.code, (void *)c->code, c->file_size);
 
-
 	AES_init_ctx_iv(&ctx, AES_CBC_key, AES_CBC_IV);
 	AES_CBC_decrypt_buffer(&ctx, local_state.code, c->file_size);
-
 
 	if (verify_ssa_signature(local_state.code[SIG_LEN]) != 0)
 	{
@@ -112,33 +347,12 @@ void format_SSC_code()
 
 void load_code()
 {
-	/*timer counter- start
-	u32 Value1;
-	u32 Value2;
-	XTmrCtr TimerCounter;
-	XTmrCtr *TmrCtrInstancePtr = &TimerCounter;
-	int Status;
-	Status = XTmrCtr_Initialize(TmrCtrInstancePtr, TMRCTR_DEVICE_ID);
-	if (Status != XST_SUCCESS) {
-		mb_printf("Failed to initialize the timer\r\n");
-	}
-
-	XTmrCtr_SetOptions(TmrCtrInstancePtr, TIMER_COUNTER_0, XTC_AUTO_RELOAD_OPTION);
-
-	Value1 = XTmrCtr_GetValue(TmrCtrInstancePtr, TIMER_COUNTER_0);
-	XTmrCtr_Start(TmrCtrInstancePtr, TIMER_COUNTER_0);
-	/*timer counter- end*/
 
 	remove_ssc_module();
 	mb_printf("Reading code & data modules\r\n");
 	format_SSC_code();
 	mb_printf("SSC Code & data loaded to BRAM\r\n");
 
-	/*timer counter- start
-	Value2 = XTmrCtr_GetValue(TmrCtrInstancePtr, TIMER_COUNTER_0);
-	mb_printf("CTEE CPU cycles to complete load SSA (Size = %d) is %d \r\n",c->file_size, (Value2 - Value1) );
-	XTmrCtr_Reset(TmrCtrInstancePtr, TIMER_COUNTER_0);
-	/*timer counter- end*/
 }
 
 void execute_SSC()
@@ -168,103 +382,11 @@ void forward_to_ssc()
 
 void remove_ssc_module()
 {
-/*timer counter- start
-	u32 Value1;
-	u32 Value2;
-	XTmrCtr TimerCounter;
-	XTmrCtr *TmrCtrInstancePtr = &TimerCounter;
-	int Status;
-	Status = XTmrCtr_Initialize(TmrCtrInstancePtr, TMRCTR_DEVICE_ID);
-	if (Status != XST_SUCCESS) {
-		mb_printf("Failed to initialize the timer\r\n");
-	}
-
-	XTmrCtr_SetOptions(TmrCtrInstancePtr, TIMER_COUNTER_0, XTC_AUTO_RELOAD_OPTION);
-
-	Value1 = XTmrCtr_GetValue(TmrCtrInstancePtr, TIMER_COUNTER_0);
-	XTmrCtr_Start(TmrCtrInstancePtr, TIMER_COUNTER_0);
-	/*timer counter- end*/
 
 	memset(&local_state.code, 0, CODE_SIZE);
 	memset(&ssc_data, 0, DATA_SIZE);
 	memset(&ssc_ro_data, 0, RO_DATA_SIZE);
 
-/*timer counter- start
-	Value2 = XTmrCtr_GetValue(TmrCtrInstancePtr, TIMER_COUNTER_0);
-	mb_printf("CTEE CPU cycles to clean up SSA: %d \r\n", (Value2 - Value1) );
-	XTmrCtr_Reset(TmrCtrInstancePtr, TIMER_COUNTER_0);
-	/*timer counter- end*/
-}
-
-int adjust_block_size(int data_size)
-{
-	int remainder = data_size % BLAKE2S_BLOCKBYTES;
-
-	if (remainder != 0)
-	{
-		data_size += (BLAKE2S_BLOCKBYTES - remainder);
-	}
-
-	return data_size;
-}
-
-void input_attestation(char flag)
-{
-	if (att_md.input_att_size == 0)
-		return;
-
-	int data_size = adjust_block_size(att_md.input_att_size + MEASUREMENT_SIZE);
-	//Input to SSC data attestation
-	memcpy(att_md.att_input_data + att_md.input_att_size, preExeResult, MEASUREMENT_SIZE);
-	//memset(att_md.att_input_data + att_md.input_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.input_att_size + MEASUREMENT_SIZE));
-	blake2s(preExeResult, att_md.att_input_data, data_size);
-
-	if (flag == 1)
-		//copy the hash to DRAM
-		memcpy((void *)&c->preExehash, &preExeResult, MEASUREMENT_SIZE);
-}
-void output_attestation()
-{
-	if (att_md.output_att_size == 0)
-		return;
-
-	int data_size = adjust_block_size(att_md.output_att_size + MEASUREMENT_SIZE);
-	//Input to SSC data attestation
-	memcpy(att_md.att_output_data + att_md.output_att_size, preExeResult, MEASUREMENT_SIZE);
-	//memset(att_md.att_output_data + att_md.output_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.output_att_size + MEASUREMENT_SIZE));
-	blake2s(preExeResult, att_md.att_output_data, data_size);
-	//copy the hash to DRAM
-	memcpy((void *)&c->postExehash, &preExeResult, MEASUREMENT_SIZE);
-}
-//This functions performs measurements on code section, data section and readonly data section before and after SSC execution
-void preExeAtt()
-{
-	int data_size;
-
-	challenge_number = (c->challenge_number);
-	mb_printf("Attestation for challenge %d\r\n", challenge_number);
-	data_size = adjust_block_size(received_metadata.ro_data_size);
-	// hash the read only data section + input hash
-	blake2s(preExeResult, ssc_ro_data.ro_data, data_size);
-	data_size = adjust_block_size(received_metadata.data_sec_size + MEASUREMENT_SIZE);
-	memcpy((ssc_data.data + received_metadata.data_sec_size), preExeResult, MEASUREMENT_SIZE);
-	// hash the data section + previous hash
-	blake2s(preExeResult, ssc_data.data, data_size);
-	data_size = adjust_block_size(received_metadata.sss_code_size + MEASUREMENT_SIZE + sizeof(challenge_number));
-	memcpy((local_state.code + received_metadata.sss_code_size), &challenge_number, sizeof(challenge_number));
-	memcpy((local_state.code + received_metadata.sss_code_size + sizeof(challenge_number)), preExeResult, MEASUREMENT_SIZE);
-	// hash the code text section + previous hash + challenge number
-	blake2s(preExeResult, local_state.code, data_size);
-}
-void postExeAtt()
-{
-	preExeAtt();
-	input_attestation(0);
-	output_attestation();
-}
-void cleaup_att_space()
-{
-	memset(&att_md, 0, sizeof(attestation_md));
 }
 
 int verify_ssa_signature(void *data_start) {
@@ -329,13 +451,13 @@ int main()
 			case QUERY_DRM:
 				query_BYOT_runtime();
 				break;
-			case SSC_COMMAND:
+			/*case SSC_COMMAND:
 				preExeAtt();
-				forward_to_ssc(); /*Executing SSC*/
+				forward_to_ssc();
 				input_attestation(1);
 				postExeAtt();
 				cleaup_att_space();
-				break;
+				break;*/
 			case EXIT:
 				remove_ssc_module();
 				ssc_module_loaded = 0;
@@ -359,16 +481,23 @@ int main()
 
 			XTmrCtr_SetOptions(TmrCtrInstancePtr, TIMER_COUNTER_0, XTC_AUTO_RELOAD_OPTION);
 
-			Value1 = XTmrCtr_GetValue(TmrCtrInstancePtr, TIMER_COUNTER_0);
 			XTmrCtr_Start(TmrCtrInstancePtr, TIMER_COUNTER_0);
+			Value1 = XTmrCtr_GetValue(TmrCtrInstancePtr, TIMER_COUNTER_0);
+
 			/*timer counter- end*/
 
-			/*put the execution function you want to measure
-
-
-			/*timer counter- start*/
+			/*put the execution function you want to measure*/
+			//int return_value = benchmark_body(1);
+			int return_value = benchmark();
 			Value2 = XTmrCtr_GetValue(TmrCtrInstancePtr, TIMER_COUNTER_0);
-			mb_printf("CTEE CPU cycles to complete execution \r\n",(Value2 - Value1) );
+			u32 res = Value2 - Value1;
+			if (verify_benchmark(return_value) == 1)
+				mb_printf("Results Verified success \r\n");
+			else
+				mb_printf("Returnred value %d \r\n", return_value);
+			/*timer counter- start*/
+
+			mb_printf("CTEE CPU cycles to complete execution for libedn =  %d\r\n",res );
 			XTmrCtr_Reset(TmrCtrInstancePtr, TIMER_COUNTER_0);
 			/*Finish cycle count*/
 			usleep(1000);

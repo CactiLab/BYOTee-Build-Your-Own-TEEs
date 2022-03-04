@@ -46,35 +46,6 @@ SECTIONS
    KEEP (*(.vectors.hw_exception))
 } 
 
-.ssc.buffer 0x50:
-{
-	KEEP(*(.ssc.code.buffer))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
-.ssc.attestation.md :
-{
-	KEEP(*(.ssc.attestation.md))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
-.test : {
-    *main.o(.text)
-	*main.o(.text.*)
-	*blake2s.o(.text)
-	*blake2s.o(.text.*)
-	*aes.o(.text)
-	*aes.o(.text.*)
-	*platform.o(.text)
-	*platform.o(.text.*)
-	*hmac.o(.text)
-	*hmac.o(.text.*)
-	*sha1.o(.text)
-	*sha1.o(.text.*)
-	*sha512.o(.text)
-	*sha512.o(.text.*)
-	*util.o(.text)
-	*util.o(.text.*)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-/*.text : { */
 .text : {
 
    *(.text)

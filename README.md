@@ -58,6 +58,15 @@ echo "source /opt/Xilinx/Vivado/2017.4/settings64.sh" >> /home/user_name/.bashrc
 echo "source /opt/Xilinx/SDK/2017.4/settings64.sh" >> /home/user_name/.bashrc
 source /home/user_name/.bashrc
 ```
+## Tips
+* While compiling the software projects if errors occur such as missing peripheral driver functions, follow the below steps:
+1. Open Vivado hardware project.
+2. Export the hardware in the **mb** folder of that project.
+3. In XSDK it should update the hardware automatically, if not right-click on the project **test**, click the update hardware option.
+4. Regenerate the BSP file, sometimes it may not update properly. Then delete the current BSP and create a new BSP project with the same name.
+
+* If  generation has have any errors, delete the **test** project in ``pl/proj``. Re-run the hardware generation script.
+* For each project **boot-image** folder and **BOOT.bin** are the same.
 
  <!--- 
  * `boot-image/` - Contains a stock FSBL, `image.ub`, and `u-boot.elf` for booting the project on the board. The stock FSBL is only provided for the purposes of making the `miPod.bin`, since `bootgen` requires you provide a bootloader when creating a `.bin` image.
