@@ -1,4 +1,4 @@
-# BYOTee: Towards Building Your Own TEEs
+# BYOTee: Build Your Own TEEs
 This repository contains an implementation of the BYOTee system, which is a framework to build multiple physically separated TEEs on-demand using FPGAs. The idea of BYOTee can be applied and implemented on FPGAs from all vendors. For this implementation, we use a [Xilinx SoC FPGA](https://digilent.com/shop/cora-z7-zynq-7000-single-core-and-dual-core-options-for-arm-fpga-soc-development/). 
 This page include the steps to clone the repository, a short description of repository structure, and lastly, instructions to set up development tools.
 
