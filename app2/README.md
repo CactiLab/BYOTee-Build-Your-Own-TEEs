@@ -17,7 +17,4 @@ The example code is structured as follows
  * `vivado-boards/` - Contains Vivado libraries for the board
  * `MB_files/` - Contains testing Microblaze files. These are example files for testing purpose.
 
- ## Embench-IoT evaluation
- * We did not follow their tool chain to evaluate on microblaze. We just copied their source code and to a BYOT developed app, and measure the execution time with AXI Timer IP. Benchmark application source code modifications can be found in: ``../Embench-IoT``. Copy the source cdoe from this directory for the applicatioin you want to evaluate and put source code in ``./mb/BYOT_Runtime`` folder. Call the **benchmark()** function from the main function between the timer start and stop
-
 
