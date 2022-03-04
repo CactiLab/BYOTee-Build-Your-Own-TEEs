@@ -27,10 +27,7 @@
 #
 # 3. The following remote source files that were added to the original project:-
 #
-#    "/home/ectf/2020-ectf/pl/src/hdl/i2s_output.vhd"
-#    "/home/ectf/2020-ectf/pl/src/bd/system/system.bd"
-#    "/home/ectf/2020-ectf/pl/src/bd/system/hdl/system_wrapper.vhd"
-#    "/home/ectf/2020-ectf/pl/src/constraints/Cora-Z7-Master.xdc"
+#
 #
 #*****************************************************************************************
 

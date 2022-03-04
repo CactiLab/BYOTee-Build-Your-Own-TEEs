@@ -1,8 +1,6 @@
 #******************************************************************
 # combineBitstream.tcl: Tcl script for automating download.bit generation
 #
-# Example expected dev_path -- repo root of 2020-ectf:
-#   /media/sf_Vagrant/2020-ectf/
 #******************************************************************
 
 if { $argc != 3 } {

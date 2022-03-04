@@ -34,7 +34,7 @@ def setup_sdcard(device):
     """
     This function sets up the sd card by formatting it with the correct
     partitions and the correct filesystems. It uses the sfdisk format file
-    which can be found in the ectf_sd.fdisk file in this directory.
+    which can be found in the BYOT_sd.fdisk file in this directory.
 
     device: the path to the device to be formatted, ie /dev/sdb. This must be
             the overall device, not a partition on the device.

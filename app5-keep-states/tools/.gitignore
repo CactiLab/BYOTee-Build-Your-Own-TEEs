@@ -2,7 +2,6 @@
 .idea/
 build/
 dist/
-ECTFTools.egg-info
 tests/secrets.h
 tests/songs/
 __pycache__/

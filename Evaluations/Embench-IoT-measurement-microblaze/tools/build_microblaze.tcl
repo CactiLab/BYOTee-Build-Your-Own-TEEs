@@ -4,8 +4,6 @@
 # This file contains tcl commands for building the microblaze project
 # after successful generation of the bitstream
 #
-# Example expected dev_path -- repo root of 2020-ectf:
-#   /media/sf_Vagrant/2020-ectf/
 #
 # ** Note ** this is mainly to automate the first time build.
 #    Subsequent builds mainly need to set the workspace and build
