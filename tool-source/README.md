@@ -1,2 +1,2 @@
 # Tool-Source
-1. This directory contains the source code of developed tools for SSAPACKER. The encryption tool is developed in C and the binary is called from python scripts.
+ This directory contains the source code of developed tools for SSAPACKER. The encryption tool is developed in C and the binary is called from python scripts. The encryption tool is compiled with gcc and the elf file is called from SSAPACKER python file. The python files of SSAPACKER can be found on each of the projects **tools** directory.

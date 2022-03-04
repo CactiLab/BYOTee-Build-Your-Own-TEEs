@@ -27,7 +27,7 @@ If you want to cite our paper in your work, please use the following BibTeX entr
 ## Cloning Repository
 
 
-1. Clone the BYOTee repository using ssh or https 
+Clone the BYOTee repository using ssh or https 
 ```bash
 git clone git@github.com:CactiLab/code-build-your-own-TEE.git
 ``` 

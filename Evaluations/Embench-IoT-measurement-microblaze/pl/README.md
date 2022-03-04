@@ -1,15 +1,3 @@
-# Cora Z7-07S Base Linux Design
-
-This repository contains the programmable logic for the reference system for MITRE's 2020 Embedded System CTF. This code is incomplete, insecure, and does not meet MITRE standards for quality. This code is being provided for educational purposes to serve as a simple example that meets the minimum functional requirements for the 2020 MITRE eCTF competition. Use this code at your own risk!
-
-## General Project Information
-Created for Vivado 2017.4.
-
-This project is built on top of an internal project used by Digilent for the Cora Z7-07S
-Petalinux Project (https://github.com/Digilent/Cora-Z7-07S-base-linux)
-
-This project contains an example PL implementation with soft-core MicroBlaze and audio codec.
-
 ## Usage
 
 The `/proj` directory contains the `create_project.tcl` script which handles the creation of your project for the Cora Z7-07S.
