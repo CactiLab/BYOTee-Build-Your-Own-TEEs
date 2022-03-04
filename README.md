@@ -1,16 +1,24 @@
-# Project Description
-This repository contains the demo implementation of BYOTee. It's a framework which implements multiple physically separated TEEs on-demand using SoC FPGAs. The framework is designed for FPGAs from all vendors. For our demo implementation, we used a Xilinx FPGA SoC: https://digilent.com/shop/cora-z7-zynq-7000-single-core-and-dual-core-options-for-arm-fpga-soc-development/
+# BYOTee: Towards Building Your Own TEEs
+This repository contains an implementation of the BYOTee system, which is a framework to build multiple physically separated TEEs on-demand using FPGAs. The idea of BYOTee can be applied and implemented on FPGAs from all vendors. For this implementation, we use a [Xilinx SoC FPGA](https://digilent.com/shop/cora-z7-zynq-7000-single-core-and-dual-core-options-for-arm-fpga-soc-development/). 
+This page include the steps to clone the repository, a short description of repository structure, and lastly, instructions to set up development tools.
 
-Please find the details of our work at: 
+If you want to cite our paper in your work, please use the following BibTeX entry.
 
-Hardware and Software requirements to reproduce our work:
+```
+@article{BYOTee2022,
+  title={BYOTee: Towards Building Your Own Trusted Execution Environments Using FPGA},
+  author={Armanuzzaman, Md. and Zhao, Ziming},
+  journal={arXiv preprint arXiv:2202.10673},
+  year={2022}
+}
+```
+
+## Hardware and Software Requirements
 
 * [Cora Z7s: Zynq-7000 development board](https://digilent.com/shop/cora-z7-zynq-7000-single-core-and-dual-core-options-for-arm-fpga-soc-development/)
 * Xilinx Software Development Kit (XSDK 2017.04)
 * Xilinx FPGA synthesis tool (Vivado 2017.04)
 * A Host computer (The framework was tested on Ubuntu 20.04 and 18.04, but should work for other OS too)
-
-The description below represents the steps to clone the repository, a short description of repository structure, and lastly, instructions to set up development tools.
 
 ## Notes
 * After setting up the development tools, to build and execute each application, go to the application directories and follow the **getting started** file instructions.
