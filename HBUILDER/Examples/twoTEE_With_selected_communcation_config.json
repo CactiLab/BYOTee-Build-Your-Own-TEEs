@@ -15,7 +15,7 @@
     "Cross_Trigger_in": "False",
     "Cross_Trigger_out": "False"
   },
-  "CTEEs": {
+  "Enlaves": {
     "MicroBlaze_0": {
       "MicroBlaze_Implementation_bits": "32",
       "Local_Memory": {

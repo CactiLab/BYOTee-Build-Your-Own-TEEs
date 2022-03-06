@@ -25,18 +25,18 @@ After setting up the development tools, to build and execute each application, g
 
 ## Project Structure
 We developed four demo applications. The example code is structured as follows:
-* `app1/` - Contains an example of **Computational applications**. In this application the PS side sends a 64 bit data to the CTEE softcore(Microblaze). The CTEE SSC outputs AES encryption/decryption depending on the commands provided by the PS untrusted application.
-In the hardware deisgn of the application CTEE is constructed with a micrbolze processor with its BRAM.
+* `app1/` - Contains an example of **Computational applications**. In this application the PS side sends a 64 bit data to the Enlave softcore(Microblaze). The Enlave SSC outputs AES encryption/decryption depending on the commands provided by the PS untrusted application.
+In the hardware deisgn of the application Enlave is constructed with a micrbolze processor with its BRAM.
 No peripherals are connected to the microblaze.
-* `app2/` - Contains an example of **Peripheral and PS Interacting Applications**. In this application the PS side just triggers the execution of SSC application without any input or output data. The CTEE SSC continuous toggels the LED color when the button is pressed.
-In the hardware deisgn of the application CTEE is constructed with a micrbolze processor with its BRAM, and two peripherals connected to that.
+* `app2/` - Contains an example of **Peripheral and PS Interacting Applications**. In this application the PS side just triggers the execution of SSC application without any input or output data. The Enlave SSC continuous toggels the LED color when the button is pressed.
+In the hardware deisgn of the application Enlave is constructed with a micrbolze processor with its BRAM, and two peripherals connected to that.
 The LED peripheral and the button peripheral in this case is included in the hardware TCB for the system.
-* `app3/` - Contains an example of **Peripheral, PS and CTEE Interacting Applications**. In this application the PS side continuously interact with the application in the CTEE. The CTEE SSC application is a digital medial player application.
-The audio files are stored in the SD card. The PS application sends the file from SD card to the CTEE SSC application.
-In the hardware deisgn of the application CTEE is constructed with a micrbolze processor with its BRAM, and axi dma, SPI module, peripherals.
-* `app4/` - Contains an example of **Distributed Applications**. In this application the there are two CTEEs implemented in the FPGA side. Both of the CTEEs are configured with its own BRAMs. And for secure communication between the CTEEs one 32KB BRAM is shared.
-The PS application here talks to the CTEE-1 through the SEB. The SSA-4 here is loaded to the CTEE-4 statically with `update-MEM` tool. Although SSAs on the CTEE-1 are loaded dynamically.
-* `CTEE-HS-generation/` - Contains a tool to generate the CTEE hardware configurations. The input file is in json format and it output tcl files to build the CTEE hardware design.
+* `app3/` - Contains an example of **Peripheral, PS and Enlave Interacting Applications**. In this application the PS side continuously interact with the application in the Enlave. The Enlave SSC application is a digital medial player application.
+The audio files are stored in the SD card. The PS application sends the file from SD card to the Enlave SSC application.
+In the hardware deisgn of the application Enlave is constructed with a micrbolze processor with its BRAM, and axi dma, SPI module, peripherals.
+* `app4/` - Contains an example of **Distributed Applications**. In this application the there are two Enlaves implemented in the FPGA side. Both of the Enlaves are configured with its own BRAMs. And for secure communication between the Enlaves one 32KB BRAM is shared.
+The PS application here talks to the Enlave-1 through the SEB. The SSA-4 here is loaded to the Enlave-4 statically with `update-MEM` tool. Although SSAs on the Enlave-1 are loaded dynamically.
+* `Enlave-HS-generation/` - Contains a tool to generate the Enlave hardware configurations. The input file is in json format and it output tcl files to build the Enlave hardware design.
 * `Evaluations/` - Contains the evaluation source code of the BYOT. It incldues implementated applications performance evaluation source code, embench-iot benchmark application source code, cold-boot-attack on DRAM and BRAM source code. Note to evaluate on the MicroBlaze processor we also added a AXI timer IP in the hardware design, the tcl scripts are also added under this directory.
 
 ## Setting up Software development & Synthesis tools

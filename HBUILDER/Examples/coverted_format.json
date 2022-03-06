@@ -15,12 +15,12 @@
       "Cross_Trigger_in": "False",
       "Cross_Trigger_out": "False"
     },
-    "CTEEs": {
-      "CTEE_1": {
+    "Enlaves": {
+      "Enlave_1": {
         "Name": "MicroBlaze_0",
         "Type": "MicroBlaze",
         "Implementation_bits": "32",
-        "CTEE Memory Size": "16KB",
+        "Enlave Memory Size": "16KB",
         "Preset": "None",
         "Local_Memory_ECC": "None",
         "Debug_Module": "Extended",
@@ -38,11 +38,11 @@
           }
         }
       },
-      "CTEE_2": {
+      "Enlave_2": {
         "Name": "MicroBlaze_1",
         "Type": "MicroBlaze",
         "Implementation_bits": "32",
-        "CTEE Memory Size": "16KB",
+        "Enlave Memory Size": "16KB",
         "Preset": "None",
         "Local_Memory_ECC": "None",
         "Debug_Module": "Extended",
@@ -68,7 +68,7 @@
         "Mode": "Slave",
         "Processor access": [
           "REE",
-          "CTEE2"
+          "Enlave2"
         ]
       },
       "UART_Lite": {
@@ -78,7 +78,7 @@
         "Mode": "Slave",
         "Processor access": [
           "REE",
-          "CTEE1"
+          "Enlave1"
         ]
       }
     }
