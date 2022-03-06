@@ -20,20 +20,11 @@ If you want to cite our paper in your work, please use the following BibTeX entr
 * Xilinx FPGA synthesis tool (Vivado 2017.04)
 * A Host computer (The framework was tested on Ubuntu 20.04 and 18.04, but should work for other OS too)
 
-## Notes
-* After setting up the development tools, to build and execute each application, go to the application directories and follow the **getting started** file instructions.
 
+After setting up the development tools, to build and execute each application, go to the application directories and follow the **getting started** file instructions.
 
-## Cloning Repository
-
-
-Clone the BYOTee repository using ssh or https 
-```bash
-git clone git@github.com:CactiLab/code-build-your-own-TEE.git
-``` 
-
-## Project structure
-In our implementation we develop four demo applications. The example code is structured as follows:
+## Project Structure
+We developed four demo applications. The example code is structured as follows:
 * `app1/` - Contains an example of **Computational applications**. In this application the PS side sends a 64 bit data to the CTEE softcore(Microblaze). The CTEE SSC outputs AES encryption/decryption depending on the commands provided by the PS untrusted application.
 In the hardware deisgn of the application CTEE is constructed with a micrbolze processor with its BRAM.
 No peripherals are connected to the microblaze.
