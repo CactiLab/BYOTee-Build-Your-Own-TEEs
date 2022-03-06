@@ -20,7 +20,7 @@ set BYOT_elf "$worksp/BYOT_runtime/Debug/BYOT_runtime.elf"
 set SIG_elf "$worksp/Signature_SSC/Debug/Signature_SSC.elf"
 set output "$device_dir/download.bit"
 
-puts "\nCalling updatemem on Enlave1 as follows:
+puts "\nCalling updatemem on Enclave1 as follows:
 updatemem -force -meminfo \
 $sw_mmi \
 -bit \
@@ -37,7 +37,7 @@ $sw_bit \
 -proc system_i/microblaze_0 -out \
 $output
 
-puts "\nCalling updatemem on Enlave2 as follows:
+puts "\nCalling updatemem on Enclave2 as follows:
 updatemem -force -meminfo \
 $sw_mmi \
 -bit \

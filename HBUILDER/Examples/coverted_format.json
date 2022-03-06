@@ -15,12 +15,12 @@
       "Cross_Trigger_in": "False",
       "Cross_Trigger_out": "False"
     },
-    "Enlaves": {
-      "Enlave_1": {
+    "Enclaves": {
+      "Enclave_1": {
         "Name": "MicroBlaze_0",
         "Type": "MicroBlaze",
         "Implementation_bits": "32",
-        "Enlave Memory Size": "16KB",
+        "Enclave Memory Size": "16KB",
         "Preset": "None",
         "Local_Memory_ECC": "None",
         "Debug_Module": "Extended",
@@ -38,11 +38,11 @@
           }
         }
       },
-      "Enlave_2": {
+      "Enclave_2": {
         "Name": "MicroBlaze_1",
         "Type": "MicroBlaze",
         "Implementation_bits": "32",
-        "Enlave Memory Size": "16KB",
+        "Enclave Memory Size": "16KB",
         "Preset": "None",
         "Local_Memory_ECC": "None",
         "Debug_Module": "Extended",
@@ -68,7 +68,7 @@
         "Mode": "Slave",
         "Processor access": [
           "REE",
-          "Enlave2"
+          "Enclave2"
         ]
       },
       "UART_Lite": {
@@ -78,7 +78,7 @@
         "Mode": "Slave",
         "Processor access": [
           "REE",
-          "Enlave1"
+          "Enclave1"
         ]
       }
     }

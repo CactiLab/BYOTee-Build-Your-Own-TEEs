@@ -497,7 +497,7 @@ int main()
 				mb_printf("Returnred value %d \r\n", return_value);
 			/*timer counter- start*/
 
-			mb_printf("Enlave CPU cycles to complete execution for libedn =  %d\r\n",res );
+			mb_printf("Enclave CPU cycles to complete execution for libedn =  %d\r\n",res );
 			XTmrCtr_Reset(TmrCtrInstancePtr, TIMER_COUNTER_0);
 			/*Finish cycle count*/
 			usleep(1000);

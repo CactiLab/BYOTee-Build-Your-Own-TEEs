@@ -12,7 +12,7 @@ def parse_config_file(file_path):
 
     with open(configFile) as jsonFile:
         data = json.load(jsonFile)
-        temp = data['Enlaves']
+        temp = data['Enclaves']
         board_info = data['Board']
         project_info = data['Project']
 

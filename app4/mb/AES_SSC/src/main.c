@@ -54,14 +54,14 @@ int dummy_aes_ssc()
     microblaze_invalidate_dcache_range();
     //memcmp(str1, str2, 10);
 }
-void Enlave2_intercommunication()
+void Enclave2_intercommunication()
 {
 
 	//uint8_t H_data[64] = {124, 73, 204, 35, 31, 248, 199, 135, 157, 91, 95, 40, 62, 136, 208, 25, 153, 121, 155, 100, 31, 67, 202, 205, 135, 118, 191, 117, 171, 144, 170, 188, 47, 139, 28, 64, 254, 159, 226, 14, 147, 17, 58, 224, 216, 14, 107, 172, 249, 70, 243, 62, 61, 127, 228, 33, 248, 189, 246, 212, 37, 187, 197, 169 };
 	bram_chnl->input_len = sizeof(received_data);
 
 	memcpy((void *)bram_chnl->input_data, received_data,  bram_chnl->input_len);
-	/* Notify Enlave2 to begin execution */
+	/* Notify Enclave2 to begin execution */
 	bram_chnl->input_available = 1;
 
 	//mb_printf("Current value: %d", bram_chnl->input_available);
@@ -73,7 +73,7 @@ void Enlave2_intercommunication()
 	}
 
 	usleep(100000);
-	mb_printf("Enlave2 calculated Hash on AES engine data: \r\n");
+	mb_printf("Enclave2 calculated Hash on AES engine data: \r\n");
 	for (int i = 0; i < HASH_OUTPUT_SIZE; i++)
 	{
 		xil_printf("%x ", bram_chnl->output_data[i]);
@@ -99,7 +99,7 @@ int main()
         xil_printf("SSC> Unrecognized command!!!\r\n");
         break;
     }
-    Enlave2_intercommunication();
+    Enclave2_intercommunication();
     //memset(ptr, 0xff, 80);
     att_md.output_att_size = ENC_DEC_DATA_SIZE;
     memcpy(&att_md.att_output_data, received_data, ENC_DEC_DATA_SIZE);

@@ -14,7 +14,7 @@ volatile cmd_channel *c;
 volatile bmp_mem *bmp;
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
 int secure_drm_load = 0;
-// sends a command to the Enlave using the shared command channel and interrupt
+// sends a command to the Enclave using the shared command channel and interrupt
 void send_command(int cmd)
 {
     memcpy((void *)&c->cmd, &cmd, 1);
@@ -43,9 +43,9 @@ void parse_input(char *input, char **cmd, char **arg1, char **arg2)
 void print_help()
 {
     mp_printf("Untrusted Application options:\r\n");
-    mp_printf("  load <fileName>: load SSC module to be executed in Enlave\r\n");
+    mp_printf("  load <fileName>: load SSC module to be executed in Enclave\r\n");
     mp_printf("  exe: Execute the loaded SSC module\r\n");
-    mp_printf("  exit: Clean the loaded SSC module from Enlave\r\n");
+    mp_printf("  exit: Clean the loaded SSC module from Enclave\r\n");
     mp_printf("  quit: To quit the untrusted application\r\n");
 }
 void secure_drm_print_help()
