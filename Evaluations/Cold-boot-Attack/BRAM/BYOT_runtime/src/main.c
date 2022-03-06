@@ -13,7 +13,7 @@
 #define set_working() change_state(WORKING)
 #define set_playing() change_state(PLAYING)
 #define set_paused() change_state(PAUSED)
-// shared command channel -- read/write for both PS and PL
+// shared command channel -- read/write for both Hardcore System and PL
 volatile cmd_channel *c = (cmd_channel *)SHARED_DDR_BASE;
 volatile bmp_map *bmp = (bmp_map *)0x7530;
 //bmp_map __attribute__((section(".ssc.bmp.buffer"))) bmp;

@@ -1,7 +1,7 @@
 
 # Project Build and File Creation Toolchain
 
-The following set of tools provides an example to build the BYOT hardware design, insecure execution in the PS side, BYOT runtime and security sensitive codes.
+The following set of tools provides an example to build the BYOT hardware design, insecure execution in the Hardcore System side, BYOT runtime and security sensitive codes.
 
 ### buildDevice
 Syntax:

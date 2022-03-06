@@ -7,7 +7,7 @@ will execute `BYOT_runtime` and `BYOT_runtime` will handle the execution of
 developer-defined security-sensitive code. Example security sensitive 
 program such a `LED_SSC` will be compiled and only the user code will be executed 
 by `BYOT_runtime`. Other portions of the `sss` will be stripped off by our provided scripts.
-`Untrusted_app` application here is the program running on the PS side. This folder will be coppied 
+`Untrusted_app` application here is the program running on the Hardcore System side. This folder will be coppied 
 from the parent directory.
 
 See the rules for the specifications on required and optional commands as well

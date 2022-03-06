@@ -25,17 +25,17 @@ After setting up the development tools, to build and execute each application, g
 
 ## Project Structure
 We developed four demo applications. The example code is structured as follows:
-* `app1/` - Contains an example of **Computational applications**. In this application the PS side sends a 64 bit data to the Enclave softcore(Microblaze). The Enclave SSC outputs AES encryption/decryption depending on the commands provided by the PS untrusted application.
+* `app1/` - Contains an example of **Computational applications**. In this application the Hardcore System side sends a 64 bit data to the Enclave softcore(Microblaze). The Enclave SSC outputs AES encryption/decryption depending on the commands provided by the Hardcore System untrusted application.
 In the hardware deisgn of the application Enclave is constructed with a micrbolze processor with its BRAM.
 No peripherals are connected to the microblaze.
-* `app2/` - Contains an example of **Peripheral and PS Interacting Applications**. In this application the PS side just triggers the execution of SSC application without any input or output data. The Enclave SSC continuous toggels the LED color when the button is pressed.
+* `app2/` - Contains an example of **Peripheral and Hardcore System Interacting Applications**. In this application the Hardcore System side just triggers the execution of SSC application without any input or output data. The Enclave SSC continuous toggels the LED color when the button is pressed.
 In the hardware deisgn of the application Enclave is constructed with a micrbolze processor with its BRAM, and two peripherals connected to that.
 The LED peripheral and the button peripheral in this case is included in the hardware TCB for the system.
-* `app3/` - Contains an example of **Peripheral, PS and Enclave Interacting Applications**. In this application the PS side continuously interact with the application in the Enclave. The Enclave SSC application is a digital medial player application.
-The audio files are stored in the SD card. The PS application sends the file from SD card to the Enclave SSC application.
+* `app3/` - Contains an example of **Peripheral, Hardcore System and Enclave Interacting Applications**. In this application the Hardcore System side continuously interact with the application in the Enclave. The Enclave SSC application is a digital medial player application.
+The audio files are stored in the SD card. The Hardcore System application sends the file from SD card to the Enclave SSC application.
 In the hardware deisgn of the application Enclave is constructed with a micrbolze processor with its BRAM, and axi dma, SPI module, peripherals.
 * `app4/` - Contains an example of **Distributed Applications**. In this application the there are two Enclaves implemented in the FPGA side. Both of the Enclaves are configured with its own BRAMs. And for secure communication between the Enclaves one 32KB BRAM is shared.
-The PS application here talks to the Enclave-1 through the SEB. The SSA-4 here is loaded to the Enclave-4 statically with `update-MEM` tool. Although SSAs on the Enclave-1 are loaded dynamically.
+The Hardcore System application here talks to the Enclave-1 through the SEB. The SSA-4 here is loaded to the Enclave-4 statically with `update-MEM` tool. Although SSAs on the Enclave-1 are loaded dynamically.
 * `Enclave-HS-generation/` - Contains a tool to generate the Enclave hardware configurations. The input file is in json format and it output tcl files to build the Enclave hardware design.
 * `Evaluations/` - Contains the evaluation source code of the BYOT. It incldues implementated applications performance evaluation source code, embench-iot benchmark application source code, cold-boot-attack on DRAM and BRAM source code. Note to evaluate on the MicroBlaze processor we also added a AXI timer IP in the hardware design, the tcl scripts are also added under this directory.
 
