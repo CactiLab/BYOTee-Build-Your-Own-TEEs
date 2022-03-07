@@ -5,7 +5,7 @@ To build the reference design for the first time, follow these steps:
 2. Run `mkdir SSC` to make a directory called`SSC`. Dumped security sensitive code using the tool chain should be stored here to be copied to SD card.
 3.  Run the device by running `./buildDevice -p ../ -n test -bf all -store_dir device1/` (note that this takes a long time to run the first time you run it! Please be patient.) This will create a Vivado project called `test` and use the `device1` store directory.
 4. Run `./packageDevice ../boot-image/template.bif device1/miPod.bin device1/download.bit` to create a `miPod.BIN` file with your bitstream.
-5. Run `./createDumpedFiles ../mb/LED_SSC/Debug/LED_SSC.elf` to create dumped file in `SSC` folder
+5. Run `./createDumpedFiles ../mb/AES_SSC/Debug/AES_SSC.elf` to create dumped file in `SSC` folder
  
 6. Insert the SD card into the SD card reader, and insert that into your laptop.
     Ensure that this is passed through to the VM through the VirtualBox USB options
@@ -24,6 +24,9 @@ Once you reset the board, you should see output on the screen indicating that th
 13. `cd` to the `music` folder.
 14. Run the `./Untrusted_app` application, and run `help` to see a list of all possible commands.
 
+## SSA Available Commands
+1. ``encrypt`` This command is trigger encryption method inside the Enclaves.
+2. ``decrypt`` This command is trigger decryption method inside the Enclaves.
 
 ## Working With the Xilinx Tools
 You can launch `vivado` to modify the reference implementation programmable logic (PL).
