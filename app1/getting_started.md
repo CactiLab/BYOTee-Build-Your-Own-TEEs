@@ -25,8 +25,8 @@ Once you reset the board, you should see output on the screen indicating that th
 14. Run the `./Untrusted_app` application, and run `help` to see a list of all possible commands.
 
 ## Available SSA Commands
-1. ``encrypt`` This command is trigger encryption method inside the Enclaves.
-2. ``decrypt`` This command is trigger decryption method inside the Enclaves.
+1. ``encrypt`` This command is trigger encryption method inside the Enclave.
+2. ``decrypt`` This command is trigger decryption method inside the Enclave.
 
 ## Working With the Xilinx Tools
 You can launch `vivado` to modify the reference implementation programmable logic (PL).

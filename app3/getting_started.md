@@ -24,6 +24,27 @@ Once you reset the board, you should see output on the screen indicating that th
 13. `cd` to the `music` folder.
 14. Run the `./Untrusted_app` application, and run `help` to see a list of all possible commands.
 
+## Available SSA Commands
+1. login <userName> <pin>: Secure_DRM-> Loging with <userName> and <pin>
+2. logout: Secure_DRM-> Logout current logged in user.
+3. Query <fileName>: Secure_DRM-> Query Song information.
+3. Share <fileName> <userName>: Secure_DRM-> Share <fileName> with <userName>
+4. Play <fileName>: Secure_DRM-> Play the <fileName> media file.
+5. digital_out <song.drm>: play the song to digital out.
+
+## Availbale users and their passwords in the currect implementation
+In the giver implementation the users and their passwords:
+1. drew: 123 (id:0)
+2. ben: abc (id:1)
+3. misha: xyz (id:2)
+
+Regions in the current implementation:
+1. United States (id:0)
+2. Japan (id:1) 
+3. Australia (id:2)
+
+## Generate User secrets & protected Audio files
+Note that in the given implementation there are already users provisioned with secrets. If you wish to create your own user secrects and audio files please follow the instructions in [Drm audio tools folder.](tools/drm_audio_tools/)
 
 ## Working With the Xilinx Tools
 You can launch `vivado` to modify the reference implementation programmable logic (PL).

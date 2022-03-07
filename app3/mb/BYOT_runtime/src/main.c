@@ -41,6 +41,10 @@ ro_data_content __attribute__((section(".ssc.ro.data.buffer"))) ssc_ro_data;
 attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
 ssc_meta_data received_metadata;
 
+#ifdef KEEP_STATE
+unsigned int register_values[TOTAL_REGISTERS];
+#endif
+
 char ssc_module_loaded = 0;
 uint8_t preExeResult[MEASUREMENT_SIZE];
 //////////////////////// INTERRUPT HANDLING ////////////////////////
