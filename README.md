@@ -57,6 +57,10 @@ echo "source /opt/Xilinx/Vivado/2017.4/settings64.sh" >> /home/user_name/.bashrc
 echo "source /opt/Xilinx/SDK/2017.4/settings64.sh" >> /home/user_name/.bashrc
 source /home/user_name/.bashrc
 ```
+
+## Loading SSA into Enclaves
+  When the PS side boot, we will get a petalinux treminal running on the PS side. ``cd`` into the ``music`` folder and run the Untrusted_app [``./Untrusted_app``]. After that to execute a SSA, we need to load SSA on to the enclave. The command for loading: 
+    **load <SSA_name>**.  Replace SSA_name with your desired SSA that we want to load.
 ## Tips
 * While compiling the software projects if errors occur such as missing peripheral driver functions, follow the below steps:
 1. Open Vivado hardware project.
