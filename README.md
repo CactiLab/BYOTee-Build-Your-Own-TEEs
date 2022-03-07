@@ -36,7 +36,7 @@ The audio files are stored in the SD card. The Hardcore System application sends
 In the hardware deisgn of the application Enclave is constructed with a micrbolze processor with its BRAM, and axi dma, SPI module, peripherals.
 * `app4/` - Contains an example of **Distributed Applications**. In this application the there are two Enclaves implemented in the FPGA side. Both of the Enclaves are configured with its own BRAMs. And for secure communication between the Enclaves one 32KB BRAM is shared.
 The Hardcore System application here talks to the Enclave-1 through the SEB. The SSA-4 here is loaded to the Enclave-4 statically with `update-MEM` tool. Although SSAs on the Enclave-1 are loaded dynamically.
-* `Enclave-HS-generation/` - Contains a tool to generate the Enclave hardware configurations. The input file is in json format and it output tcl files to build the Enclave hardware design.
+* `HBUILDER/` - Contains a tool to generate the Enclave hardware configurations. The input file is in json format and it output tcl files to build the Enclave hardware design.
 * `Evaluations/` - Contains the evaluation source code of the BYOT. It incldues implementated applications performance evaluation source code, embench-iot benchmark application source code, cold-boot-attack on DRAM and BRAM source code. Note to evaluate on the MicroBlaze processor we also added a AXI timer IP in the hardware design, the tcl scripts are also added under this directory.
 
 ## Setting up Software development & Synthesis tools
