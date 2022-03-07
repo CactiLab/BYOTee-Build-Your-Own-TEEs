@@ -17,6 +17,7 @@
 #define USERNAME_SZ 64
 #define MAX_PIN_SZ 64
 #define PADING_SZ 2
+//#define KEEP_STATE
 //AES SSC CONSTANTS
 #define ENC_DEC_DATA_SIZE 64
 // LED colors and controller
@@ -27,6 +28,22 @@ struct color
     u32 b;
 };
 
+
+#ifdef KEEP_STATE
+
+enum commands
+{
+	LOAD_CODE,
+	QUERY_DRM,
+	SSC_COMMAND,
+	EXIT,
+	EXECUTE,
+	SAVE,
+	RELOAD
+};
+#endif
+
+#ifndef KEEP_STATE
 enum commands
 {
     LOAD_CODE,
@@ -35,6 +52,7 @@ enum commands
     EXIT,
     EXECUTE
 };
+#endif
 
 enum states
 {
