@@ -5,7 +5,7 @@ To build the reference design for the first time, follow these steps:
 2. Run `mkdir SSC` to make a directory called`SSC`. Dumped security sensitive code using the tool chain should be stored here to be copied to SD card.
 3.  Run the device by running `./buildDevice -p ../ -n test -bf all -store_dir device1/` (note that this takes a long time to run the first time you run it! Please be patient.) This will create a Vivado project called `test` and use the `device1` store directory.
 4. Run `./packageDevice ../boot-image/template.bif device1/miPod.bin device1/download.bit` to create a `miPod.BIN` file with your bitstream.
-5. Run `./createDumpedFiles ../mb/LED_SSC/Debug/LED_SSC.elf` to create dumped file in `SSC` folder
+5. Run `./createDumpedFiles ../mb/Secure_DRM/Debug/Secure_DRM.elf` to create dumped file in `SSC` folder
  
 6. Insert the SD card into the SD card reader, and insert that into your laptop.
     Ensure that this is passed through to the VM through the VirtualBox USB options
