@@ -12,7 +12,7 @@
 
 volatile cmd_channel *c;
 //////////////////////// UTILITY FUNCTIONS ////////////////////////
-int secure_drm_load = 0;
+int ases_ssa_load = 0;
 // sends a command to the Enclave using the shared command channel and interrupt
 void send_command(int cmd)
 {
@@ -50,15 +50,11 @@ void print_help()
     mp_printf("  quit: To quit the untrusted application\r\n");
 }
 
-void secure_drm_print_help()
+void aes_ssa_help()
 {
-    mp_printf("Secure_DRM SSC options:\r\n");
-    mp_printf("  login <userName> <pin>: Secure_DRM-> Loging with <userName> and <pin>\r\n");
-    mp_printf("  logout: Secure_DRM-> Logout current logged in user\r\n");
-    mp_printf("  Query <fileName>: Secure_DRM-> Query Song information\r\n");
-    mp_printf("  Share <fileName> <userName>: Secure_DRM-> Share <fileName> with <userName>\r\n");
-    mp_printf("  Play <fileName>: Secure_DRM-> Play the <fileName> media file\r\n");
-    mp_printf("  digital_out <song.drm>: play the song to digital out\r\n");
+    mp_printf("AES SSA options:\r\n");
+    mp_printf("  encrypt: Encrypt the data specified in the application, Key is embedded\r\n");
+    mp_printf("  decrypt: Decrypt the data specified in the application, Key is embedded\r\n");
 }
 
 void print_playback_help()
@@ -160,10 +156,10 @@ void load_code(char *fileName)
 
     mp_printf("Finished loading file\r\n");
 
-    if (!strncmp(fileName, "Secure_DRM", sizeof("Secure_DRM")))
+    if (!strncmp(fileName, "AES_SSC", sizeof("AES_SSC")))
     {
-        secure_drm_load = 1;
-        secure_drm_print_help();
+        ases_ssa_load = 1;
+        aes_ssa_help();
     }
 }
 
@@ -268,7 +264,7 @@ void exit_SSC()
     while (c->drm_state == WORKING)
         continue; // wait for DRM to dump file
 
-    secure_drm_load = 0;
+    ases_ssa_load = 0;
     mp_printf("Cleaned UP SSC\r\n");
 }
 // attempts to share a song with a user
@@ -586,8 +582,8 @@ int main(int argc, char **argv)
         {
             print_help();
 
-            if (secure_drm_load)
-                secure_drm_print_help();
+            if (ases_ssa_load)
+                aes_ssa_help();
         }
         else if (!strncmp(cmd, "load", sizeof("load")))
         {
@@ -651,8 +647,8 @@ int main(int argc, char **argv)
             mp_printf("Unrecognized command.\r\n\r\n");
             print_help();
 
-            if (secure_drm_load)
-                secure_drm_print_help();
+            if (ases_ssa_load)
+                aes_ssa_help();
         }
     }
 

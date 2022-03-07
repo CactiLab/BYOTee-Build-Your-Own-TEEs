@@ -24,7 +24,7 @@ Once you reset the board, you should see output on the screen indicating that th
 13. `cd` to the `music` folder.
 14. Run the `./Untrusted_app` application, and run `help` to see a list of all possible commands.
 
-## SSA Available Commands
+## Available SSA Commands
 1. ``encrypt`` This command is trigger encryption method inside the Enclaves.
 2. ``decrypt`` This command is trigger decryption method inside the Enclaves.
 
