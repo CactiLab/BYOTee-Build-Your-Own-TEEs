@@ -8,7 +8,7 @@ If you want to cite our paper in your work, please use the following BibTeX entr
 @article{BYOTee2022,
   title={BYOTee: Towards Building Your Own Trusted Execution Environments Using FPGA},
   author={Armanuzzaman, Md. and Zhao, Ziming},
-  journal={arXiv preprint arXiv:2202.10673},
+  journal={arXiv preprint arXiv:????},
   year={2022}
 }
 ```
