@@ -3,16 +3,7 @@ This repository contains an implementation of the BYOTee system, which is a fram
 This page include the steps to clone the repository, a short description of repository structure, and lastly, instructions to set up development tools.
 The idea of BYOTee is inspired by our MITRE eCTF 2020 experience, which we open source the design and implementation at [here](https://github.com/CactiLab/2020-ectf-rit-system).
 
-If you want to cite our paper in your work, please use the following BibTeX entry.
 
-```
-@article{BYOTee2022,
-  title={BYOTee: Towards Building Your Own Trusted Execution Environments Using FPGA},
-  author={Armanuzzaman, Md and Zhao, Ziming},
-  journal={arXiv preprint arXiv:2203.04214},
-  year={2022}
-}
-```
 
 ## Hardware and Software Requirements
 
