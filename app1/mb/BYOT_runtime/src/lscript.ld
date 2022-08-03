@@ -17,9 +17,7 @@ _HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x800;
 
 MEMORY
 {
-   ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem : ORIGIN = 0x50, LENGTH = 0x1FFB0
-   share_axi_bram_ctrl_0_Mem0 : ORIGIN = 0x4B00000, LENGTH = 0x2000
-   mb_dma_axi_bram_ctrl_0_Mem0 : ORIGIN = 0xC0000000, LENGTH = 0x8000
+   enclave_bram : ORIGIN = 0xC0000050, LENGTH = 0x1ffff
 }
 
 /* Specify the default entry point to the program */
@@ -30,63 +28,34 @@ ENTRY(_start)
 
 SECTIONS
 {
-.vectors.reset 0x0 : {
+.vectors.reset 0xC0000000 : {
    KEEP (*(.vectors.reset))
 } 
 
-.vectors.sw_exception 0x8 : {
+.vectors.sw_exception 0xC0000008 : {
    KEEP (*(.vectors.sw_exception))
 } 
 
-.vectors.interrupt 0x10 : {
+.vectors.interrupt 0xC0000010 : {
    KEEP (*(.vectors.interrupt))
 } 
 
-.vectors.hw_exception 0x20 : {
+.vectors.hw_exception 0xC0000020 : {
    KEEP (*(.vectors.hw_exception))
 } 
 
-.ssc.buffer 0x50:
-{
-	KEEP(*(.ssc.code.buffer))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
-.ssc.attestation.md :
-{
-	KEEP(*(.ssc.attestation.md))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-
-.test : {
-   *main.o(.text)
-	*main.o(.text.*)
-	*blake2s.o(.text)
-	*blake2s.o(.text.*)
-	*aes.o(.text)
-	*aes.o(.text.*)
-	*platform.o(.text)
-	*platform.o(.text.*)
-	*hmac.o(.text)
-	*hmac.o(.text.*)
-	*sha1.o(.text)
-	*sha1.o(.text.*)
-	*sha512.o(.text)
-	*sha512.o(.text.*)
-	*util.o(.text)
-	*util.o(.text.*)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
-/*.text : { */
 .text : {
 
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 
 .ssc.data.buffer :
 {
 	KEEP(*(.ssc.data.buffer))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 
 .data : {
@@ -96,15 +65,15 @@ SECTIONS
    *(.data.*)
    *(.gnu.linkonce.d.*)
    __data_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .init : {
    KEEP (*(.init))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .fini : {
    KEEP (*(.fini))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .ctors : {
    __CTOR_LIST__ = .;
@@ -115,7 +84,7 @@ SECTIONS
    KEEP (*(.ctors))
    __CTOR_END__ = .;
    ___CTORS_END___ = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .dtors : {
    __DTOR_LIST__ = .;
@@ -126,12 +95,12 @@ SECTIONS
    KEEP (*(.dtors))
    PROVIDE(__DTOR_END__ = .);
    PROVIDE(___DTORS_END___ = .);
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .ssc.ro.data.buffer :
 {
 	KEEP(*(.ssc.ro.data.buffer))
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .rodata : {
    __rodata_start = .;
@@ -139,7 +108,7 @@ SECTIONS
    *(.rodata.*)
    *(.gnu.linkonce.r.*)
    __rodata_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .sdata2 : {
    . = ALIGN(8);
@@ -149,7 +118,7 @@ SECTIONS
    *(.gnu.linkonce.s2.*)
    . = ALIGN(8);
    __sdata2_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .sbss2 : {
    __sbss2_start = .;
@@ -157,32 +126,32 @@ SECTIONS
    *(.sbss2.*)
    *(.gnu.linkonce.sb2.*)
    __sbss2_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 
 .got : {
    *(.got)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .got1 : {
    *(.got1)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .got2 : {
    *(.got2)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .eh_frame : {
    *(.eh_frame)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .jcr : {
    *(.jcr)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .gcc_except_table : {
    *(.gcc_except_table)
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 
 .sdata : {
@@ -192,7 +161,7 @@ SECTIONS
    *(.sdata.*)
    *(.gnu.linkonce.s.*)
    __sdata_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .sbss (NOLOAD) : {
    . = ALIGN(4);
@@ -202,7 +171,7 @@ SECTIONS
    *(.gnu.linkonce.sb.*)
    . = ALIGN(8);
    __sbss_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 
 .tdata : {
@@ -211,7 +180,7 @@ SECTIONS
    *(.tdata.*)
    *(.gnu.linkonce.td.*)
    __tdata_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .tbss : {
    __tbss_start = .;
@@ -219,7 +188,7 @@ SECTIONS
    *(.tbss.*)
    *(.gnu.linkonce.tb.*)
    __tbss_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 
 .bss (NOLOAD) : {
@@ -231,7 +200,7 @@ SECTIONS
    *(COMMON)
    . = ALIGN(4);
    __bss_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 _SDA_BASE_ = __sdata_start + ((__sbss_end - __sdata_start) / 2 );
 
@@ -245,7 +214,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    _heap_start = .;
    . += _HEAP_SIZE;
    _heap_end = .;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 .stack (NOLOAD) : {
    _stack_end = .;
@@ -253,7 +222,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    . = ALIGN(8);
    _stack = .;
    __stack = _stack;
-} > ins_lmb_bram_if_cntlr_0_Mem_data_lmb_bram_if_cntlr_1_Mem
+} > enclave_bram
 
 
 _end = .;

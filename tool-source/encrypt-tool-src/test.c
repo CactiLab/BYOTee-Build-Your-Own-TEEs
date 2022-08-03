@@ -83,7 +83,7 @@ static int encrypt_cbc(char *fnmae)
     close(fd);
     printf("----------------CBC encrypting DONE-----------------\n");
     /*for TESTING PURPOSE*/
-   /*read(fd, encrypted_SSA,  sb.st_size);
+    read(fd, encrypted_SSA,  sb.st_size);
     close(fd);
        for (int i = 0; i < 4; ++i)
     {
@@ -92,15 +92,31 @@ static int encrypt_cbc(char *fnmae)
     }
     printf("\n");
     AES_init_ctx_iv(&ctx, key, iv);
-    AES_CBC_decrypt_buffer(&ctx, encrypted_SSA, 32);
-    if (0 == memcmp((char*) encrypted_SSA, (char*) SSA, 32)) {
+    AES_CBC_decrypt_buffer(&ctx, encrypted_SSA, 128);
+    if (0 == memcmp((char*) encrypted_SSA, (char*) SSA, 128)) {
         printf("SUCCESS!\n");
 	//return(0);
     } else {
         printf("FAILURE!\n");
 	return(1);
     }
-    uint8_t tt [32];
+    AES_CBC_decrypt_buffer(&ctx, &encrypted_SSA[128], 128);
+    if (0 == memcmp((char*) &encrypted_SSA[128], (char*) &SSA[128], 128)) {
+        printf("SUCCESS!\n");
+	//return(0);
+    } else {
+        printf("FAILURE!\n");
+	return(1);
+    }
+    AES_CBC_decrypt_buffer(&ctx, &encrypted_SSA[256], 128);
+    if (0 == memcmp((char*) &encrypted_SSA[256], (char*) &SSA[256], 128)) {
+        printf("SUCCESS!\n");
+	//return(0);
+    } else {
+        printf("FAILURE!\n");
+	return(1);
+    }
+    /*uint8_t tt [32];
     memset(tt, 0, 32);
     memcpy(tt, encrypted_SSA + 32, 31);
     //AES_init_ctx_iv(&ctx, key, iv);
