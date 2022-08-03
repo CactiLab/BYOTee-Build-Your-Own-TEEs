@@ -1,8 +1,8 @@
 --Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2017.4 (lin64) Build 2086221 Fri Dec 15 20:54:30 MST 2017
---Date        : Sun Jan 19 17:06:31 2020
---Host        : vagrant-eCTF running 64-bit Ubuntu 18.10
+--Date        : Mon Aug  1 18:06:41 2022
+--Host        : tomal running 64-bit Ubuntu 20.04.3 LTS
 --Command     : generate_target system_wrapper.bd
 --Design      : system_wrapper
 --Purpose     : IP block netlist
@@ -86,8 +86,6 @@ architecture STRUCTURE of system_wrapper is
     FIXED_IO_ps_srstb : inout STD_LOGIC;
     FIXED_IO_ps_clk : inout STD_LOGIC;
     FIXED_IO_ps_porb : inout STD_LOGIC;
-    vp_vn_v_n : in STD_LOGIC;
-    vp_vn_v_p : in STD_LOGIC;
     vaux0_v_n : in STD_LOGIC;
     vaux0_v_p : in STD_LOGIC;
     vaux1_v_n : in STD_LOGIC;
@@ -106,11 +104,13 @@ architecture STRUCTURE of system_wrapper is
     vaux13_v_p : in STD_LOGIC;
     vaux15_v_n : in STD_LOGIC;
     vaux15_v_p : in STD_LOGIC;
-    rgb_led : out STD_LOGIC_VECTOR ( 5 downto 0 );
-    ja3 : out STD_LOGIC;
+    vp_vn_v_n : in STD_LOGIC;
+    vp_vn_v_p : in STD_LOGIC;
     ja1 : out STD_LOGIC;
     ja0 : out STD_LOGIC;
-    ja2 : out STD_LOGIC
+    ja2 : out STD_LOGIC;
+    ja3 : out STD_LOGIC;
+    rgb_led : out STD_LOGIC_VECTOR ( 5 downto 0 )
   );
   end component system;
 begin

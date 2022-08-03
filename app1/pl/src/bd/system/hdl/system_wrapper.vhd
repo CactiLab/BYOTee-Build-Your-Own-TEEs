@@ -1,8 +1,8 @@
 --Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2017.4 (lin64) Build 2086221 Fri Dec 15 20:54:30 MST 2017
---Date        : Fri Jul 23 14:59:29 2021
---Host        : tomal running 64-bit Ubuntu 20.04.2 LTS
+--Date        : Wed Aug  3 13:27:33 2022
+--Host        : tomal running 64-bit Ubuntu 20.04.3 LTS
 --Command     : generate_target system_wrapper.bd
 --Design      : system_wrapper
 --Purpose     : IP block netlist
@@ -33,7 +33,27 @@ entity system_wrapper is
     FIXED_IO_mio : inout STD_LOGIC_VECTOR ( 53 downto 0 );
     FIXED_IO_ps_clk : inout STD_LOGIC;
     FIXED_IO_ps_porb : inout STD_LOGIC;
-    FIXED_IO_ps_srstb : inout STD_LOGIC
+    FIXED_IO_ps_srstb : inout STD_LOGIC;
+    vaux0_v_n : in STD_LOGIC;
+    vaux0_v_p : in STD_LOGIC;
+    vaux12_v_n : in STD_LOGIC;
+    vaux12_v_p : in STD_LOGIC;
+    vaux13_v_n : in STD_LOGIC;
+    vaux13_v_p : in STD_LOGIC;
+    vaux15_v_n : in STD_LOGIC;
+    vaux15_v_p : in STD_LOGIC;
+    vaux1_v_n : in STD_LOGIC;
+    vaux1_v_p : in STD_LOGIC;
+    vaux5_v_n : in STD_LOGIC;
+    vaux5_v_p : in STD_LOGIC;
+    vaux6_v_n : in STD_LOGIC;
+    vaux6_v_p : in STD_LOGIC;
+    vaux8_v_n : in STD_LOGIC;
+    vaux8_v_p : in STD_LOGIC;
+    vaux9_v_n : in STD_LOGIC;
+    vaux9_v_p : in STD_LOGIC;
+    vp_vn_v_n : in STD_LOGIC;
+    vp_vn_v_p : in STD_LOGIC
   );
 end system_wrapper;
 
@@ -60,7 +80,27 @@ architecture STRUCTURE of system_wrapper is
     FIXED_IO_ddr_vrp : inout STD_LOGIC;
     FIXED_IO_ps_srstb : inout STD_LOGIC;
     FIXED_IO_ps_clk : inout STD_LOGIC;
-    FIXED_IO_ps_porb : inout STD_LOGIC
+    FIXED_IO_ps_porb : inout STD_LOGIC;
+    vaux0_v_n : in STD_LOGIC;
+    vaux0_v_p : in STD_LOGIC;
+    vaux1_v_n : in STD_LOGIC;
+    vaux1_v_p : in STD_LOGIC;
+    vaux5_v_n : in STD_LOGIC;
+    vaux5_v_p : in STD_LOGIC;
+    vaux6_v_n : in STD_LOGIC;
+    vaux6_v_p : in STD_LOGIC;
+    vaux8_v_n : in STD_LOGIC;
+    vaux8_v_p : in STD_LOGIC;
+    vaux9_v_n : in STD_LOGIC;
+    vaux9_v_p : in STD_LOGIC;
+    vaux12_v_n : in STD_LOGIC;
+    vaux12_v_p : in STD_LOGIC;
+    vaux13_v_n : in STD_LOGIC;
+    vaux13_v_p : in STD_LOGIC;
+    vaux15_v_n : in STD_LOGIC;
+    vaux15_v_p : in STD_LOGIC;
+    vp_vn_v_n : in STD_LOGIC;
+    vp_vn_v_p : in STD_LOGIC
   );
   end component system;
 begin
@@ -86,6 +126,26 @@ system_i: component system
       FIXED_IO_mio(53 downto 0) => FIXED_IO_mio(53 downto 0),
       FIXED_IO_ps_clk => FIXED_IO_ps_clk,
       FIXED_IO_ps_porb => FIXED_IO_ps_porb,
-      FIXED_IO_ps_srstb => FIXED_IO_ps_srstb
+      FIXED_IO_ps_srstb => FIXED_IO_ps_srstb,
+      vaux0_v_n => vaux0_v_n,
+      vaux0_v_p => vaux0_v_p,
+      vaux12_v_n => vaux12_v_n,
+      vaux12_v_p => vaux12_v_p,
+      vaux13_v_n => vaux13_v_n,
+      vaux13_v_p => vaux13_v_p,
+      vaux15_v_n => vaux15_v_n,
+      vaux15_v_p => vaux15_v_p,
+      vaux1_v_n => vaux1_v_n,
+      vaux1_v_p => vaux1_v_p,
+      vaux5_v_n => vaux5_v_n,
+      vaux5_v_p => vaux5_v_p,
+      vaux6_v_n => vaux6_v_n,
+      vaux6_v_p => vaux6_v_p,
+      vaux8_v_n => vaux8_v_n,
+      vaux8_v_p => vaux8_v_p,
+      vaux9_v_n => vaux9_v_n,
+      vaux9_v_p => vaux9_v_p,
+      vp_vn_v_n => vp_vn_v_n,
+      vp_vn_v_p => vp_vn_v_p
     );
 end STRUCTURE;
