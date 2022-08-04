@@ -1,0 +1,4 @@
+THIRPARTY=false
+HW_PROJECT_REFERENCE=test
+PROCESSOR=attestation_module_soft_core
+MSS_FILE=system.mss
