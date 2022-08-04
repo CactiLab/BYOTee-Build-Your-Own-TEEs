@@ -234,9 +234,12 @@ void format_SSC_code()
 		return;
 	}*/
 	int length = c->file_size/AES_BLOCK_SIZE + 1;
+	int rem = c->file_size;
+
 	for (int i = 0; i < length; i++)
 	{
-		memcpy(loader->SSA_data[i * AES_BLOCK_SIZE], (void *)c->code, c->file_size);
+		memcpy(loader->SSA_data[i * AES_BLOCK_SIZE], (void *)c->code,  (rem > AES_BLOCK_SIZE) ? AES_BLOCK_SIZE : rem);
+		rem = rem - AES_BLOCK_SIZE;
 	}
 	// Invoke the attestation module
 
