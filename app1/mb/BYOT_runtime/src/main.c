@@ -8,6 +8,7 @@
 #include "xintc.h"
 #include "constants.h"
 #include "sleep.h"
+
 //#include "blake2s.h"
 //#include "aes.h"
 //#include "hmac.h"
@@ -23,9 +24,9 @@ volatile cmd_channel *c = (cmd_channel *)SHARED_DDR_BASE;
 
 volatile SSA_loader *loader = (SSA_loader *)SSA_BASE;
 // internal state store
-//internal_state __attribute__((section(".ssc.code.buffer"))) local_state;
-//data_content __attribute__((section(".ssc.data.buffer"))) ssc_data;
-//ro_data_content __attribute__((section(".ssc.ro.data.buffer"))) ssc_ro_data;
+internal_state __attribute__((section(".ssc.code.buffer"))) local_state;
+data_content __attribute__((section(".ssc.data.buffer"))) ssc_data;
+ro_data_content __attribute__((section(".ssc.ro.data.buffer"))) ssc_ro_data;
 ////attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
 ssc_meta_data received_metadata;
 
@@ -213,6 +214,7 @@ void dummy()
 		format_SSC_code();
 	}
 	Xil_MemCpy(str1, str2, 10);
+
 }
 
 void format_SSC_code()

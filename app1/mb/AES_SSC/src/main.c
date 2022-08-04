@@ -20,7 +20,7 @@ static void test_encrypt_ecb_verbose(void);
 
 volatile cmd_channel *cmd_chnl = (cmd_channel *)SHARED_DDR_BASE;
 
-attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
+//attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
 
 int dummy_aes_ssc()
 {
@@ -54,8 +54,8 @@ int dummy_aes_ssc()
 int main()
 {
     memcpy(received_data, (void *)cmd_chnl->enc_dec_data, ENC_DEC_DATA_SIZE);
-    att_md.input_att_size = ENC_DEC_DATA_SIZE;
-    memcpy(att_md.att_input_data, received_data, ENC_DEC_DATA_SIZE);
+   // att_md.input_att_size = ENC_DEC_DATA_SIZE;
+ //   memcpy(att_md.att_input_data, received_data, ENC_DEC_DATA_SIZE);
 
     switch (cmd_chnl->aes_cmd)
     {
@@ -72,8 +72,8 @@ int main()
         break;
     }
     //memset(ptr, 0xff, 80);
-    att_md.output_att_size = ENC_DEC_DATA_SIZE;
-    memcpy(&att_md.att_output_data, received_data, ENC_DEC_DATA_SIZE);
+    //att_md.output_att_size = ENC_DEC_DATA_SIZE;
+  //  memcpy(&att_md.att_output_data, received_data, ENC_DEC_DATA_SIZE);
 }
 
 void aes_dec_test()

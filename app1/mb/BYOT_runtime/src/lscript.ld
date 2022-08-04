@@ -43,6 +43,19 @@ SECTIONS
 .vectors.hw_exception 0xC0000020 : {
    KEEP (*(.vectors.hw_exception))
 } 
+.ssc.code.buffer 0xC0000050 :
+{
+	KEEP(*(.ssc.code.buffer))
+} > enclave_bram
+
+.fw : {
+ 	*main.o(.text)
+	*main.o(.text.*)
+	*platform.o(.text)
+	*platform.o(.text.*)
+	*util.o(.text)
+	*util.o(.text.*)
+} >enclave_bram
 
 .text : {
 
@@ -52,11 +65,11 @@ SECTIONS
 } > enclave_bram
 
 
-.ssc.data.buffer :
+
+.ssc.data.buffer 0xc00076c4:
 {
 	KEEP(*(.ssc.data.buffer))
 } > enclave_bram
-
 
 .data : {
    . = ALIGN(4);
@@ -67,6 +80,10 @@ SECTIONS
    __data_end = .;
 } > enclave_bram
 
+.ssc.ro.data.buffer :
+{
+	KEEP(*(.ssc.ro.data.buffer))
+} > enclave_bram
 .init : {
    KEEP (*(.init))
 } > enclave_bram
@@ -97,10 +114,6 @@ SECTIONS
    PROVIDE(___DTORS_END___ = .);
 } > enclave_bram
 
-.ssc.ro.data.buffer :
-{
-	KEEP(*(.ssc.ro.data.buffer))
-} > enclave_bram
 
 .rodata : {
    __rodata_start = .;

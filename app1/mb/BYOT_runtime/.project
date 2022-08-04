@@ -3,7 +3,7 @@
 	<name>BYOT_runtime</name>
 	<comment>Created by SDK v2017.4. sanity_check_bsp - microblaze_0</comment>
 	<projects>
-		<project>drm_audio_fw_bsp</project>
+		<project>BYOT_bsp</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
