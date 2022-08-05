@@ -30,6 +30,8 @@ ro_data_content __attribute__((section(".ssc.ro.data.buffer"))) ssc_ro_data;
 ////attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
 ssc_meta_data received_metadata;
 
+volatile hw_att_md *current_att_md = (hw_att_md *)ATT_BASE;
+
 char ssc_module_loaded = 0;
 uint8_t preExeResult[MEASUREMENT_SIZE];
 #ifdef KEEP_STATE

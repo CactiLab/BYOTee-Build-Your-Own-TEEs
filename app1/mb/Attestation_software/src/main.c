@@ -18,7 +18,7 @@ int main()
 
 			for (int i = 0; i < length; i++)
 			{
-				AES_CBC_decrypt_buffer(&ctx, loader->SSA_data[i * AES_BLOCK_SIZE], (rem > AES_BLOCK_SIZE) ? AES_BLOCK_SIZE : rem);
+				AES_CBC_decrypt_buffer(&ctx, (char *)loader->SSA_data[i * AES_BLOCK_SIZE], (rem > AES_BLOCK_SIZE) ? AES_BLOCK_SIZE : rem);
 				rem = rem - AES_BLOCK_SIZE;
 			}
 		}
