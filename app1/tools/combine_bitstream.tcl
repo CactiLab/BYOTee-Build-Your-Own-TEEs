@@ -38,21 +38,5 @@ $sw_bit \
 $output
 
 
-puts "\nCalling updatemem on attestation_module module as follows:
-updatemem -force -meminfo \
-$sw_mmi \
--bit \
-$output \
--data $ATT_elf \
--proc system_i/attestation_module/soft_core -out \
-$output\n"
-
-exec updatemem -force -meminfo \
-$sw_mmi \
--bit \
-$output \
--data $ATT_elf \
--proc system_i/attestation_module/soft_core -out \
-$output
 
 puts "Created download.bit at: $output"
