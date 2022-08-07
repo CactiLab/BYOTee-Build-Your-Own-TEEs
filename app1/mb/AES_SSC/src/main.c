@@ -62,7 +62,7 @@ int dummy_aes_SSA()
 	memset(str1, str2, 10);
 	usleep(500);
 	microblaze_register_handler((XInterruptHandler)dummy_aes_SSA, (void *)0);
-	Xil_Assert(str1, 32);
+	//Xil_Assert(str1, 32);
 	XIntc_Initialize(&InterruptController, XPAR_INTC_0_DEVICE_ID);
 	SetUpInterruptSystem(&InterruptController, (XInterruptHandler)dummy_aes_SSA);
 }

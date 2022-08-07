@@ -67,7 +67,7 @@ SECTIONS
 
 
 
-.ssc.data.buffer :
+.ssc.data.buffer 0xc00073b4:
 {
 	KEEP(*(.ssc.data.buffer))
 } > enclave_bram
