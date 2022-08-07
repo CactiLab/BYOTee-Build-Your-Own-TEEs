@@ -17,7 +17,8 @@ _HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x800;
 
 MEMORY
 {
-   enclave_bram : ORIGIN = 0xC0000050, LENGTH = 0x1ffff
+   	enclave_bram : ORIGIN = 0xC0000050, LENGTH = 0x20000
+	Enclave_1_local_memory_ilmb_bram_if_cntlr_Mem_Enclave_1_local_memory_dlmb_bram_if_cntlr_Mem : ORIGIN = 0x50, LENGTH = 0xFB0
 }
 
 /* Specify the default entry point to the program */
@@ -28,19 +29,19 @@ ENTRY(_start)
 
 SECTIONS
 {
-.vectors.reset 0xC0000000 : {
+.vectors.reset 0x0 : {
    KEEP (*(.vectors.reset))
 } 
 
-.vectors.sw_exception 0xC0000008 : {
+.vectors.sw_exception 0x08 : {
    KEEP (*(.vectors.sw_exception))
 } 
 
-.vectors.interrupt 0xC0000010 : {
+.vectors.interrupt 0x10 : {
    KEEP (*(.vectors.interrupt))
 } 
 
-.vectors.hw_exception 0xC0000020 : {
+.vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 } 
 .ssc.code.buffer 0xC0000050 :
@@ -121,6 +122,11 @@ SECTIONS
    *(.rodata.*)
    *(.gnu.linkonce.r.*)
    __rodata_end = .;
+} > enclave_bram
+
+.ssc.att.module.data :
+{
+	KEEP(*(.ssc.att.module.data))
 } > enclave_bram
 
 .sdata2 : {

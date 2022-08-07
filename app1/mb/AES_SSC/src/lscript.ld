@@ -17,7 +17,8 @@ _HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x400;
 
 MEMORY
 {
-   enclave_bram : ORIGIN = 0xC0000050, LENGTH = 0x1ffff
+  	enclave_bram : ORIGIN = 0xC0000050, LENGTH = 0x20000
+	Enclave_1_local_memory_ilmb_bram_if_cntlr_Mem_Enclave_1_local_memory_dlmb_bram_if_cntlr_Mem : ORIGIN = 0x50, LENGTH = 0xFB0
 }
 
 /* Specify the default entry point to the program */
@@ -28,19 +29,19 @@ ENTRY(_start)
 
 SECTIONS
 {
-.vectors.reset 0xC0000000 : {
+.vectors.reset 0x0 : {
    KEEP (*(.vectors.reset))
 } 
 
-.vectors.sw_exception 0xC0000008 : {
+.vectors.sw_exception 0x08 : {
    KEEP (*(.vectors.sw_exception))
 } 
 
-.vectors.interrupt 0xC0000010 : {
+.vectors.interrupt 0x10 : {
    KEEP (*(.vectors.interrupt))
 } 
 
-.vectors.hw_exception 0xC0000020 : {
+.vectors.hw_exception 0x20 : {
    KEEP (*(.vectors.hw_exception))
 }
 
@@ -61,13 +62,13 @@ SECTIONS
 	KEEP(*(.ssc.attestation.md))
 } > enclave_bram
 */
-.text 0xc0004908: {
+.text 0xc00049e4: {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
 } > enclave_bram
 
-.data 0xc00076e4: {
+.data : {
    . = ALIGN(4);
    __data_start = .;
    *(.data)
@@ -76,7 +77,7 @@ SECTIONS
    __data_end = .;
 } > enclave_bram
 
-.rodata 0xc0007ff4: {
+.rodata 0xc0007cc0: {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)
@@ -84,7 +85,7 @@ SECTIONS
    __rodata_end = .;
 } > enclave_bram
 
-.init 0xc00087c4: {
+.init 0xc0008490: {
    KEEP (*(.init))
 } > enclave_bram
 

@@ -53,8 +53,8 @@ void print_help()
 void aes_ssa_help()
 {
     mp_printf("AES SSA options:\r\n");
-    mp_printf("  encrypt: Encrypt the data specified in the application, Key is embedded\r\n");
-    mp_printf("  decrypt: Decrypt the data specified in the application, Key is embedded\r\n");
+    mp_printf("  encrypt: Encrypt the data specified in the application, Key is embedded in hardware module\r\n");
+    mp_printf("  decrypt: Decrypt the data specified in the application, Key is embedded in hardware module\r\n");
 }
 
 void print_playback_help()

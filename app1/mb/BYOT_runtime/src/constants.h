@@ -6,8 +6,6 @@
 // shared DDR address
 #define SHARED_DDR_BASE (0x20000000 + 0x1CC00000)
 
-#define SSA_BASE (0xC0000050)
-#define ATT_BASE (0xC0008D98)
 // printing utility
 #define MB_PROMPT "\r\nBYOT_Runtime> "
 #define mb_printf(...) xil_printf(MB_PROMPT __VA_ARGS__)

@@ -18,7 +18,7 @@ _HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x800;
 MEMORY
 {
    attestation_module_attestation_local_memory_ilmb_bram_if_cntlr_Mem_attestation_module_attestation_local_memory_dlmb_bram_if_cntlr_Mem : ORIGIN = 0x50, LENGTH = 0xFFB0
-   attestation_module_axi_bram_ctrl_1_Mem0 : ORIGIN = 0xC0000000, LENGTH = 0x7FFF
+   attestation_module_axi_bram_ctrl_1_Mem0 : ORIGIN = 0xC0000000, LENGTH = 0x1ffff
 }
 
 /* Specify the default entry point to the program */
@@ -116,6 +116,16 @@ SECTIONS
    __data_end = .;
 } > attestation_module_attestation_local_memory_ilmb_bram_if_cntlr_Mem_attestation_module_attestation_local_memory_dlmb_bram_if_cntlr_Mem
 
+.ssc.code.buffer 0xC0000050 :
+{
+	KEEP(*(.ssc.code.buffer))
+} > attestation_module_axi_bram_ctrl_1_Mem0
+
+.ssc.att.module.data 0xc0007f78 :
+{
+	KEEP(*(.ssc.att.module.data))
+} > attestation_module_axi_bram_ctrl_1_Mem0
+
 .got : {
    *(.got)
 } > attestation_module_attestation_local_memory_ilmb_bram_if_cntlr_Mem_attestation_module_attestation_local_memory_dlmb_bram_if_cntlr_Mem
@@ -207,6 +217,8 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    _stack = .;
    __stack = _stack;
 } > attestation_module_attestation_local_memory_ilmb_bram_if_cntlr_Mem_attestation_module_attestation_local_memory_dlmb_bram_if_cntlr_Mem
+
+
 
 _end = .;
 }

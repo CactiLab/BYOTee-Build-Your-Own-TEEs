@@ -17,6 +17,7 @@ set worksp "$dev_path/mb"
 set sw_mmi "$worksp/$proj_name/system_wrapper.mmi"
 set sw_bit "$worksp/$proj_name/system_wrapper.bit"
 set BYOT_elf "$worksp/BYOT_runtime/Debug/BYOT_runtime.elf"
+set ATT_elf "$worksp/Attestation_software/Debug/Attestation_software.elf"
 set output "$device_dir/download.bit"
 
 puts "\nCalling updatemem as follows:
@@ -25,7 +26,7 @@ $sw_mmi \
 -bit \
 $sw_bit \
 -data $BYOT_elf \
--proc system_i/microblaze_0 -out \
+-proc system_i/Enclave_1 -out \
 $output\n"
 
 exec updatemem -force -meminfo \
@@ -33,7 +34,25 @@ $sw_mmi \
 -bit \
 $sw_bit \
 -data $BYOT_elf \
--proc system_i/microblaze_0 -out \
+-proc system_i/Enclave_1  -out \
+$output
+
+
+puts "\nCalling updatemem on attestation_module module as follows:
+updatemem -force -meminfo \
+$sw_mmi \
+-bit \
+$output \
+-data $ATT_elf \
+-proc system_i/attestation_module/soft_core -out \
+$output\n"
+
+exec updatemem -force -meminfo \
+$sw_mmi \
+-bit \
+$output \
+-data $ATT_elf \
+-proc system_i/attestation_module/soft_core -out \
 $output
 
 puts "Created download.bit at: $output"
