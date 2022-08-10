@@ -62,13 +62,13 @@ SECTIONS
 	KEEP(*(.ssc.attestation.md))
 } > enclave_bram
 */
-.text 0xc00049e4: {
+.text 0xc00049f4: {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
 } > enclave_bram
 
-.data : {
+.data 0xc00073b4: {
    . = ALIGN(4);
    __data_start = .;
    *(.data)

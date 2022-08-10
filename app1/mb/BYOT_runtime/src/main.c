@@ -225,7 +225,8 @@ void format_SSC_code()
 	// Invoke the attestation module
 	current_att_md.ssa_size = c->file_size;
 	current_att_md.cmd = 0xA;
-
+	/* need to wait here until we get the decryption done*/
+	while (current_att_md.cmd != 0);
 	unsigned char temp_buffer[sizeof(ssc_meta_data)];
 	memset(&received_metadata, 0, sizeof(ssc_meta_data));
 	memcpy(temp_buffer, local_state.code + SIG_LEN, sizeof(ssc_meta_data));
