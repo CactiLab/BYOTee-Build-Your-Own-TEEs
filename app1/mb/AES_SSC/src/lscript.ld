@@ -62,7 +62,7 @@ SECTIONS
 	KEEP(*(.ssc.attestation.md))
 } > enclave_bram
 */
-.text 0xc00049f4: {
+.text 0xc00049e4: {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)

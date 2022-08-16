@@ -37,22 +37,3 @@ $sw_bit \
 -proc system_i/microblaze_0 -out \
 $output
 
-
-puts "\nCalling updatemem on attestation_module module as follows:
-updatemem -force -meminfo \
-$sw_mmi \
--bit \
-$output \
--data $ATT_elf \
--proc system_i/microblaze_1 -out \
-$output\n"
-
-exec updatemem -force -meminfo \
-$sw_mmi \
--bit \
-$output \
--data $ATT_elf \
--proc system_i/microblaze_1 -out \
-$output
-
-puts "Created download.bit at: $output"
