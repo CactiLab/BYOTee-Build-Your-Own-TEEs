@@ -2,17 +2,17 @@
 #define XPARAMETERS_H   /* by using protection macros */
 
 /* Definitions for bus frequencies */
-#define XPAR_CPU_M_AXI_DP_FREQ_HZ 100000000
-#define XPAR_CPU_M_AXI_IP_FREQ_HZ 100000000
+#define XPAR_CPU_M_AXI_DP_FREQ_HZ 1e+08
+#define XPAR_CPU_M_AXI_IP_FREQ_HZ 1e+08
 /******************************************************************/
 
 /* Canonical definitions for bus frequencies */
-#define XPAR_PROC_BUS_0_FREQ_HZ 100000000
-#define XPAR_PROC_BUS_1_FREQ_HZ 100000000
+#define XPAR_PROC_BUS_0_FREQ_HZ 1e+08
+#define XPAR_PROC_BUS_1_FREQ_HZ 1e+08
 /******************************************************************/
 
-#define XPAR_CPU_CORE_CLOCK_FREQ_HZ 100000000
-#define XPAR_MICROBLAZE_CORE_CLOCK_FREQ_HZ 100000000
+#define XPAR_CPU_CORE_CLOCK_FREQ_HZ 1e+08
+#define XPAR_MICROBLAZE_CORE_CLOCK_FREQ_HZ 1e+08
 
 /******************************************************************/
 
