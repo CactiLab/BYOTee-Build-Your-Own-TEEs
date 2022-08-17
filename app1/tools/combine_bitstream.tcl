@@ -25,16 +25,16 @@ updatemem -force -meminfo \
 $sw_mmi \
 -bit \
 $sw_bit \
--data $BYOT_elf \
--proc system_i/microblaze_0 -out \
+-data $ATT_elf \
+-proc system_i/microblaze_1 -out \
 $output\n"
 
 exec updatemem -force -meminfo \
 $sw_mmi \
 -bit \
 $sw_bit \
--data $BYOT_elf \
--proc system_i/microblaze_0 -out \
+-data $ATT_elf \
+-proc system_i/microblaze_1 -out \
 $output
 
 
@@ -43,16 +43,16 @@ updatemem -force -meminfo \
 $sw_mmi \
 -bit \
 $output \
--data $ATT_elf \
--proc system_i/microblaze_1 -out \
+-data $BYOT_elf \
+-proc system_i/microblaze_0 -out \
 $output\n"
 
 exec updatemem -force -meminfo \
 $sw_mmi \
 -bit \
 $output \
--data $ATT_elf \
--proc system_i/microblaze_1 -out \
+-data $BYOT_elf \
+-proc system_i/microblaze_0 -out \
 $output
 
 puts "Created download.bit at: $output"
