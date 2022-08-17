@@ -176,7 +176,7 @@ set_property -name "file_type" -value "XDC" -objects $file_obj
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
-set_property -name "target_constrs_file" -value "[file normalize "$$origin_dir/src/constraints/Cora-Z7-Master.xdc"]" -objects $obj
+set_property -name "target_constrs_file" -value "[file normalize "$origin_dir/src/constraints/Cora-Z7-Master.xdc"]" -objects $obj
 
 # Create 'sim_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sim_1] ""]} {
