@@ -121,7 +121,7 @@ SECTIONS
 	KEEP(*(.ssc.code.buffer))
 } > attestation_module_axi_bram_ctrl_1_Mem0
 
-.ssc.att.module.data 0xc0007f78 :
+.ssc.att.module.data 0xc0008a9c :
 {
 	KEEP(*(.ssc.att.module.data))
 } > attestation_module_axi_bram_ctrl_1_Mem0
