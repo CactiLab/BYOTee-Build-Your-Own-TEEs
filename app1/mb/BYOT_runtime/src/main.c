@@ -29,7 +29,7 @@ internal_state __attribute__((section(".ssc.code.buffer"))) local_state;
 data_content __attribute__((section(".ssc.data.buffer"))) ssc_data;
 ro_data_content __attribute__((section(".ssc.ro.data.buffer"))) ssc_ro_data;
 ////attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
-ssc_meta_data received_metadata;
+ssc_meta_data __attribute__((section(".received.meta.info"))) received_metadata;
 
 char ssc_module_loaded = 0;
 uint8_t preExeResult[MEASUREMENT_SIZE];
@@ -198,25 +198,6 @@ void load_from_shared_to_local()
 	memcpy(local_state.code, (void *)c->code, CODE_SIZE);
 }
 
-//void dummy()
-//{
-//	char *str1 = NULL, *str2;
-//	microblaze_disable_dcache();
-//	memmove(str1, str2, 10);
-//	strncpy(str1, str2, 10);
-//
-//	if (!strncmp(str1, NULL, 10))
-//	{
-//		format_SSC_code();
-//	}
-//
-//	if (!memcmp(str1, str2, 10))
-//	{
-//		format_SSC_code();
-//	}
-//	Xil_MemCpy(str1, str2, 10);
-//
-//}
 
 void format_SSC_code()
 {
@@ -225,7 +206,10 @@ void format_SSC_code()
 	// Invoke the attestation module
 	current_att_md.ssa_size = c->file_size;
 	current_att_md.cmd = 0xA;
+	/*wait for HW-ATT to finish*/
 	while (current_att_md.cmd != 0);
+
+
 	unsigned char temp_buffer[sizeof(ssc_meta_data)];
 	memset(&received_metadata, 0, sizeof(ssc_meta_data));
 	memcpy(temp_buffer, local_state.code + SIG_LEN, sizeof(ssc_meta_data));
@@ -265,18 +249,18 @@ void forward_to_ssc()
 		mb_printf("No SSC module present in BRAM\r\n");
 		return;
 	}*/
-	if (current_att_md.cmd != 0)
-	{
-		mb_printf("not zero\r\n");
-	}
-	else
-	{
-		mb_printf("not zero\r\n");
-	}
-	for (int i = 0 ; i < 64; i++)
-	{
-		mb_printf("%d bit %d\r\n", i, local_state.code[i]);
-	}
+//	if (current_att_md.cmd != 0)
+//	{
+//		mb_printf("not zero\r\n");
+//	}
+//	else
+//	{
+//		mb_printf("not zero\r\n");
+//	}
+//	for (int i = 0 ; i < 64; i++)
+//	{
+//		mb_printf("%d bit %d\r\n", i, local_state.code[i]);
+//	}
 	//while (current_att_md.cmd != 0);
 	mb_printf("Give execution to SSC\r\n");
 	((int (*)(void))local_state.code)();
@@ -360,16 +344,15 @@ void cleaup_att_space()
 	//memset(&att_md, 0, sizeof(attestation_md));
 }
 
-//int verify_ssa_signature(void *data_start) {
-//
-//	uint8_t sig[HASH_OUTSIZE];
-//
-//	memset(sig, 0, HASH_OUTSIZE);
-//	hmac(auth_key, data_start, c->file_size - SIG_LEN, sig);
-//
-//	return !memcmp(sig, (uint8_t *)data_start , SIG_LEN);
-//}
-
+preExeAtt()
+{
+	current_att_md.ssa_size = c->file_size;
+	current_att_md.cmd = 0xD;
+	current_att_md.challenge_number = (c->challenge_number);
+	/*wait for HW-ATT to finish*/
+	while (current_att_md.cmd != 0);
+	memcpy((void *)&c->preExehash, current_att_md.attestation_output, MEASUREMENT_SIZE);
+}
 int main()
 {
 	u32 status;
@@ -419,7 +402,7 @@ int main()
 				query_BYOT_runtime();
 				break;
 			case SSC_COMMAND:
-				//preExeAtt();
+				preExeAtt();
 				forward_to_ssc(); /*Executing SSC*/
 				//input_attestation(1);
 				//postExeAtt();

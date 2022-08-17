@@ -107,6 +107,7 @@ typedef struct
 {
 	unsigned int cmd;
 	unsigned int ssa_size;
+	unsigned int challenge_number;
 	uint8_t attestation_output[MEASUREMENT_SIZE];
 } hw_att_md;
 

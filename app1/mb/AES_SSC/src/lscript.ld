@@ -62,13 +62,13 @@ SECTIONS
 	KEEP(*(.ssc.attestation.md))
 } > enclave_bram
 */
-.text 0xc00049f4: {
+.text 0xc0004cd8: {
    *(.text)
    *(.text.*)
    *(.gnu.linkonce.t.*)
 } > enclave_bram
 
-.data 0xc00073b4: {
+.data : {
    . = ALIGN(4);
    __data_start = .;
    *(.data)
@@ -77,7 +77,7 @@ SECTIONS
    __data_end = .;
 } > enclave_bram
 
-.rodata 0xc0007cc0: {
+.rodata 0xc0007f48: {
    __rodata_start = .;
    *(.rodata)
    *(.rodata.*)
@@ -85,7 +85,7 @@ SECTIONS
    __rodata_end = .;
 } > enclave_bram
 
-.init 0xc0008490: {
+.init 0xc0008718: {
    KEEP (*(.init))
 } > enclave_bram
 

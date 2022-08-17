@@ -11,13 +11,13 @@
 /*******************************************************************/
 
 _STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x400;
-_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x800;
+_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x400;
 
 /* Define Memories in the system */
 
 MEMORY
 {
-   attestation_module_attestation_local_memory_ilmb_bram_if_cntlr_Mem_attestation_module_attestation_local_memory_dlmb_bram_if_cntlr_Mem : ORIGIN = 0x50, LENGTH = 0xFFB0
+   attestation_module_attestation_local_memory_ilmb_bram_if_cntlr_Mem_attestation_module_attestation_local_memory_dlmb_bram_if_cntlr_Mem : ORIGIN = 0x50, LENGTH = 0x7FB0
    attestation_module_axi_bram_ctrl_1_Mem0 : ORIGIN = 0xC0000000, LENGTH = 0x1ffff
 }
 
@@ -121,9 +121,24 @@ SECTIONS
 	KEEP(*(.ssc.code.buffer))
 } > attestation_module_axi_bram_ctrl_1_Mem0
 
-.ssc.att.module.data 0xc0008a9c :
+.ssc.att.module.data 0xc0008cec :
 {
 	KEEP(*(.ssc.att.module.data))
+} > attestation_module_axi_bram_ctrl_1_Mem0
+
+.received.meta.info 0xc0007f30:
+{
+	KEEP(*(.received.meta.info))
+} > attestation_module_axi_bram_ctrl_1_Mem0
+
+.ssc.ro.data.buffer 0xc0007f48:
+{
+	KEEP(*(.ssc.ro.data.buffer))
+} > attestation_module_axi_bram_ctrl_1_Mem0
+
+.ssc.data.buffer 0xc0007624:
+{
+	KEEP(*(.ssc.data.buffer))
 } > attestation_module_axi_bram_ctrl_1_Mem0
 
 .got : {
