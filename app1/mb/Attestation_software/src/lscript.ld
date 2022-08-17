@@ -116,27 +116,27 @@ SECTIONS
    __data_end = .;
 } > attestation_module_attestation_local_memory_ilmb_bram_if_cntlr_Mem_attestation_module_attestation_local_memory_dlmb_bram_if_cntlr_Mem
 
-.ssc.code.buffer 0xC0000050 :
+.ssc.code.buffer 0xC0000050:
 {
 	KEEP(*(.ssc.code.buffer))
 } > attestation_module_axi_bram_ctrl_1_Mem0
 
-.ssc.att.module.data 0xc0008cec :
+.ssc.att.module.data 0xc00090e0:
 {
 	KEEP(*(.ssc.att.module.data))
 } > attestation_module_axi_bram_ctrl_1_Mem0
 
-.received.meta.info 0xc0007f30:
+.received.meta.info 0xc0008324:
 {
 	KEEP(*(.received.meta.info))
 } > attestation_module_axi_bram_ctrl_1_Mem0
 
-.ssc.ro.data.buffer 0xc0007f48:
+.ssc.ro.data.buffer 0xc000833c:
 {
 	KEEP(*(.ssc.ro.data.buffer))
 } > attestation_module_axi_bram_ctrl_1_Mem0
 
-.ssc.data.buffer 0xc0007624:
+.ssc.data.buffer 0xc0007a18:
 {
 	KEEP(*(.ssc.data.buffer))
 } > attestation_module_axi_bram_ctrl_1_Mem0

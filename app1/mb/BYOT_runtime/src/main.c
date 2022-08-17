@@ -9,10 +9,6 @@
 #include "constants.h"
 #include "sleep.h"
 
-//#include "blake2s.h"
-//#include "aes.h"
-//#include "hmac.h"
-
 #define change_state(state) c->drm_state = state;
 #define set_stopped() change_state(STOPPED)
 #define set_working() change_state(WORKING)
@@ -24,15 +20,13 @@ volatile cmd_channel *c = (cmd_channel *)SHARED_DDR_BASE;
 
 
 hw_att_md __attribute__((section(".ssc.att.module.data"))) current_att_md;
-// internal state store
 internal_state __attribute__((section(".ssc.code.buffer"))) local_state;
 data_content __attribute__((section(".ssc.data.buffer"))) ssc_data;
 ro_data_content __attribute__((section(".ssc.ro.data.buffer"))) ssc_ro_data;
-////attestation_md __attribute__((section(".ssc.attestation.md"))) att_md;
 ssc_meta_data __attribute__((section(".received.meta.info"))) received_metadata;
 
 char ssc_module_loaded = 0;
-uint8_t preExeResult[MEASUREMENT_SIZE];
+uint8_t measurement[MEASUREMENT_SIZE];
 #ifdef KEEP_STATE
 unsigned int register_values[TOTAL_REGISTERS];
 #endif
@@ -41,7 +35,6 @@ unsigned int register_values[TOTAL_REGISTERS];
 // shared variable between main thread and interrupt processing thread
 volatile static int InterruptProcessed = FALSE;
 static XIntc InterruptController;
-//struct AES_ctx ctx;
 
 #ifdef KEEP_STATE
 void RELOAD_SSA()
@@ -244,24 +237,6 @@ void execute_SSC()
 
 void forward_to_ssc()
 {
-	/*if (ssc_module_loaded == 0)
-	{
-		mb_printf("No SSC module present in BRAM\r\n");
-		return;
-	}*/
-//	if (current_att_md.cmd != 0)
-//	{
-//		mb_printf("not zero\r\n");
-//	}
-//	else
-//	{
-//		mb_printf("not zero\r\n");
-//	}
-//	for (int i = 0 ; i < 64; i++)
-//	{
-//		mb_printf("%d bit %d\r\n", i, local_state.code[i]);
-//	}
-	//while (current_att_md.cmd != 0);
 	mb_printf("Give execution to SSC\r\n");
 	((int (*)(void))local_state.code)();
 }
@@ -273,75 +248,9 @@ void remove_ssc_module()
 	memset(&ssc_ro_data, 0, RO_DATA_SIZE);
 }
 
-/*int adjust_block_size(int data_size)
-{
-	int remainder = data_size % BLAKE2S_BLOCKBYTES;
-
-	if (remainder != 0)
-	{
-		data_size += (BLAKE2S_BLOCKBYTES - remainder);
-	}
-
-	return data_size;
-}*/
-
-//void input_attestation(char flag)
-//{
-//	if (att_md.input_att_size == 0)
-//		return;
-//
-//	int data_size = adjust_block_size(att_md.input_att_size + MEASUREMENT_SIZE);
-//	//Input to SSC data attestation
-//	memcpy(att_md.att_input_data + att_md.input_att_size, preExeResult, MEASUREMENT_SIZE);
-//	//memset(att_md.att_input_data + att_md.input_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.input_att_size + MEASUREMENT_SIZE));
-//	blake2s(preExeResult, att_md.att_input_data, data_size);
-//
-//	if (flag == 1)
-//		//copy the hash to DRAM
-//		memcpy((void *)&c->preExehash, &preExeResult, MEASUREMENT_SIZE);
-//}
-//void output_attestation()
-//{
-//	if (att_md.output_att_size == 0)
-//		return;
-//
-//	int data_size = adjust_block_size(att_md.output_att_size + MEASUREMENT_SIZE);
-//	//Input to SSC data attestation
-//	memcpy(att_md.att_output_data + att_md.output_att_size, preExeResult, MEASUREMENT_SIZE);
-//	//memset(att_md.att_output_data + att_md.output_att_size + MEASUREMENT_SIZE, 0, data_size - (att_md.output_att_size + MEASUREMENT_SIZE));
-//	blake2s(preExeResult, att_md.att_output_data, data_size);
-//	//copy the hash to DRAM
-//	memcpy((void *)&c->postExehash, &preExeResult, MEASUREMENT_SIZE);
-//}
-////This functions performs measurements on code section, data section and readonly data section before and after SSC execution
-//void preExeAtt()
-//{
-//	int data_size;
-//
-//	challenge_number = (c->challenge_number);
-//	mb_printf("Attestation for challenge %d\r\n", challenge_number);
-//	data_size = adjust_block_size(received_metadata.ro_data_size);
-//	// hash the read only data section + input hash
-//	blake2s(preExeResult, ssc_ro_data.ro_data, data_size);
-//	data_size = adjust_block_size(received_metadata.data_sec_size + MEASUREMENT_SIZE);
-//	memcpy((ssc_data.data + received_metadata.data_sec_size), preExeResult, MEASUREMENT_SIZE);
-//	// hash the data section + previous hash
-//	blake2s(preExeResult, ssc_data.data, data_size);
-//	data_size = adjust_block_size(received_metadata.sss_code_size + MEASUREMENT_SIZE + sizeof(challenge_number));
-//	memcpy((local_state.code + received_metadata.sss_code_size), &challenge_number, sizeof(challenge_number));
-//	memcpy((local_state.code + received_metadata.sss_code_size + sizeof(challenge_number)), preExeResult, MEASUREMENT_SIZE);
-//	// hash the code text section + previous hash + challenge number
-//	blake2s(preExeResult, local_state.code, data_size);
-//}
-//void postExeAtt()
-//{
-//	preExeAtt();
-//	input_attestation(0);
-//	output_attestation();
-//}
 void cleaup_att_space()
 {
-	//memset(&att_md, 0, sizeof(attestation_md));
+	memset(&current_att_md, 0, sizeof(hw_att_md));
 }
 
 preExeAtt()
@@ -349,10 +258,23 @@ preExeAtt()
 	current_att_md.ssa_size = c->file_size;
 	current_att_md.cmd = 0xD;
 	current_att_md.challenge_number = (c->challenge_number);
+	memcpy(current_att_md.SSA_input, (void *)c->enc_dec_data, ENC_DEC_DATA_SIZE);
 	/*wait for HW-ATT to finish*/
 	while (current_att_md.cmd != 0);
 	memcpy((void *)&c->preExehash, current_att_md.attestation_output, MEASUREMENT_SIZE);
 }
+
+postExeAtt()
+{
+	current_att_md.ssa_size = c->file_size;
+	current_att_md.cmd = 0xC;
+	current_att_md.challenge_number = (c->challenge_number);
+	memcpy(current_att_md.SSA_output, (void *)c->enc_dec_data, ENC_DEC_DATA_SIZE);
+	/*wait for HW-ATT to finish*/
+	while (current_att_md.cmd != 0);
+	memcpy((void *)&c->postExehash, current_att_md.attestation_output, MEASUREMENT_SIZE);
+}
+
 int main()
 {
 	u32 status;
@@ -404,8 +326,7 @@ int main()
 			case SSC_COMMAND:
 				preExeAtt();
 				forward_to_ssc(); /*Executing SSC*/
-				//input_attestation(1);
-				//postExeAtt();
+				postExeAtt();
 				cleaup_att_space();
 				break;
 			case EXIT:
