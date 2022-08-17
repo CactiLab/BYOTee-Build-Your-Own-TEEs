@@ -1,0 +1,16 @@
+*.pyc
+.idea/
+build/
+dist/
+tests/secrets.h
+tests/songs/
+__pycache__/
+.pytest_cache?
+songs/
+*secrets*.h
+*secrets*.json
+*.drm
+*.wav
+*.secrets
+device1
+SSC

@@ -1,0 +1,233 @@
+#!/usr/bin/env python3
+
+import os, sys
+import subprocess
+import argparse
+
+# the directory to mount the sd card to
+BOOT_MNT = '/media/tomal/boot'
+SSC_MNT = '/media/tomal/root'
+
+# the names to copy the boot and mes files to on the sd card
+BOOT_FILE = 'BOOT.bin'
+UA_BIN_FILE = "miPod.bin"
+
+
+def copy_file(src, dst):
+    print("Destination :")
+    print(dst)
+    """
+    This function copies a files from the src path to the destination path.
+    This is used for copying files to the sd card.
+
+    src: a path to the source file to copy.
+    dst: a path to the destination file to copy.
+    """
+
+    if not os.path.isfile(src):
+        raise IOError("File does not exist: %s" % (src))
+
+    subprocess.check_call("sudo cp %s %s" % (src, dst), shell=True)
+
+
+def setup_sdcard(device):
+    """
+    This function sets up the sd card by formatting it with the correct
+    partitions and the correct filesystems. It uses the sfdisk format file
+    which can be found in the BYOT_sd.fdisk file in this directory.
+
+    device: the path to the device to be formatted, ie /dev/sdb. This must be
+            the overall device, not a partition on the device.
+    """
+
+    print("Formatting SD Card...")
+    # format sd card and create filesystems
+    subprocess.check_call("sudo sfdisk --force %s < BYOT_sd.sfdisk > /dev/null" % (device), shell=True)
+    subprocess.check_call("sudo mkfs.fat -F 32 -n BOOT -I %s1 > /dev/null" % (device), shell=True)
+    subprocess.check_call("sudo mkfs.ext4 -L root %s2 > /dev/null" % (device), shell=True)
+
+    print("Done Formatting SD Card")
+    print("    BOOT : %s1" % (device))
+    print("    root : %s2 " % (device))
+
+
+def copy_SSC(device, SSC_Dir):
+    """
+    This function copies all the SSC files from the specified SSC directory
+    to the device specified.
+
+    device: the device path to copy the SSC to, ie /dev/sdb.
+    SSC: the path to the directory that contains the SSC files to copy to
+           the sd card. This script will copy ALL regular files in the root of
+           the specified directory, so make sure it is a clean directory.
+    """
+
+    print("Copying SSC Files...")
+    # mount sd card
+    subprocess.check_call("sudo mkdir -p %s" % (SSC_MNT), shell=True)
+    subprocess.check_call("sudo mount %s2 %s" % (device, SSC_MNT), shell=True)
+
+    # copy each file specified in SSC directory
+    src_files = os.listdir(SSC_Dir)
+    for file_name in src_files:
+        full_path = os.path.join(SSC_Dir, file_name)
+        try:
+            print("    %s-> %s2/" % (full_path, device))
+            copy_file(full_path, SSC_MNT)
+        except IOError as e:
+            print(e)
+            subprocess.check_call("sudo umount %s" % (SSC_MNT), shell=True)
+            exit(1)
+
+    # cleanup
+    subprocess.check_call("sudo umount %s" % (SSC_MNT), shell=True)
+
+    print("Done copying SSC to SD Card")
+
+
+def copy_boot(device, boot_path, Untrusted_app_bin_path=None):
+    """
+    This function copies the boot file from the specified file paths
+    to the device specified. The device is the overall device and it will copy
+    the specified files to the first partition (the boot partition).
+
+    device: the path to the device to copy the SSC to, ie /dev/sdb.
+    boot_path: The path to the boot file to use. This will always copy
+            the file with the name BOOT_FILE specified above.
+    """
+
+    print("Copying images to SD Card...")
+
+    # mount sd card
+    subprocess.check_call("sudo mkdir -p %s" % (BOOT_MNT), shell=True)
+    subprocess.check_call("sudo mount %s1 %s" % (device, BOOT_MNT), shell=True)
+
+    # copy boot binary
+    try:
+        print("    %s-> %s" % (boot_path, os.path.join(device + "1", BOOT_FILE)))
+        copy_file(boot_path, os.path.join(BOOT_MNT, BOOT_FILE))
+        if Untrusted_app_bin_path is not None:
+                print("    %s-> %s" % (boot_path, os.path.join(device + "1", UA_BIN_FILE)))
+                copy_file(Untrusted_app_bin_path, os.path.join(BOOT_MNT, UA_BIN_FILE))
+    except IOError as e:
+        print(e)
+        subprocess.check_call("sudo umount %s" % (BOOT_MNT), shell=True)
+        exit(1)
+
+    # cleanup
+    subprocess.check_call("sudo umount %s" % (BOOT_MNT), shell=True)
+
+
+def copy_Untrusted_app(device, path):
+    """This function copies the Untrusted_app application to the SD card"""
+    print("Copying Untrusted_app application...")
+    # mount sd card
+    subprocess.check_call("sudo mount %s2 %s" % (device, SSC_MNT), shell=True)
+
+    try:
+        print("    %s-> %s2/" % (path, device))
+        copy_file(path, "%s/Untrusted_app" % (SSC_MNT,))
+    except IOError as e:
+        print(e)
+        subprocess.check_call("sudo umount %s" % (SSC_MNT), shell=True)
+        exit(1)
+
+    # cleanup
+    subprocess.check_call("sudo umount %s" % (SSC_MNT), shell=True)
+
+    print("Done copying Untrusted_app application to SD Card")
+
+
+def copy_imageub(device, path):
+    """This function copies the Untrusted_app application to the SD card"""
+    print("Copying image.ub...")
+    # mount sd card
+    subprocess.check_call("sudo mount %s1 %s" % (device, BOOT_MNT), shell=True)
+
+    try:
+        print("    %s-> %s1/" % (path, device))
+        copy_file(path, BOOT_MNT)
+    except IOError as e:
+        print(e)
+        subprocess.check_call("sudo umount %s" % (BOOT_MNT), shell=True)
+        exit(1)
+
+    # cleanup
+    subprocess.check_call("sudo umount %s" % (BOOT_MNT), shell=True)
+
+    print("Done copying image.ub")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('device',
+                        help=("This is the SD device to deploy the "
+                              "system on to."))
+    parser.add_argument('boot_path',
+                        help=("This is the path to the main file to boot the "
+                              "system."))
+    parser.add_argument('SSC',
+                        help=("This is the directory where SSC "
+                              "files are stored."))
+    parser.add_argument("Untrusted_app",
+                        help=("This is the path to the Untrusted_app application"))
+    parser.add_argument("imageub",
+                        help=("The path to image.ub, the petalinux filesystem"))
+
+    parser.add_argument('--Untrusted_app-bin-path',
+                        help=("This is the path to the Untrusted_app.BIN file to boot the "
+                              "system. This will contain your bitstream."),
+                        required=False,
+                        default=None)
+    parser.add_argument('--noformat',
+                        action="store_true",
+                        help=("This is an optional argument. "
+                              "If it is specified, then the SD card will not "
+                              "be formatted. Caution, if the sd card is "
+                              "not already formatted correctly, this "
+                              "script will fail."))
+    args = parser.parse_args()
+    print("Secucirty Sensitive code directory: " + str(args.SSC))
+    #while True:
+     #   try:
+    # verify boot bin
+    boot_file = args.boot_path
+    if not os.path.isfile(boot_file):
+        print("Unable to open %s. You must copy the provided BOOT.bin to "
+              "that location in order to run this script" % (boot_file))
+        exit(2)
+
+    if args.Untrusted_app_bin_path is not None:
+        if not os.path.isfile(args.Untrusted_app_bin_path):
+            print("Unable to open %s. You must copy your Untrusted_app.bin to "
+                  "that location in order to run this script" % (boot_file))
+            exit(2)
+
+    # verify device
+    if not os.path.exists(args.device):
+        print("Error, SD device does not exist: %s" % (args.device))
+        exit(2)
+    # verify SSC folder
+    if not os.path.isdir(args.SSC):
+        print("Error, SSC directory doesn't exist: %s" % (args.SSC))
+        exit(2)
+
+    # unmount sd card just in case
+    subprocess.call("sudo umount %s* &> /dev/null" % (args.device), shell=True)
+
+    # build images and provision sd card
+    if not args.noformat:
+        setup_sdcard(args.device)
+
+    copy_boot(args.device, boot_file, args.Untrusted_app_bin_path)
+    copy_SSC(args.device, args.SSC)
+    copy_Untrusted_app(args.device, args.Untrusted_app)
+    copy_imageub(args.device, args.imageub)
+
+    exit(0)
+      #  except:
+       #     print("=====================got error running again==========================")
+
+
+if __name__ == '__main__':
+    main()
