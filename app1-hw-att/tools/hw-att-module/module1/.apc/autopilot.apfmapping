@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="blake2s.c" path="/home/safayat/BYOTee/BYOTee-Build-Your-Own-TEEs/app1-hw-att/tools/hw-att-module/blake2s.c"/>
+    <originFiles name="blake2s.h" path="/home/safayat/BYOTee/BYOTee-Build-Your-Own-TEEs/app1-hw-att/tools/hw-att-module/blake2s.h"/>
+  </source>
+  <testbench/>
+</autopilotfilemapping:AutoPilotFileMapping>
