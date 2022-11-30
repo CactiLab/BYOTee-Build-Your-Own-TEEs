@@ -7,12 +7,10 @@
 
 int main(){
 
-	char  in[SIZE_t];
-	uint8_t out[32];
+	uint8_t in[SIZE_t];
+	uint8_t out[SIZE_t];
 	
-	for (int i = 0 ; i < SIZE_t; i++)
-		in[i] = i *10;
-	//memset(in, 1 , SIZE_t);
+	memset(in, 1 , SIZE_t);
 	memset(out, 0 , SIZE_t);
 
 
@@ -23,7 +21,7 @@ int main(){
 		printf ("Output: \n");
 		for (int j = 0; j < SIZE_t; j++)
 		{
-			printf("%d\t", out[j]);
+			printf("%hhu\t", out[j]);
 		}
 	printf("\n");
 	}
