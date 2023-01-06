@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Messages>
+	<Message prefix="[HLS 200-10]" severity="INFO" keynum="HLS_10_1312" content="Analyzing design file &apos;blake2s.c&apos; ..." tag=""/>
+	<Message prefix="[HLS 200-40]" severity="WARNING" keynum="HLS_40_1378" content="In file included from blake2s.c:1:
+blake2s.c:198:22: warning: incompatible pointer types initializing &apos;const uint32_t *&apos; (aka &apos;const unsigned int *&apos;) with an expression of type &apos;const uint8_t *&apos; (aka &apos;const unsigned char *&apos;) [-Wincompatible-pointer-types]
+     const uint32_t *m = in;
+                     ^   ~~
+1 warning generated." tag=""/>
+	<Message prefix="[HLS 200-10]" severity="INFO" keynum="HLS_10_1465" content="Validating synthesis directives ..." tag=""/>
+	<Message prefix="[HLS 200-111]" severity="INFO" keynum="473" content="Finished Checking Pragmas Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 343.488 ; gain = 13.371 ; free physical = 41461 ; free virtual = 53549" tag=""/>
+	<Message prefix="[HLS 200-111]" severity="INFO" keynum="473" content="Finished Linking Time (s): cpu = 00:00:03 ; elapsed = 00:00:02 . Memory (MB): peak = 343.488 ; gain = 13.371 ; free physical = 41485 ; free virtual = 53568" tag=""/>
+	<Message prefix="[HLS 200-10]" severity="INFO" keynum="HLS_10_1467" content="Starting code transformations ..." tag=""/>
+	<Message prefix="[HLS 200-111]" severity="INFO" keynum="473" content="Finished Standard Transforms Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 343.488 ; gain = 13.371 ; free physical = 41485 ; free virtual = 53568" tag=""/>
+	<Message prefix="[HLS 200-10]" severity="INFO" keynum="HLS_10_1472" content="Checking synthesizability ..." tag=""/>
+	<Message prefix="[XFORM 203-602]" severity="INFO" keynum="794" content="Inlining function &apos;blake2s_set_IV&apos; into &apos;blake2s_init&apos; (blake2s.c:150) automatically." tag=""/>
+	<Message prefix="[XFORM 203-602]" severity="INFO" keynum="794" content="Inlining function &apos;blake2s_set_lastnode&apos; into &apos;blake2s_set_lastblock&apos; (blake2s.c:123) automatically." tag=""/>
+	<Message prefix="[XFORM 203-602]" severity="INFO" keynum="794" content="Inlining function &apos;rotr32&apos; into &apos;blake2s_round&apos; (blake2s.c:184) automatically." tag=""/>
+	<Message prefix="[XFORM 203-602]" severity="INFO" keynum="794" content="Inlining function &apos;memcpy_hls&apos; into &apos;blake2s_compress&apos; (blake2s.c:205) automatically." tag=""/>
+	<Message prefix="[XFORM 203-602]" severity="INFO" keynum="794" content="Inlining function &apos;blake2s_set_IV.1&apos; into &apos;blake2s_compress&apos; (blake2s.c:207) automatically." tag=""/>
+	<Message prefix="[XFORM 203-602]" severity="INFO" keynum="794" content="Inlining function &apos;blake2s_init&apos; into &apos;blake2s&apos; (blake2s.c:288) automatically." tag=""/>
+	<Message prefix="[XFORM 203-602]" severity="INFO" keynum="794" content="Inlining function &apos;blake2s_increment_counter&apos; into &apos;blake2s&apos; (blake2s.c:311) automatically." tag=""/>
+	<Message prefix="[XFORM 203-602]" severity="INFO" keynum="794" content="Inlining function &apos;blake2s_set_lastblock&apos; into &apos;blake2s&apos; (blake2s.c:315) automatically." tag=""/>
+	<Message prefix="[XFORM 203-602]" severity="INFO" keynum="794" content="Inlining function &apos;blake2s_final&apos; into &apos;blake2s&apos; (blake2s.c:328) automatically." tag=""/>
+	<Message prefix="[SYNCHK 200-61]" severity="ERROR" keynum="574" content="blake2s.c:180: unsupported memory access on variable &apos;m&apos; which is (or contains) an array with unknown size at compile time." tag=""/>
+	<Message prefix="[SYNCHK 200-41]" severity="ERROR" keynum="609" content="blake2s.c:198: unsupported pointer reinterpretation from type &apos;i8*&apos; to type &apos;i32*&apos; on variable &apos;in&apos;." tag=""/>
+	<Message prefix="[SYNCHK 200-22]" severity="ERROR" keynum="601" content="blake2s.c:148: memory copy is not supported unless used on bus interface possible cause(s): non-static/non-constant local array with initialization)." tag=""/>
+	<Message prefix="[SYNCHK 200-10]" severity="INFO" keynum="597" content="3 error(s), 0 warning(s)." tag=""/>
+	<Message prefix="[HLS 200-70]" severity="ERROR" keynum="HLS_70_1855" content="Synthesizability check failed." tag=""/>
+	<Message prefix="[HLS 200-150]" severity="INFO" keynum="11" content="command &apos;ap_source&apos; returned error code
+    while executing
+&quot;source /home/safayat/BYOTee/BYOTee-Build-Your-Own-TEEs/app1-hw-att/tools/hw-att-module/module1/solution1/csynth.tcl&quot;
+    invoked from within
+&quot;hls::main /home/safayat/BYOTee/BYOTee-Build-Your-Own-TEEs/app1-hw-att/tools/hw-att-module/module1/solution1/csynth.tcl&quot;
+    (&quot;uplevel&quot; body line 1)
+    invoked from within
+&quot;uplevel 1 hls::main {*}$args&quot;
+    (procedure &quot;hls_proc&quot; line 5)
+    invoked from within
+&quot;hls_proc $argv&quot;" tag=""/>
+</Messages>

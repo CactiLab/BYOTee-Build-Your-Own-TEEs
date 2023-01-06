@@ -3,8 +3,19 @@
 #include <stdio.h>
 
 #include "blake2s.h"
+//#include "lib.c"
 
-#define NATIVE_LITTLE_ENDIAN (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+#define NATIVE_LITTLE_ENDIAN (1)
+
+void *
+memcpy_hls (void *dest, const void *src, size_t len)
+{
+  char *d = dest;
+  const char *s = src;
+  while (len--)
+    *d++ = *s++;
+  return dest;
+}
 
 static const uint32_t blake2s_IV[8] = {
     0x6A09E667UL, 0xBB67AE85UL, 0x3C6EF372UL, 0xA54FF53AUL,
@@ -183,14 +194,15 @@ static void blake2s_round(size_t r, const uint32_t m[16], uint32_t v[16])
 static void blake2s_compress(blake2s_state *S, const uint8_t in[BLAKE2S_BLOCKBYTES])
 {
 #if !BLAKE2S_UNALIGNED
-    const uint32_t *m = (const uint32_t *)in;
+//	 const uint32_t *m = (const uint32_t *)in;
+     const uint32_t *m = in;
 #else
     uint32_t m[16];
     memcpy(m, in, sizeof(m));
 #endif
 
     uint32_t v[16];
-    memcpy(v, S->h, 8 * sizeof(v[0]));
+    memcpy_hls(v, S->h, 8 * sizeof(v[0]));
 
     blake2s_set_IV(&v[8]);
     v[12] ^= S->t[0];

@@ -52,6 +52,11 @@
 			<location>/home/safayat/BYOTee/BYOTee-Build-Your-Own-TEEs/app1-hw-att/tools/hw-att-module/blake2s.h</location>
 		</link>
 		<link>
+			<name>testbench/main.c</name>
+			<type>1</type>
+			<location>/home/safayat/BYOTee/BYOTee-Build-Your-Own-TEEs/app1-hw-att/tools/hw-att-module/module1/solution1/main.c</location>
+		</link>
+		<link>
 			<name>solution1/constraints/.xml.directive</name>
 			<type>1</type>
 			<location>/home/safayat/BYOTee/BYOTee-Build-Your-Own-TEEs/app1-hw-att/tools/hw-att-module/module1/solution1/solution1.directive</location>

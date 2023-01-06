@@ -1,0 +1,9 @@
+--Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
+----------------------------------------------------------------------------------
+--Tool Version: Vivado v.2017.4 (lin64) Build 2086221 Fri Dec 15 20:54:30 MST 2017
+--Date        : Thu Jan  5 17:51:21 2023
+--Host        : safa running 64-bit Ubuntu 20.04.5 LTS
+--Command     : generate_target blade2s_block_design.bd
+--Design      : blade2s_block_design
+--Purpose     : IP block netlist
+----------------------------------------------------------------------------------

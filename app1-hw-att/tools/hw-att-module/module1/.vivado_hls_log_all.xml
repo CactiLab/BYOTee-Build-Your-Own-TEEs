@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vivadoHLSLog:LogRoot xmlns:vivadoHLSLog="www.xilinx.com/vivadoHLSLog">
+  <errorLogs>
+    <logs>
+      <synLog>
+        <logs message="ERROR: [HLS 200-70] Synthesizability check failed.&#xA;command 'ap_source' returned error code&#xA;    while executing&#xA;&quot;source /home/safayat/BYOTee/BYOTee-Build-Your-Own-TEEs/app1-hw-att/tools/hw-att-module/module1/solution1/csynth.tcl&quot;&#xA;    invoked from within&#xA;&quot;hls::main /home/safayat/BYOTee/BYOTee-Build-Your-Own-TEEs/app1-hw-att/tools/hw-att-module/module1/solution1/csynth.tcl&quot;&#xA;    (&quot;uplevel&quot; body line 1)&#xA;    invoked from within&#xA;&quot;uplevel 1 hls::main {*}$args&quot;&#xA;    (procedure &quot;hls_proc&quot; line 5)&#xA;    invoked from within&#xA;&quot;hls_proc $argv&quot;&#xA;" projectName="module1" solutionName="solution1" date="2023-01-02T20:43:54.572-0500"/>
+        <logs message="ERROR: [SYNCHK 200-22] blake2s.c:148: memory copy is not supported unless used on bus interface possible cause(s): non-static/non-constant local array with initialization)." projectName="module1" solutionName="solution1" date="2023-01-02T20:43:54.563-0500"/>
+        <logs message="ERROR: [SYNCHK 200-41] blake2s.c:198: unsupported pointer reinterpretation from type 'i8*' to type 'i32*' on variable 'in'." projectName="module1" solutionName="solution1" date="2023-01-02T20:43:54.558-0500"/>
+        <logs message="ERROR: [SYNCHK 200-61] blake2s.c:180: unsupported memory access on variable 'm' which is (or contains) an array with unknown size at compile time." projectName="module1" solutionName="solution1" date="2023-01-02T20:43:54.554-0500"/>
+      </synLog>
+      <simLog/>
+      <mgLog/>
+      <packageLog/>
+      <csimLog/>
+    </logs>
+  </errorLogs>
+  <warningLogs>
+    <logs>
+      <synLog>
+        <logs message="WARNING: [HLS 200-40] In file included from blake2s.c:1:&#xA;blake2s.c:198:22: warning: incompatible pointer types initializing 'const uint32_t *' (aka 'const unsigned int *') with an expression of type 'const uint8_t *' (aka 'const unsigned char *') [-Wincompatible-pointer-types]&#xA;     const uint32_t *m = in;&#xA;                     ^   ~~&#xA;1 warning generated." projectName="module1" solutionName="solution1" date="2023-01-02T20:43:53.699-0500" type="Warning"/>
+      </synLog>
+      <simLog/>
+      <mgLog/>
+      <packageLog/>
+      <csimLog/>
+    </logs>
+  </warningLogs>
+</vivadoHLSLog:LogRoot>
