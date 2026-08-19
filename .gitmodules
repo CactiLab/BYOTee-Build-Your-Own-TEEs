@@ -1,0 +1,3 @@
+[submodule "ReTEE-OSDZU3-REF-MPSoC"]
+	path = ReTEE-OSDZU3-REF-MPSoC
+	url = https://github.com/CactiLab/ReTEE-OSDZU3-REF-MPSoC
